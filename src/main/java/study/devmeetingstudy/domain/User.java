@@ -1,6 +1,9 @@
 package study.devmeetingstudy.domain;
 
 
+import lombok.Builder;
+import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,24 +15,39 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-
+@Getter
 public class User extends BaseTimeEntity implements UserDetails{
+
+    public User() {
+
+    }
 
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true)
     private String email;
 
+    @Column(name = "name", length = 30)
     private String name;
     private String password;
     private String auth; // 권한
+
+    @ColumnDefault("0")
     private int grade;  // 평점
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;  // 회원상태
 
+    @Builder
+    public User(String email, String name, String password, String auth, int grade, UserStatus status) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.auth = auth;
+        this.grade = grade;
+        this.status = status;
+    }
 
     // 사용자의 권한을 콜렉션 형태로 반환
     // 단, 클래스 자료형은 GrantedAuthority를 구현해야함
