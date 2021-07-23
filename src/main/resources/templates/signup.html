@@ -1,0 +1,50 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>sign up</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Sign Up</h1> <hr>-->
+
+<!--<form th:action="@{/user}" method="POST">-->
+<!--    email : <input type="text" name="email"> <br>-->
+<!--    password : <input type="password" name="password"> <br>-->
+<!--    <input type="radio" name="auth" value="ROLE_ADMIN,ROLE_USER"> admin-->
+<!--    <input type="radio" name="auth" value="ROLE_USER" checked="checked"> user <br>-->
+<!--    <button type="submit">Join</button>-->
+<!--</form> <br>-->
+
+<!--<a href="/login">Go to login →</a>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorator="layouts/layout"
+>
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css"> </th:block>
+
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script"> </th:block>
+
+<div layout:fragment="content">
+
+    <h1>Sign Up</h1> <hr>
+
+    <form th:action="@{/user}" method="POST">
+        email : <input type="text" name="email"> <br>
+        password : <input type="password" name="password"> <br>
+        <input type="radio" name="auth" value="ROLE_ADMIN,ROLE_USER"> admin
+        <input type="radio" name="auth" value="ROLE_USER" checked="checked"> user <br>
+        <button type="submit">Join</button>
+    </form> <br>
+
+    <a href="/login">Go to login →</a>
+</div>
+</html>

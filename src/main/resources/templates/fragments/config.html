@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head th:fragment="configFragment">
+    <meta charset="UTF-8" />
+    <!-- 공통으로 쓰이는 css파일을넣는다.-->
+
+    <script type="text/javascript" th:src="@{/plugins/jquery-3.4.1.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/plugins/stickyfill/dist/stickyfill.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/js/main.js}"></script>
+
+    <script type="text/javascript" th:src="@{/fontawesome/js/all.js}"></script>
+
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <!--FACEBOOK LIKE BUTTON JAVASCRIPT SDK-->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=994736563909741&autoLogAppEvents=1"></script>
+
+    <!-- 컨텐츠페이지의 스크립트 영역이 들어감 -->
+    <th:block layout:fragment="script"></th:block>
+</head>
+</html>
