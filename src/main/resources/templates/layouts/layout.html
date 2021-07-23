@@ -6,6 +6,12 @@
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 >
+<link th:href="@{/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/plugins/elegant_font/css/style.css}" rel="stylesheet" />
+<!-- Theme CSS -->
+<link th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<div class="landing-page">
 <head th:replace="fragments/config :: configFragment"></head>
 
 <header th:replace="fragments/header :: headerFragment"></header>
@@ -13,4 +19,5 @@
 <div layout:fragment="content"></div>  <!-- 실제로 바뀔 내옹 -->
 
 <footer th:replace="fragments/footer :: footerFragment"></footer>
+</div>
 </html>

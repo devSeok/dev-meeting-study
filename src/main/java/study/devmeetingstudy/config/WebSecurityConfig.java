@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // https://stackoverflow.com/questions/61029340/spring-security-redirects-to-page-with-status-code-999/61029341
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**")
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/fontawesome/**","/plugins/**","/scss/**", "/iamges/**")
                 .antMatchers("/favicon.ico", "/resources/**", "/error");
     }
 
@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/" ,"/login", "/signup", "/user").permitAll() // 누구나 접근 허용
+                    .antMatchers("/" ,"/login", "/signup", "/user","/start").permitAll() // 누구나 접근 허용
 //                    .antMatchers("/").hasRole("USER") // USER, ADMIN만 접근 가능
                     .antMatchers("/admin").hasRole("ADMIN") // ADMIN만 접근 가능
                     .anyRequest().authenticated() // 나머지 요청들은 권한의 종류에 상관 없이 권한이 있어야 접근 가능
