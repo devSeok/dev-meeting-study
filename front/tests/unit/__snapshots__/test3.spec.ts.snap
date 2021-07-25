@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`group6 repeats words three times 1`] = `
+Array [
+  "Test",
+  "Test",
+  "Test",
+]
+`;
