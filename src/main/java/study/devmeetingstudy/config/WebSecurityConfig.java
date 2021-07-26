@@ -1,60 +1,71 @@
 package study.devmeetingstudy.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import study.devmeetingstudy.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import study.devmeetingstudy.jwt.JwtAccessDeniedHandler;
+import study.devmeetingstudy.jwt.JwtAuthenticationEntryPoint;
+import study.devmeetingstudy.jwt.TokenProvider;
 
-@Configuration
+//@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final TokenProvider tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final UserService userService;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-
-    // 인증을 무시할 결로를 설정해뒀습니다.
-    // static 하위 폴드는 무조건 접근이 가능하도록 설정하였습니다.
-
-
-    // 로그인 성공후에 에러가 발생하였다. 999
-    // 해결 방안
-    // https://stackoverflow.com/questions/61029340/spring-security-redirects-to-page-with-status-code-999/61029341
+    // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/fontawesome/**","/plugins/**","/scss/**", "/iamges/**")
-                .antMatchers("/favicon.ico", "/resources/**", "/error");
+        web.ignoring()
+                .antMatchers("/mysql-console/**", "/favicon.ico");
     }
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                    .antMatchers("/" ,"/login", "/signup", "/user","/start").permitAll() // 누구나 접근 허용
-//                    .antMatchers("/").hasRole("USER") // USER, ADMIN만 접근 가능
-                    .antMatchers("/admin").hasRole("ADMIN") // ADMIN만 접근 가능
-                    .anyRequest().authenticated() // 나머지 요청들은 권한의 종류에 상관 없이 권한이 있어야 접근 가능
-                .and()
-                    .formLogin()
-                    .loginPage("/login") // 로그인 페이지 링크
-                    .defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트 주소
-                .and()
-                    .logout() // 로그아웃 설정
-                        .logoutSuccessUrl("/login") // 로그아웃 성공시 리다이렉트 주소
-                        .invalidateHttpSession(true) // 세션 날리기
-        ;
-    }
+        // CSRF 설정 Disable
+        http.csrf().disable()
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception { // 9
-        auth.userDetailsService(userService)
-                // 해당 서비스(userService)에서는 UserDetailsService를 implements해서
-                // loadUserByUsername() 구현해야함 (서비스 참고)
-                .passwordEncoder(new BCryptPasswordEncoder());
+                // exception handling 할 때 우리가 만든 클래스를 추가
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+
+                // h2-console 을 위한 설정을 추가
+                .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin()
+
+                // 시큐리티는 기본적으로 세션을 사용
+                // 여기서는 세션을 사용하지 않기 때문에 세션 설정을 Stateless 로 설정
+                .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/auth/**").permitAll()
+                    .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
+
+                // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
+                .and()
+                    .apply(new JwtSecurityConfig(tokenProvider));
+
     }
 }
