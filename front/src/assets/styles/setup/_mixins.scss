@@ -1,0 +1,175 @@
+@import 'variables';
+
+@mixin fx($h: $FS, $v: $ST, $w: wrap,$direction:row) {
+	display: flex;
+	justify-content: $h;
+	align-items: $v;
+	flex-wrap: $w;
+	flex-direction: $direction;
+}
+@mixin fx-wrap($w:wrap) {
+	flex-wrap: $w;
+}
+@mixin fx-col {
+	flex-direction: column;
+}
+@mixin center($z:auto) {
+	z-index: $z;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+@mixin wrapper($w: $LG) {
+	max-width: $w;
+	margin: 0 auto;
+}
+@mixin shadow($x:5px,$y:5px,$b:5px,$o:0.5) {
+	box-shadow: $x $y $b rgba(0,0,0,$o);
+}
+@mixin shadow-light($x:0,$y:0,$b:5px,$o:0.5) {
+	box-shadow: 5px 5px 10px rgba(255,255,255,$o);
+}
+@mixin text-shadow($x:0,$y:0,$b:5px,$o:0.5) {
+	text-shadow: 5px 5px 10px rgba(0,0,0,$o);
+}
+@mixin text-shadow-light($x:0,$y:0,$b:5px,$o:0.5) {
+	text-shadow: 5px 5px 10px rgba(255,255,255,$o);
+}
+@mixin bt-primary() {
+	background-color: $primary;
+	color: $light;
+	padding: 1em 1.25em;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: all 0.5s;
+	&:hover{
+		background-color: $primary-light;
+		color: $primary-dark;
+	}
+}
+@mixin header-title($s:1.5rem,$c:$dark,$w:normal) {
+	font-size: $s;
+	color: $c;
+	font-weight: $w;
+	text-align: center;
+}
+@mixin link-hover($w:2px,$c:$dark,$g:0.5em,$s:0.5s) {
+	&::after{
+		display: block;
+		content: "";
+		height: $w;
+		background-color: $c;
+		margin-top: $g;
+		transition: transform $s;
+		transform:scaleX(0);
+		transform-origin: right;
+	}
+	 &:hover{
+	 	&::after{
+			transform:scaleX(1);
+	 		transform-origin: left;
+	 	}
+	 }
+}
+@mixin ellipsis($w:100%) {
+	display:inline-block;
+	width:$w;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+@mixin border($px:1px,$color:black) {
+	border: $px solid $color;
+}
+@mixin multiEllipsis($w:100%,$line:3,$lh:1.2em) {
+	display:-webkit-box;
+	-webkit-line-clamp:$line; /* 라인수 */
+	-webkit-box-orient:vertical;
+	width:$w;
+	line-height:$lh;
+	height:calc(#{$lh} * #{$line});
+	overflow:hidden;
+	text-overflow:ellipsis;
+	text-align:left;
+	word-wrap: break-word; 
+}
+@mixin scrollNone() {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+	&::-webkit-scrollbar {
+			display: none; /* Chrome, Safari, Opera*/
+	}
+}
+/**************** 반응형 ****************/
+
+@mixin XL {
+	@media screen and(max-width:$XL) {
+		@content;
+		
+	}
+	
+}
+@mixin LG {
+	@media screen and(max-width:$LG) {
+		@content;
+		
+	}
+	
+}
+@mixin MD {
+	@media screen and(max-width:$MD) {
+		@content;
+		
+	}
+	
+}
+@mixin SM {
+	@media screen and(max-width:$SM) {
+		@content;
+		
+	}
+	
+}
+@mixin XS {
+	@media screen and(max-width:$XS) {
+		@content;
+		
+	}
+	
+}
+@mixin HXL {
+	@media screen and(max-height:$XL) {
+		@content;
+		
+	}
+	
+}
+@mixin HLG {
+	@media screen and(max-height:$LG) {
+		@content;
+		
+	}
+	
+}
+@mixin HMD {
+	@media screen and(max-height:$MD) {
+		@content;
+		
+	}
+	
+}
+@mixin HSM {
+	@media screen and(max-height:$SM) {
+		@content;
+		
+	}
+	
+}
+@mixin HXS {
+	@media screen and(max-height:$XS) {
+		@content;
+		
+	}
+	
+}
