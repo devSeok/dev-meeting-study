@@ -1,4 +1,4 @@
-package study.devmeetingstudy.config;
+package study.devmeetingstudy.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import study.devmeetingstudy.config.security.JwtSecurityConfig;
 import study.devmeetingstudy.jwt.JwtAccessDeniedHandler;
 import study.devmeetingstudy.jwt.JwtAuthenticationEntryPoint;
 import study.devmeetingstudy.jwt.TokenProvider;
@@ -30,7 +31,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
-                .antMatchers("/mysql-console/**", "/favicon.ico");
+                .antMatchers(
+                        "/v2/**",
+                        "/webjars/**",
+                        "/swagger**",
+                        "/swagger-resources/**"
+                );
     }
 
 

@@ -1,4 +1,4 @@
-package study.devmeetingstudy.config;
+package study.devmeetingstudy.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
