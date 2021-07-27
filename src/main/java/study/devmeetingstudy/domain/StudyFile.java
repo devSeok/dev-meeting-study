@@ -6,13 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Subject{
+public class StudyFile {
 
     @Id @GeneratedValue
-    @Column(name = "subject_id")
+    @Column(name = "study_file_id")
     private Long id;
-
-    @Column(name = "subject_name", length = 30, nullable = false)
-    private String name;
-
 }

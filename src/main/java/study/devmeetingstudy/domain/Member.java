@@ -10,8 +10,9 @@ import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.dto.MemberRequestDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Setter
 @Getter
 @NoArgsConstructor
 @Table(name = "member")
@@ -36,17 +37,16 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private final List<Message> messages = new ArrayList<>();
 
-    public static Member createMember(MemberRequestDto memberRequestDto, PasswordEncoder passwordEncoder) {
-            Member member = new Member();
-
-            member.setEmail(memberRequestDto.getEmail());
-            member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
-            member.setAuthority(Authority.ROLE_USER);
-            member.setStatus(UserStatus.active);
-
-        // 회원가입시 초기 값 셋팅
-        return member;
+    @Builder
+    public Member(String email, String password, Authority authority, int grade, UserStatus status) {
+        this.email = email;
+        this.password = password;
+        this.authority = authority;
+        this.grade = grade;
+        this.status = status;
     }
 }
 
