@@ -7,8 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.domain.Authority;
 import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.RefreshToken;
+import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.dto.MemberRequestDto;
 import study.devmeetingstudy.dto.MemberResponseDto;
 import study.devmeetingstudy.dto.TokenDto;
@@ -32,8 +34,13 @@ public class AuthService {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
-        Member member = memberRequestDto.toMember(passwordEncoder);
-        return MemberResponseDto.of(memberRepository.save(member));
+        return MemberResponseDto.of(memberRepository.save(Member.builder()
+                .email(memberRequestDto.getEmail())
+                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
+                .authority(Authority.ROLE_USER)
+                .status(UserStatus.active)
+                .build())
+        );
     }
 
     @Transactional

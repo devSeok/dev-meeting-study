@@ -1,4 +1,4 @@
-package study.devmeetingstudy.domain.Base;
+package study.devmeetingstudy.domain.base;
 
 
 import org.springframework.data.annotation.CreatedDate;

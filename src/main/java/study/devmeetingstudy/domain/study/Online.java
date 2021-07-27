@@ -1,4 +1,5 @@
-package study.devmeetingstudy.domain;
+package study.devmeetingstudy.domain.study;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,13 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Subject{
+public class Online extends Study{
 
     @Id @GeneratedValue
-    @Column(name = "subject_id")
+    @Column(name = "online_id")
     private Long id;
 
-    @Column(name = "subject_name", length = 30, nullable = false)
-    private String name;
+    private String onlineType;
 
+    private String link;
 }
