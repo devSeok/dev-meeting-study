@@ -25,9 +25,6 @@ public class MemberRequestDto {
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        System.out.println(email);
-        System.out.println(password);
-
         return new UsernamePasswordAuthenticationToken(email, password);
     }
 }
