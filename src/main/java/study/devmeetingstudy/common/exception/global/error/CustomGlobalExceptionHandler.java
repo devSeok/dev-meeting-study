@@ -1,4 +1,4 @@
-package study.devmeetingstudy.common.exception.global;
+package study.devmeetingstudy.common.exception.global.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import org.springframework.validation.BindException;
-import study.devmeetingstudy.common.exception.global.error.BusinessException;
+import study.devmeetingstudy.common.exception.global.error.exception.BusinessException;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 
 import java.nio.file.AccessDeniedException;
 // 참고 https://cheese10yun.github.io/spring-guide-exception

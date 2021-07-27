@@ -1,4 +1,4 @@
-package study.devmeetingstudy.common.exception.global;
+package study.devmeetingstudy.common.exception.global.error.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -19,12 +19,15 @@ public enum ErrorCode {
 
 
     // Member
-    EMAIL_DUPLICATION(400, "M001", "Email is Duplication"),
-    LOGIN_INPUT_INVALID(400, "M002", "Login input is invalid"),
+    EMAIL_DUPLICATION(400, "M001", "이미 가입되어 있는 유저 입니다."),
+    TOKEN_DUPLICATION(400, "M002", "권한정보가 없는 토큰입니다."),
+    LOGIN_INPUT_INVALID(400, "M003", "Login input is invalid"),
 
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),
     COUPON_EXPIRE(400, "CO002", "Coupon was already expired");
+
+
     private final String code;
     private final String message;
     private int status;

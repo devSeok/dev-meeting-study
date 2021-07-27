@@ -1,6 +1,4 @@
-package study.devmeetingstudy.common.exception.global.error;
-
-import study.devmeetingstudy.common.exception.global.ErrorCode;
+package study.devmeetingstudy.common.exception.global.error.exception;
 
 public class BusinessException extends RuntimeException{
     private ErrorCode errorCode;

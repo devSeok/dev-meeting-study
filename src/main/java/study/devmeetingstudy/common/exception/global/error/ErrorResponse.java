@@ -1,12 +1,11 @@
-package study.devmeetingstudy.common.exception.global;
+package study.devmeetingstudy.common.exception.global.error;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;

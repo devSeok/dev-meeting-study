@@ -7,9 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.common.exception.global.ErrorCode;
-import study.devmeetingstudy.common.exception.global.error.BusinessException;
-import study.devmeetingstudy.common.exception.global.error.SignupDuplicateException;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
+import study.devmeetingstudy.common.exception.global.error.exception.BusinessException;
+import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
 import study.devmeetingstudy.domain.Authority;
 import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.RefreshToken;
@@ -36,7 +36,7 @@ public class AuthService {
     @Transactional
     public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new BusinessException("이미 가입되어 있는 유저입니다", ErrorCode.EMAIL_DUPLICATION);
+            throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
         }
 
         return MemberResponseDto.of(memberRepository.save(Member.builder()
