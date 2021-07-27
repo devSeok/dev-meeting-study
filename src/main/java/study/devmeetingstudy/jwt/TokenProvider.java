@@ -12,6 +12,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
+import study.devmeetingstudy.common.exception.global.error.exception.TokenException;
 import study.devmeetingstudy.dto.TokenDto;
 
 import java.security.Key;
@@ -76,7 +78,7 @@ public class TokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new TokenException("권한 정보가 없는 토큰입니다.", ErrorCode.TOKEN_DUPLICATION);
         }
 
         // 클레임에서 권한 정보 가져오기

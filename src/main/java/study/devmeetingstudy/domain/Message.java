@@ -1,8 +1,11 @@
 package study.devmeetingstudy.domain;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
 public class Message {
     @Id
     @GeneratedValue

@@ -1,6 +1,7 @@
 package study.devmeetingstudy.domain;
 
 
+import lombok.NoArgsConstructor;
 import net.bytebuddy.implementation.bind.annotation.Default;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
 public class StudyMember {
 
     @Id @GeneratedValue
