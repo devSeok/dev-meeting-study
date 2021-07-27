@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,8 @@ import study.devmeetingstudy.dto.TokenDto;
 import study.devmeetingstudy.dto.TokenRequestDto;
 import study.devmeetingstudy.service.AuthService;
 
+import javax.validation.Valid;
+
 @Api(tags = {"1. Auth"})
 @RestController
 @RequestMapping("/auth")
@@ -23,7 +26,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
-    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<MemberResponseDto> signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+
         return ResponseEntity.ok(authService.signup(memberRequestDto));
     }
 

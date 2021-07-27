@@ -9,6 +9,8 @@ import study.devmeetingstudy.domain.Authority;
 import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.UserStatus;
 
+import javax.validation.constraints.NotEmpty;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class MemberRequestDto {
 
     private final static int GRADE = 0;
 
+    @NotEmpty(message = "이메일은 필수입니다.")
     private String email;
     private String password;
 
