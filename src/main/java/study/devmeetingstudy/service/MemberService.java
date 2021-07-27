@@ -9,6 +9,7 @@ import study.devmeetingstudy.util.SecurityUtil;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;

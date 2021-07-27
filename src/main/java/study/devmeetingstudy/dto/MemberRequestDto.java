@@ -7,22 +7,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import study.devmeetingstudy.domain.Authority;
 import study.devmeetingstudy.domain.Member;
+import study.devmeetingstudy.domain.UserStatus;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberRequestDto {
 
+    private final static int GRADE = 0;
+
     private String email;
     private String password;
-
-    public Member toMember(PasswordEncoder passwordEncoder) {
-        return Member.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .authority(Authority.ROLE_USER)
-                .build();
-    }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(email, password);
