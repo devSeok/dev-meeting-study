@@ -3,6 +3,7 @@ package study.devmeetingstudy.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.dto.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.util.SecurityUtil;
@@ -18,7 +19,7 @@ public class MemberService {
     public MemberResponseDto getMemberInfo(String email) {
         return memberRepository.findByEmail(email)
                 .map(MemberResponseDto::of)  // email 확징
-                .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
+                .orElseThrow(() -> new UserException("유저 정보가 없습니다."));
     }
 
     // 현재 SecurityContext 에 있는 유저 정보 가져오기
@@ -26,6 +27,6 @@ public class MemberService {
     public MemberResponseDto getMyInfo() {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .map(MemberResponseDto::of)
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+                .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
     }
 }
