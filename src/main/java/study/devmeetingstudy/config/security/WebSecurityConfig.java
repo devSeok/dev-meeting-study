@@ -38,9 +38,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**"
                 );
     }
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // CSRF 설정 Disable

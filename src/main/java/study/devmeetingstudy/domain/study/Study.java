@@ -1,5 +1,6 @@
 package study.devmeetingstudy.domain.study;
 
+import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 public abstract class Study extends BaseTimeEntity {
