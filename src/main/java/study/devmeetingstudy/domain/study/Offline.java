@@ -7,14 +7,14 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
-public class Region extends Study{
+public class Offline extends Study{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "region_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "address_id")
+//    private Address address;
 
 }

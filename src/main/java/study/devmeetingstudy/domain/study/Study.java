@@ -1,11 +1,14 @@
 package study.devmeetingstudy.domain.study;
 
 import lombok.NoArgsConstructor;
+import study.devmeetingstudy.domain.StudyFile;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -13,7 +16,7 @@ import java.time.LocalDateTime;
 @DiscriminatorColumn
 public abstract class Study extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_id")
     private Long id;
 
@@ -28,4 +31,7 @@ public abstract class Study extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
+
+//    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+//    private List<StudyFile> files = new ArrayList<>();
 }

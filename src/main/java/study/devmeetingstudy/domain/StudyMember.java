@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class StudyMember {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_member_id")
     private Long id;
 
@@ -26,6 +26,7 @@ public class StudyMember {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'MEMBER'")  // 최초 방을 생성하는 사람이 리더가 된다.
     private StudyAuth studyAuth;
+
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
