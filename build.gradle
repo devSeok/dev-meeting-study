@@ -2,8 +2,9 @@ plugins {
     id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'war'
 }
-
+ext['tomcat.version'] = '9.0.30'
 group = 'study'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
