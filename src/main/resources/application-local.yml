@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:log4jdbc:mariadb://kgm2876.iptime.org:9504/bvoat
+    url: jdbc:mariadb://kgm2876.iptime.org:9504/bvoat
     username: BVOAT
     password: 1024
     driver-class-name: org.mariadb.jdbc.Driver
