@@ -2,8 +2,9 @@ plugins {
     id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'war'
 }
-
+ext['tomcat.version'] = '9.0.30'
 group = 'study'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -32,6 +33,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     // jwt 관련 의존성 https://github.com/jwtk/jjwt
