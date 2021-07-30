@@ -1,4 +1,4 @@
-package study.devmeetingstudy.repository;
+package study.devmeetingstudy.repository.email;
 
 import study.devmeetingstudy.domain.Email;
 

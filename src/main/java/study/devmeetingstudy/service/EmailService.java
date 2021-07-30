@@ -7,13 +7,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import study.devmeetingstudy.domain.Email;
 import study.devmeetingstudy.dto.EmailVerifyCodeRequestDto;
-import study.devmeetingstudy.repository.EmailRepository;
-import study.devmeetingstudy.repository.MemberRepository;
+import study.devmeetingstudy.repository.email.EmailRepository;
 
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -90,6 +88,5 @@ public class EmailService {
 
         return byEmail.filter(email -> dto.getAuth_number().equals(
                 email.getAuth_number())).isPresent();
-
     }
 }
