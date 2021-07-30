@@ -27,6 +27,7 @@ public class Member extends BaseTimeEntity {
     @Column(length = 100,unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +38,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private final List<Message> messages = new ArrayList<>();
 
     @Builder
