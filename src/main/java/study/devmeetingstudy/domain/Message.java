@@ -1,14 +1,20 @@
 package study.devmeetingstudy.domain;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.enums.MessageStatus;
+import study.devmeetingstudy.dto.message.MessageRequestDto;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Message {
 
@@ -30,6 +36,50 @@ public class Message {
     private MessageStatus status;
 
     @Column(nullable = false)
-    private String sender_name;
+    private String senderName;
 
+    @Builder
+    public Message(Long senderId, String content, String senderName, Member member){
+        this.senderId = senderId;
+        this.content = content;
+        this.senderName = senderName;
+        this.member = member;
+    }
+
+    /**
+     * PK memberId에 저장될 value는 회원 검색 후 dto를 타고 들어오는 Id 이다.
+     * @param messageRequestDto
+     * @param sender
+     * @param member
+     * @return
+     */
+    public static Message saveMessage(MessageRequestDto messageRequestDto,Member sender, Member member){
+        return Message.builder()
+                .senderId(sender.getId())
+                .content(messageRequestDto.getContent())
+                .senderName(sender.getEmail())
+                .member(member).build();
+    }
+
+    public static Message changeMessageStatus(Message message){
+        message.setStatus(MessageStatus.READ);
+        return message;
+    }
+
+    private void setStatus(MessageStatus messageStatus){
+        this.status = messageStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(getId(), message.getId()) && Objects.equals(getSenderId(), message.getSenderId()) && Objects.equals(getContent(), message.getContent()) && Objects.equals(getSenderName(), message.getSenderName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSenderId(), getContent(), getSenderName());
+    }
 }
