@@ -1,9 +1,6 @@
 package study.devmeetingstudy.domain;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
@@ -16,6 +13,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString(exclude = {"member"})
 public class Message {
 
     @Id
@@ -24,6 +22,7 @@ public class Message {
 
     @Column(nullable = false)
     private Long senderId;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -47,13 +46,13 @@ public class Message {
     }
 
     /**
-     * PK memberId에 저장될 value는 회원 검색 후 dto를 타고 들어오는 Id 이다.
+     * PK memberId에 저장될 value는 보낼 대상 Id 이다.
      * @param messageRequestDto
      * @param sender
      * @param member
      * @return
      */
-    public static Message saveMessage(MessageRequestDto messageRequestDto,Member sender, Member member){
+    public static Message createMessage(MessageRequestDto messageRequestDto, Member sender, Member member){
         return Message.builder()
                 .senderId(sender.getId())
                 .content(messageRequestDto.getContent())
