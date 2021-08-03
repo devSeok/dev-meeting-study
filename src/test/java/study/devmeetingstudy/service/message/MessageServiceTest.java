@@ -31,8 +31,6 @@ class MessageServiceTest {
     MessageService messageService;
     @Autowired
     MemberRepository memberRepository;
-
-
     Member member;
     Member sender;
 
@@ -71,8 +69,6 @@ class MessageServiceTest {
         Message memberToSenderMessage = messageService.sendMessage(getMessageDto(sender), member, sender);
         Message senderToMemberMessage = messageService.sendMessage(getMessageDto(member), sender, member);
 
-        System.out.println(memberToSenderMessage);
-        System.out.println(senderToMemberMessage);
         // when
 //        Message findMessage = em.find(Message.class, 1L);
 
