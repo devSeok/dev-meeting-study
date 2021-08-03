@@ -15,8 +15,9 @@ import java.util.function.Function;
 public class MemberResponseDto {
 
     private String email;
+    private int grade;
 
     public static MemberResponseDto of(Member member) {
-        return new MemberResponseDto(member.getEmail());
+        return new MemberResponseDto(member.getEmail(), member.getGrade());
     }
 }

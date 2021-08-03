@@ -22,6 +22,7 @@ import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.SignatureException;
 
 @Service
@@ -49,7 +50,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(MemberRequestDto memberRequestDto) {
+    public TokenDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
         
@@ -59,6 +60,9 @@ public class AuthService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+        // 인증정보 쿠키 저장
+        tokenProvider.createCookie(response, tokenDto.getAccessToken());
 
         // 4. RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()

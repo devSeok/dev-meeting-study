@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.dto.MemberResponseDto;
 import study.devmeetingstudy.service.MemberService;
 
@@ -24,7 +25,9 @@ public class MemberController {
     @GetMapping("/me")
     @ApiOperation(value = "사용자확인", notes = "토큰값으로 사용자 누군지 체크")
     @ApiParam(value = "test", required = true)
-    public ResponseEntity<MemberResponseDto> getMyMemberInfo() {
+    public ResponseEntity<MemberResponseDto> getMyMemberInfo(@JwtMember String name) {
+
+
         return ResponseEntity.ok(memberService.getMyInfo());
     }
 

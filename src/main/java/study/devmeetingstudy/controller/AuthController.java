@@ -10,15 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
-import study.devmeetingstudy.dto.EmailRequestDto;
-import study.devmeetingstudy.dto.EmailVerifyCodeRequestDto;
-import study.devmeetingstudy.dto.MemberRequestDto;
-import study.devmeetingstudy.dto.TokenRequestDto;
+import study.devmeetingstudy.dto.*;
+import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.service.EmailService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
+
+import static study.devmeetingstudy.jwt.TokenProvider.*;
 
 @Api(tags = {"1. Auth"})
 @RestController
@@ -39,14 +41,25 @@ public class AuthController {
                 authService.signup(memberRequestDto));
     }
 
+    // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
-    public ApiResponseDto login(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+    public ApiResponseDto login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
+        TokenDto login = authService.login(memberRequestDto, response);
+
+
+//        // TODO : 좀더 좋은 방법인 코드로 해결해야될듯합니다.
+//        Cookie cookie = new Cookie("accessToken", login.getAccessToken());
+//        cookie.setMaxAge((int) ACCESS_TOKEN_EXPIRE_TIME);
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+
+//        response.addCookie(cookie);
 
         return new ApiResponseDto(
                 "성공적으로 로그인 되었습니다.",
                 200,
-                authService.login(memberRequestDto));
+                login);
     }
 
     @PostMapping("/reissue")
