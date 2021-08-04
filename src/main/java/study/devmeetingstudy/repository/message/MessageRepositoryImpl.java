@@ -2,8 +2,8 @@ package study.devmeetingstudy.repository.message;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.Message;
+import study.devmeetingstudy.domain.member.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

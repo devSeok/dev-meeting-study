@@ -21,6 +21,7 @@ public enum ErrorCode {
     // Member
     EMAIL_DUPLICATION(400, "M001", "이미 가입되어 있는 유저 입니다."),
     TOKEN_DUPLICATION(400, "M002", "권한정보가 없는 토큰입니다."),
+    ACCESSTOKEN_NOT_HAVE  (400, "M004", "Access Token이 존재하지 않습니다."),
     USER_NOT_FOUND(400, "M003", "유저 정보가 없습니다."),
     LOGIN_INPUT_INVALID(400, "M003", "Login input is invalid"),
 

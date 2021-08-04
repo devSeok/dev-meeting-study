@@ -1,10 +1,11 @@
-package study.devmeetingstudy.domain;
+package study.devmeetingstudy.domain.study;
 
 
 import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bind.annotation.Default;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
+import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.domain.study.enums.StudyAuth;
+import study.devmeetingstudy.domain.study.enums.StudyStatus;
 
 import javax.persistence.*;
 
