@@ -1,6 +1,5 @@
 package study.devmeetingstudy.domain;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.study.Study;
@@ -16,9 +15,14 @@ public class StudyFile {
     @Column(name = "study_file_id")
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "study_id", columnDefinition = "comment '다대일 관계의 study foreign key'")
-//    private Study study;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_id")
+    private Study study;
 
+    @Column(length = 30, name = "study_file_name")
+    private String name;
+
+    @Column(name = "file_path")
+    private String path;
 
 }

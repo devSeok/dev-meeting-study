@@ -32,6 +32,8 @@ public abstract class Study extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
 
-//    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-//    private List<StudyFile> files = new ArrayList<>();
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    private List<StudyFile> files = new ArrayList<>();
+
+
 }

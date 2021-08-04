@@ -7,8 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
-import study.devmeetingstudy.common.exception.global.error.exception.BusinessException;
 import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
 import study.devmeetingstudy.domain.Authority;
 import study.devmeetingstudy.domain.Member;
@@ -21,8 +19,6 @@ import study.devmeetingstudy.dto.TokenRequestDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
-
-import java.security.SignatureException;
 
 @Service
 @RequiredArgsConstructor
