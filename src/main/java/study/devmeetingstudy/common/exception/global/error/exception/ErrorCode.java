@@ -24,6 +24,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(400, "M003", "유저 정보가 없습니다."),
     LOGIN_INPUT_INVALID(400, "M003", "Login input is invalid"),
 
+    // Message
+    MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다"),
+
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),
     COUPON_EXPIRE(400, "CO002", "Coupon was already expired");

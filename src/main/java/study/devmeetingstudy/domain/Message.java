@@ -2,6 +2,7 @@ package study.devmeetingstudy.domain;
 
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.enums.MessageStatus;
@@ -12,8 +13,9 @@ import java.util.Objects;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = {"member"})
+@DynamicInsert
 public class Message {
 
     @Id
@@ -22,7 +24,6 @@ public class Message {
 
     @Column(nullable = false)
     private Long senderId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -48,19 +49,17 @@ public class Message {
     /**
      * PK memberId에 저장될 value는 보낼 대상 Id 이다.
      * @param messageRequestDto
-     * @param sender
-     * @param member
      * @return
      */
-    public static Message createMessage(MessageRequestDto messageRequestDto, Member sender, Member member){
+    public static Message create(MessageRequestDto messageRequestDto){
         return Message.builder()
-                .senderId(sender.getId())
+                .senderId(messageRequestDto.getSender().getId())
                 .content(messageRequestDto.getContent())
-                .senderName(sender.getEmail())
-                .member(member).build();
+                .senderName(messageRequestDto.getSender().getEmail())
+                .member(messageRequestDto.getMember()).build();
     }
 
-    public static Message changeMessageStatus(Message message){
+    public static Message changeStatus(Message message){
         message.setStatus(MessageStatus.READ);
         return message;
     }
