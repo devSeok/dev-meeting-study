@@ -1,13 +1,8 @@
-package study.devmeetingstudy.dto;
+package study.devmeetingstudy.dto.member;
 
 
 import lombok.*;
-import study.devmeetingstudy.domain.Authority;
-import study.devmeetingstudy.domain.Member;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.util.function.Function;
+import study.devmeetingstudy.domain.member.Member;
 
 @Getter
 @AllArgsConstructor

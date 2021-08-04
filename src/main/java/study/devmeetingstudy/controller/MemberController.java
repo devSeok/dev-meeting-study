@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import study.devmeetingstudy.annotation.JwtMember;
-import study.devmeetingstudy.dto.MemberResponseDto;
+import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.service.MemberService;
 
 @Api(tags = {"2. member"})

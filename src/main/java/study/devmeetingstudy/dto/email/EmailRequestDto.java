@@ -1,4 +1,4 @@
-package study.devmeetingstudy.dto;
+package study.devmeetingstudy.dto.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

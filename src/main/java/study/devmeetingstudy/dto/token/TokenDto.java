@@ -1,4 +1,4 @@
-package study.devmeetingstudy.dto;
+package study.devmeetingstudy.dto.token;
 
 
 import lombok.AllArgsConstructor;

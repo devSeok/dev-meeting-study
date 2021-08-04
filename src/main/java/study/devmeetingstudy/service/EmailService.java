@@ -6,7 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import study.devmeetingstudy.domain.Email;
-import study.devmeetingstudy.dto.EmailVerifyCodeRequestDto;
+import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
 import study.devmeetingstudy.repository.email.EmailRepository;
 
 import javax.mail.Message;

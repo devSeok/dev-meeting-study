@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
-import study.devmeetingstudy.dto.*;
+import study.devmeetingstudy.dto.email.EmailRequestDto;
+import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
+import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.token.TokenDto;
+import study.devmeetingstudy.dto.token.TokenRequestDto;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.service.EmailService;
 

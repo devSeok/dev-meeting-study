@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
-import study.devmeetingstudy.dto.TokenDto;
+import study.devmeetingstudy.dto.token.TokenDto;
 
 import javax.persistence.*;
 

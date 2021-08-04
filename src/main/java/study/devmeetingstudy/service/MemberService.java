@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
-import study.devmeetingstudy.dto.MemberResponseDto;
+import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.util.SecurityUtil;
 

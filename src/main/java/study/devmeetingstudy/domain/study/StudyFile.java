@@ -1,4 +1,4 @@
-package study.devmeetingstudy.domain;
+package study.devmeetingstudy.domain.study;
 
 import lombok.Data;
 import lombok.Getter;

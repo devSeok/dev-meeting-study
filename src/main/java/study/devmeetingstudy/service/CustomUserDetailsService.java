@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.domain.Member;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.repository.MemberRepository;
 
 import java.util.Collections;

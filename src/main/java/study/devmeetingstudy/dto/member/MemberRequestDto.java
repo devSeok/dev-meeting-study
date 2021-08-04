@@ -1,13 +1,9 @@
-package study.devmeetingstudy.dto;
+package study.devmeetingstudy.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import study.devmeetingstudy.domain.Authority;
-import study.devmeetingstudy.domain.Member;
-import study.devmeetingstudy.domain.UserStatus;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

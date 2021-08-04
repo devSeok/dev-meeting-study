@@ -1,14 +1,12 @@
 package study.devmeetingstudy.domain.study;
 
 import lombok.NoArgsConstructor;
-import study.devmeetingstudy.domain.StudyFile;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
+import study.devmeetingstudy.domain.study.enums.StudyType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

@@ -1,13 +1,14 @@
-package study.devmeetingstudy.domain;
+package study.devmeetingstudy.domain.member;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import net.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import study.devmeetingstudy.domain.Message;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
-import study.devmeetingstudy.dto.MemberRequestDto;
+import study.devmeetingstudy.domain.member.enums.Authority;
+import study.devmeetingstudy.domain.member.enums.UserStatus;
+import study.devmeetingstudy.dto.member.MemberRequestDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Member extends BaseTimeEntity {
                 .email(memberRequestDto.getEmail())
                 .password(passwordEncoder.encode(memberRequestDto.getPassword()))
                 .authority(Authority.ROLE_USER)
-                .status(UserStatus.active)
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 

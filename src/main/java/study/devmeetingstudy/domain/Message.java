@@ -1,9 +1,8 @@
 package study.devmeetingstudy.domain;
 
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.enums.MessageStatus;
+import study.devmeetingstudy.domain.member.Member;
 
 import javax.persistence.*;
 

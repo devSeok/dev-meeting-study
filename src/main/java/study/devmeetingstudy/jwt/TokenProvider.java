@@ -15,12 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.TokenException;
-import study.devmeetingstudy.dto.TokenDto;
+import study.devmeetingstudy.dto.token.TokenDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
