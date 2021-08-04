@@ -25,7 +25,7 @@ public class MemberController {
     @GetMapping("/me")
     @ApiOperation(value = "사용자확인", notes = "토큰값으로 사용자 누군지 체크")
     @ApiParam(value = "test", required = true)
-    public ResponseEntity<MemberResponseDto> getMyMemberInfo(@JwtMember String name) {
+    public ResponseEntity<MemberResponseDto> getMyMemberInfo() {
 
 
         return ResponseEntity.ok(memberService.getMyInfo());
