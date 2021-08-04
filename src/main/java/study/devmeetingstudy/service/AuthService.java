@@ -40,13 +40,9 @@ public class AuthService {
             throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
         }
 
-        return MemberResponseDto.of(memberRepository.save(Member.builder()
-                .email(memberRequestDto.getEmail())
-                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
-                .authority(Authority.ROLE_USER)
-                .status(UserStatus.active)
-                .build())
-        );
+        Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
+
+        return MemberResponseDto.of(memberRepository.save(createMember));
     }
 
     @Transactional
@@ -65,10 +61,7 @@ public class AuthService {
         tokenProvider.createCookie(response, tokenDto.getAccessToken());
 
         // 4. RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+        RefreshToken refreshToken = RefreshToken.createRefreshToken(authentication, tokenDto);
 
         refreshTokenRepository.save(refreshToken);
 

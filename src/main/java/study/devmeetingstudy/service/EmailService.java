@@ -31,12 +31,9 @@ public class EmailService {
         MimeMessage  message = emailSender.createMimeMessage();
 
         String code = createCode(createKey());
+        Email createEmail = Email.createEmail(to, code);
 
-        emailRepository.save(Email.builder()
-                .email(to)
-                .auth_number(code)
-                .build()
-        );
+        emailRepository.save(createEmail);
 
         message.addRecipients(Message.RecipientType.TO, to); //보내는 대상
         message.setSubject("dev-meeting-study 확인 코드: " + code); //제목

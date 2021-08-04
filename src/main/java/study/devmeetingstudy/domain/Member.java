@@ -24,7 +24,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100,unique = true)
+    @Column(length = 100, unique = true)
     private String email;
 
     private String password;
@@ -39,6 +39,16 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private final List<Message> messages = new ArrayList<>();
+
+
+    public static Member createMember(MemberRequestDto memberRequestDto, PasswordEncoder passwordEncoder) {
+        return Member.builder()
+                .email(memberRequestDto.getEmail())
+                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
+                .authority(Authority.ROLE_USER)
+                .status(UserStatus.active)
+                .build();
+    }
 
     @Builder
     public Member(String email, String password, Authority authority, int grade, UserStatus status) {
