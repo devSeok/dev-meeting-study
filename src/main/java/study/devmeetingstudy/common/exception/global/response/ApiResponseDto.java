@@ -13,5 +13,5 @@ public class ApiResponseDto {
 
     private String message;
     private int status;
-    private  Object object = new Object();
+    private Object data = new Object();
 }
