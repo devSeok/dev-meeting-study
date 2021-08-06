@@ -2,7 +2,7 @@ package study.devmeetingstudy.repository.message;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import study.devmeetingstudy.domain.Message;
+import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
 
 import javax.persistence.EntityManager;
@@ -22,4 +22,6 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom{
                 .setParameter("memberId",member.getId())
                 .getResultList();
     }
+
+
 }
