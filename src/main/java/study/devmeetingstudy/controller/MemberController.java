@@ -16,7 +16,7 @@ import study.devmeetingstudy.service.MemberService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class MemberController {
 
     private final MemberService memberService;
