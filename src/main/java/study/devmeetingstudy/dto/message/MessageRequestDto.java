@@ -4,7 +4,7 @@ package study.devmeetingstudy.dto.message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import study.devmeetingstudy.domain.Member;
+import study.devmeetingstudy.domain.member.Member;
 
 @Data
 public class MessageRequestDto {

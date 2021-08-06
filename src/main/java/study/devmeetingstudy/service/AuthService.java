@@ -8,17 +8,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
-import study.devmeetingstudy.domain.Authority;
-import study.devmeetingstudy.domain.Member;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
-import study.devmeetingstudy.domain.UserStatus;
-import study.devmeetingstudy.dto.MemberRequestDto;
-import study.devmeetingstudy.dto.MemberResponseDto;
-import study.devmeetingstudy.dto.TokenDto;
-import study.devmeetingstudy.dto.TokenRequestDto;
+import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.member.MemberResponseDto;
+import study.devmeetingstudy.dto.token.TokenDto;
+import study.devmeetingstudy.dto.token.TokenRequestDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -35,17 +35,13 @@ public class AuthService {
             throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
         }
 
-        return MemberResponseDto.of(memberRepository.save(Member.builder()
-                .email(memberRequestDto.getEmail())
-                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
-                .authority(Authority.ROLE_USER)
-                .status(UserStatus.active)
-                .build())
-        );
+        Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
+
+        return MemberResponseDto.of(memberRepository.save(createMember));
     }
 
     @Transactional
-    public TokenDto login(MemberRequestDto memberRequestDto) {
+    public TokenDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
         
@@ -56,11 +52,11 @@ public class AuthService {
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
+        // 인증정보 쿠키 저장
+        tokenProvider.createCookie(response, tokenDto.getAccessToken());
+
         // 4. RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+        RefreshToken refreshToken = RefreshToken.createRefreshToken(authentication, tokenDto);
 
         refreshTokenRepository.save(refreshToken);
 

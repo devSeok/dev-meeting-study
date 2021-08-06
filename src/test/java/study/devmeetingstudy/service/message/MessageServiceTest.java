@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
-import study.devmeetingstudy.domain.Authority;
-import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.Message;
 import study.devmeetingstudy.domain.UserStatus;
+import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 
 import javax.persistence.EntityManager;
@@ -52,7 +52,7 @@ class MessageServiceTest {
                 .password(password)
                 .authority(Authority.ROLE_USER)
                 .grade(0)
-                .status(UserStatus.active).build();
+                .status(UserStatus.ACTIVE).build();
     }
 
     private Message buildMessage(Member member, Member sender){

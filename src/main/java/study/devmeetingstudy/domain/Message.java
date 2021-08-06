@@ -1,12 +1,15 @@
 package study.devmeetingstudy.domain;
 
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.enums.MessageStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
+import lombok.NoArgsConstructor;
+import study.devmeetingstudy.domain.member.Member;
+
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = {"member"})
 @DynamicInsert
-public class Message {
+public class Message extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

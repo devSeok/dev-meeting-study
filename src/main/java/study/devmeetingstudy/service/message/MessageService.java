@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
-import study.devmeetingstudy.domain.Member;
 import study.devmeetingstudy.domain.Message;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
