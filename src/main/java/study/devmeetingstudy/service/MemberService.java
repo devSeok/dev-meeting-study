@@ -3,6 +3,7 @@ package study.devmeetingstudy.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;

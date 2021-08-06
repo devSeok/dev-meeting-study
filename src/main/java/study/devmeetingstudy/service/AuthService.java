@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
+import study.devmeetingstudy.common.exception.global.error.exception.UserOutException;
+import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
@@ -19,6 +21,7 @@ import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +47,13 @@ public class AuthService {
     public TokenDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
-        
+
+        Optional<Member> byEmail = memberRepository.findByEmail(memberRequestDto.getEmail());
+
+        if (!byEmail.isPresent() || byEmail.get().getStatus() != UserStatus.ACTIVE) {
+            throw new UserOutException("회원이 없거나 회원 탈퇴한 회원입니다.");
+        }
+
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
