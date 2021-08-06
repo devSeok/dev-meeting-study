@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import study.devmeetingstudy.domain.Message;
 import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.member.enums.Authority;
+import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
 
 import javax.persistence.*;
