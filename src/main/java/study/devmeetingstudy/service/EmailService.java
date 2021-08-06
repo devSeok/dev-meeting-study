@@ -84,6 +84,6 @@ public class EmailService {
         Optional<Email> byEmail = emailRepository.findByEmail(dto.getEmail());
 
         return byEmail.filter(email -> dto.getAuth_number().equals(
-                email.getAuth_number())).isPresent();
+                email.getAuthNumber())).isPresent();
     }
 }

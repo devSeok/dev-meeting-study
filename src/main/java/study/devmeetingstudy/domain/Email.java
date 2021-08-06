@@ -20,18 +20,18 @@ public class Email extends BaseTimeEntity {
 
     private String email;
 
-    private String auth_number;
+    private String authNumber;
 
     public static Email createEmail(String to, String code){
         return Email.builder()
                 .email(to)
-                .auth_number(code)
+                .authNumber(code)
                 .build();
     }
 
     @Builder
-    public Email(String email, String auth_number) {
+    public Email(String email, String authNumber) {
         this.email = email;
-        this.auth_number = auth_number;
+        this.authNumber = authNumber;
     }
 }
