@@ -1,11 +1,11 @@
-package study.devmeetingstudy.domain;
+package study.devmeetingstudy.domain.message;
 
 
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
-import study.devmeetingstudy.domain.enums.MessageStatus;
+import study.devmeetingstudy.domain.message.enums.MessageStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.member.Member;

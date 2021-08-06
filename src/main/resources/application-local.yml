@@ -1,14 +1,19 @@
 spring:
   datasource:
-    url: jdbc:mariadb://kgm2876.iptime.org:9504/bvoat
+    url: jdbc:mariadb://kgm2876.iptime.org:9504/dev_meeting_study?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: BVOAT
     password: 1024
-
     driver-class-name: org.mariadb.jdbc.Driver
+#      url: jdbc:mysql://localhost:3306/dev_meeting_study?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#      username: root
+#      password: Abcd123@
+#
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         show_sel: true
