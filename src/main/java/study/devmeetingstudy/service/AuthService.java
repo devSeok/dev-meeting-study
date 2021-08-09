@@ -11,9 +11,9 @@ import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.common.exception.global.error.exception.UserOutException;
-import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
+import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.token.TokenDto;
@@ -23,7 +23,6 @@ import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -106,7 +105,7 @@ public class AuthService {
     }
 
     private void userLoginValidation(Member byEmail, MemberRequestDto memberRequestDto){
-        if (byEmail.getStatus() != UserStatus.ACTIVE) {
+        if (byEmail.getStatus() != MemberStatus.ACTIVE) {
             throw new UserOutException("탈퇴한 회원입니다.", ErrorCode.USER_OUT);
         }
 
