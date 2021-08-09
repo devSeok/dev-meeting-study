@@ -1,7 +1,6 @@
 package study.devmeetingstudy.service.message;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
-import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
+import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 
@@ -52,7 +51,7 @@ class MessageServiceTest {
                 .password(password)
                 .authority(Authority.ROLE_USER)
                 .grade(0)
-                .status(UserStatus.ACTIVE).build();
+                .status(MemberStatus.ACTIVE).build();
     }
 
     private Message buildMessage(Member member, Member sender){
