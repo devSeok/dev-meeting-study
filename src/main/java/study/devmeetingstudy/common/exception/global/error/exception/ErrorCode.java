@@ -24,7 +24,10 @@ public enum ErrorCode {
     ACCESSTOKEN_NOT_HAVE  (400, "M003", "Access Token이 존재하지 않습니다."),
     USER_NOT_FOUND(400, "M004", "유저 정보가 없습니다."),
     LOGIN_INPUT_INVALID(400, "M005", "Login input is invalid"),
-    USER_OUT(400, "M006", "회원이 없거나 회원 탈퇴한 회원입니다"),
+    USER_OUT(400, "M006", "탈퇴한 회원입니다"),
+    USER_NOT_PASSWORD(400, "M007", "패스워드가 틀렸습니다."),
+
+
     // Message
     MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다"),
 
