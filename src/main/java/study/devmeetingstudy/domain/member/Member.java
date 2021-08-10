@@ -6,9 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import study.devmeetingstudy.domain.UserStatus;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.member.enums.Authority;
+import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
 
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "member")
 @Entity
@@ -41,7 +42,7 @@ public class Member extends BaseTimeEntity {
     private int grade;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private MemberStatus status;
 
 
     @OneToMany(mappedBy = "member")
@@ -53,12 +54,12 @@ public class Member extends BaseTimeEntity {
                 .email(memberRequestDto.getEmail())
                 .password(passwordEncoder.encode(memberRequestDto.getPassword()))
                 .authority(Authority.ROLE_USER)
-                .status(UserStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE)
                 .build();
     }
 
     @Builder
-    public Member(String email, String password, Authority authority, int grade, UserStatus status) {
+    public Member(String email, String password, Authority authority, int grade, MemberStatus status) {
         this.email = email;
         this.password = password;
         this.authority = authority;
