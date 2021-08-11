@@ -15,7 +15,7 @@ JavaScript, React, css, scss
 
 ### ✅ ERD
 
-자세한 사항은 👉 [https://github.com/devSeok/dev-meeting-study/wiki/ERD](hhttps://github.com/devSeok/dev-meeting-study/wiki/ERD)
+자세한 사항은 👉 [https://github.com/devSeok/dev-meeting-study/wiki/ERD](https://github.com/devSeok/dev-meeting-study/wiki/ERD)
 
 ### ✅ 주요 기능
 
