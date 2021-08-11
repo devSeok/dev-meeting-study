@@ -19,8 +19,9 @@ JavaScript, React, css, scss
 
 ### ✅ 주요 기능
 
-* [각 기능별 비즈니스 로직](https://github.com/f-lab-edu/sns-itda/wiki/Business-Rule)
-* [각 기능별 Use Case](https://github.com/f-lab-edu/sns-itda/wiki/Use-Case)
+[comment]: <> (* [각 기능별 비즈니스 로직]&#40;https://github.com/f-lab-edu/sns-itda/wiki/Business-Rule&#41;)
+
+[comment]: <> (* [각 기능별 Use Case]&#40;https://github.com/f-lab-edu/sns-itda/wiki/Use-Case&#41;)
 
 ▶ 사용자
 
