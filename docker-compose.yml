@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+        nginx-proxy:
+                image: jwilder/nginx-proxy
+                container_name: nginx-proxy
+                restart: always
+                ports:
+                        - "80:80"
+                volumes:
+                        - /var/run/docker.sock:/tmp/docker.sock:ro
+                                
+
+        front:
+                image: front:v1
+                build:
+                        context: ./front
+                        dockerfile: Dockerfile
+                container_name: front_v1
+                environment:
+                        - VIRTUAL_HOST=local.dev-meeting-study.site
+                        - VIRTUAL_PORT=3000
+                volumes:
+                        - ./front:/var/www/dev-meeting-study
+                command:
+                        - bash
+                        - -c
+                        - |
+                          rm -rf ./node_modules &&
+                          npm ci &&
+                          npm run build &&
+                          npm start &&
+                          apk --no-cache add tzdata && \
+                          cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+                          echo "Asia/Seoul" > /etc/timezone
+
+        backend:
+                image: backend:v1
+                build:
+                        context: ./
+                        dockerfile: Dockerfile
+                container_name: backend_v1
+                environment:
+                        - VIRTUAL_HOST=backend.api
+                        - VIRTUAL_PORT=8080
+                volumes:
+                        - ./:/var/www/dev-meeting-study
+                command:
+                        - bash
+                        - -c
+                        - |
+                          apk --no-cache add tzdata && \
+                          cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+                          echo "Asia/Seoul" > /etc/timezone
+                          java -jar build/libs/dev-meeting-study-0.0.1-SNAPSHOT.jar
+
+
+
+
+
+
