@@ -6,7 +6,7 @@
 
 
 Back-end :
-Java, Spring Boot, IntelliJ, Gradlew, JPA, MySQL, Jenkins, Docker
+Java, Spring Boot, IntelliJ, Gradlew, JPA, MySQL, Jenkins, Docker <br>
 Front-end :
 JavaScript, React, css, scss
 
