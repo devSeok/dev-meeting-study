@@ -44,7 +44,6 @@ class MessageServiceTest {
         em.clear();
     }
 
-
     private Member buildMember(String email, String password) {
         return Member.builder()
                 .email(email)

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
+import study.devmeetingstudy.domain.message.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,10 @@ public class Message extends BaseTimeEntity{
 
     @Column(nullable = false)
     private String senderName;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'NOT_DELETED'")
+    private DeletionStatus delflg;
 
     @Builder
     public Message(Long senderId, String content, String senderName, Member member){

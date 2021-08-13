@@ -1,5 +1,7 @@
 package study.devmeetingstudy.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,7 @@ import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
-
+@Api(tags = {"1. Messages"})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/messages")
@@ -29,6 +31,7 @@ public class MessageApiController {
      * @return
      */
     @PostMapping
+    @ApiOperation(value = "메시지 보내기")
     public ResponseEntity<ApiResponseDto> sendMessage(){
         return new ResponseEntity<>(
                 new ApiResponseDto(
@@ -37,13 +40,6 @@ public class MessageApiController {
                         new ResponseMessage()),
                 HttpStatus.CREATED);
     }
-//
-//    @GetMapping
-//    public ResponseEntity<ApiResponseDto> getMessages(){
-//
-//    }
-
-
 
     @Data
     class ResponseMessage{
@@ -51,5 +47,18 @@ public class MessageApiController {
         private MemberResponseDto sender;
         private String content;
     }
+
+
+//    @GetMapping
+//    @ApiOperation(value = "메시지 리스트")
+//    public ResponseEntity<ApiResponseDto> getMessages(){
+//
+//    }
+
+
+
+
+
+
 
 }
