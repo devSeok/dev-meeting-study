@@ -27,7 +27,7 @@ services:
                         - -c
                         - |
                           rm -rf ./node_modules &&
-                          npm ci &&
+                          npm i &&
                           npm run build &&
                           npm start &&
                           apk --no-cache add tzdata && \
