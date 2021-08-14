@@ -32,7 +32,11 @@ JavaScript, React, css, scss
 5. 스터디 유로, 무료 타입 선택
 6. 쪽지 읽기 쓰기
 
+### ✅ 프로젝트를 진행하며 고민한 Technical Issue
 
+자세한 사항은 👉 [https://github.com/devSeok/dev-meeting-study/wiki/Technical-Issue](https://github.com/devSeok/dev-meeting-study/wiki/Technical-Issue)
+
+* 에러처리 통일화
 
 
 -- 프로젝트 기획 구성 <br>
