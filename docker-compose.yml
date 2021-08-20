@@ -41,7 +41,7 @@ services:
                         dockerfile: Dockerfile
                 container_name: backend_v1
                 environment:
-                        - VIRTUAL_HOST=backend.api
+                        - VIRTUAL_HOST=api.dev-meeting-study.site
                         - VIRTUAL_PORT=8080
                 volumes:
                         - ./:/var/www/dev-meeting-study
