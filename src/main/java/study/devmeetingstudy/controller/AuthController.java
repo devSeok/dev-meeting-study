@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.email.EmailRequestDto;
 import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
@@ -30,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
-    public ApiResponseDto signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+    public ApiResponseDto<Member> signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
 
         return new ApiResponseDto(
                 "성공적으로 회원가입되었습니다",
@@ -41,7 +42,7 @@ public class AuthController {
     // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
-    public ApiResponseDto login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public ApiResponseDto<Member> login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
         return new ApiResponseDto(
@@ -52,7 +53,7 @@ public class AuthController {
 
     @PostMapping("/reissue")
     @ApiOperation(value = "토큰 재발급")
-    public ApiResponseDto reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ApiResponseDto<Member> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
 
         return new ApiResponseDto(
                 "성공적으로 토큰 재발급 되었습니다.",
