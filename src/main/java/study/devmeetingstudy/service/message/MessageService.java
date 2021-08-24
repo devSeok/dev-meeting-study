@@ -17,23 +17,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MessageService {
     private final MessageRepository messageRepository;
-    private final MemberRepository memberRepository;
     /**
      * 회원 인증 정보
      * @return Message
      */
     @Transactional
     public Message save(MessageRequestDto messageRequestDto){
-        Message message = Message.create(shutXss(messageRequestDto));
+        Message message = Message.create(messageRequestDto);
         return messageRepository.save(message);
-    }
-
-    /**
-     * Xss 인증처리
-     */
-    private MessageRequestDto shutXss(MessageRequestDto messageRequestDto){
-        String content = messageRequestDto.getContent();
-        return messageRequestDto;
     }
 
     public Message getMessage(Long id){
@@ -44,6 +35,7 @@ public class MessageService {
     public List<Message> getMessages(Member member){
         return messageRepository.findMessagesDesc(member);
     }
+
 
 
 }

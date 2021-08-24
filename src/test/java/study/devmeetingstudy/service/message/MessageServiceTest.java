@@ -35,8 +35,8 @@ class MessageServiceTest {
     Member sender;
 
     @BeforeEach
-    void setMemberAndSender(){
-        member = buildMember("xonic@na.na","1234");
+    void setMemberAndSender() {
+        member = buildMember("xonic@na.na", "1234");
         sender = buildMember("dltmddn@na.na", "1234");
         em.persist(member);
         em.persist(sender);
@@ -53,7 +53,7 @@ class MessageServiceTest {
                 .status(MemberStatus.ACTIVE).build();
     }
 
-    private Message buildMessage(Member member, Member sender){
+    private Message buildMessage(Member member, Member sender) {
         return Message.builder()
                 .senderId(sender.getId())
                 .content("1234")
@@ -62,32 +62,31 @@ class MessageServiceTest {
     }
 
     @Test
-    void 메시지생성_객체가같은지_True(){
+    void 메시지생성_객체가같은지_True() {
         // given
 
-        Message memberToSenderMessage = messageService.save(getMessageDto(member,sender));
+        Message memberToSenderMessage = messageService.save(getMessageDto(member, sender));
 
         // when
         em.flush();
         em.clear();
 
         // then
-        assertEquals(memberToSenderMessage,messageService.getMessage(memberToSenderMessage.getId()));
+        assertEquals(memberToSenderMessage, messageService.getMessage(memberToSenderMessage.getId()));
     }
 
-    private MessageRequestDto getMessageDto(Member member, Member sender){
+    private MessageRequestDto getMessageDto(Member member, Member sender) {
         if (this.member.equals(member)) {
             member = this.member;
             sender = this.sender;
-        }
-        else {
+        } else {
             member = this.sender;
             sender = this.member;
         }
-        return createMessage(member,sender);
+        return createMessage(member, sender);
     }
 
-    private MessageRequestDto createMessage(Member member, Member sender){
+    private MessageRequestDto createMessage(Member member, Member sender) {
         return MessageRequestDto.builder()
                 .member(member)
                 .content("하이")
@@ -96,7 +95,7 @@ class MessageServiceTest {
     }
 
     @Test
-    void 메시지찾기_엑셉션발생(){
+    void 메시지찾기_엑셉션발생() {
         //given
         //when
 
@@ -105,15 +104,15 @@ class MessageServiceTest {
     }
 
     @Test
-    public void 메시지모두가져오기_사이즈비교_True() throws Exception{
+    void 메시지모두가져오기_사이즈비교_True() throws Exception {
         //given
-        for (int i = 0; i < 5; i++){
-            messageService.save(getMessageDto(member,sender));
+        for (int i = 0; i < 5; i++) {
+            messageService.save(getMessageDto(member, sender));
         }
 
         //when
         List<Message> messages = messageService.getMessages(member);
         //then
-        assertEquals(5,messages.size());
+        assertEquals(5, messages.size());
     }
 }
