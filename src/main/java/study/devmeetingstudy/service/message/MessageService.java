@@ -7,7 +7,6 @@ import study.devmeetingstudy.common.exception.global.error.exception.MessageNotF
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
-import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
 import java.util.List;
@@ -17,23 +16,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MessageService {
     private final MessageRepository messageRepository;
-    private final MemberRepository memberRepository;
     /**
      * 회원 인증 정보
      * @return Message
      */
     @Transactional
-    public Message save(MessageRequestDto messageRequestDto){
-        Message message = Message.create(shutXss(messageRequestDto));
+    public Message send(MessageRequestDto messageRequestDto){
+        Message message = Message.create(messageRequestDto);
         return messageRepository.save(message);
-    }
-
-    /**
-     * Xss 인증처리
-     */
-    private MessageRequestDto shutXss(MessageRequestDto messageRequestDto){
-        String content = messageRequestDto.getContent();
-        return messageRequestDto;
     }
 
     public Message getMessage(Long id){
@@ -44,6 +34,5 @@ public class MessageService {
     public List<Message> getMessages(Member member){
         return messageRepository.findMessagesDesc(member);
     }
-
 
 }

@@ -12,7 +12,10 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
+import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.service.AuthService;
 
 import javax.persistence.EntityManager;
 
@@ -31,63 +34,60 @@ class MessageServiceTest {
 
     private final EntityManager em;
     private final MessageService messageService;
+    private final AuthService authService;
     Member member;
     Member sender;
 
     @BeforeEach
-    void setMemberAndSender(){
-        member = buildMember("xonic@na.na","1234");
-        sender = buildMember("dltmddn@na.na", "1234");
+    void setMemberAndSender() {
+        member = buildMember("xonic@na.na", "1234", "nick1");
+        sender = buildMember("dltmddn@na.na", "1234", "nick2");
         em.persist(member);
         em.persist(sender);
-        em.flush();
-        em.clear();
     }
 
-    private Member buildMember(String email, String password) {
+    private Member buildMember(String email, String password, String nickname) {
         return Member.builder()
                 .email(email)
                 .password(password)
                 .authority(Authority.ROLE_USER)
                 .grade(0)
-                .status(MemberStatus.ACTIVE).build();
+                .status(MemberStatus.ACTIVE)
+                .nickname(nickname)
+                .build();
     }
 
-    private Message buildMessage(Member member, Member sender){
-        return Message.builder()
+    private Message getMessage() {
+        Message message = Message.builder()
                 .senderId(sender.getId())
-                .content("1234")
-                .senderName(sender.getEmail())
-                .member(member).build();
+                .senderName(sender.getNickname())
+                .member(member)
+                .content("하이")
+                .delflg(MessageDeletionStatus.NOT_DELETED)
+                .status(MessageReadStatus.NOT_READ)
+                .build();
+        return message;
     }
 
     @Test
-    void 메시지생성_객체가같은지_True(){
+    void 메시지생성_객체가같은지_True() {
         // given
 
-        Message memberToSenderMessage = messageService.save(getMessageDto(member,sender));
+        Message sendMessage = messageService.send(getMessageDto(member, sender));
 
         // when
         em.flush();
         em.clear();
 
         // then
-        assertEquals(memberToSenderMessage,messageService.getMessage(memberToSenderMessage.getId()));
+        assertEquals(sendMessage, messageService.getMessage(sendMessage.getId()));
     }
 
-    private MessageRequestDto getMessageDto(Member member, Member sender){
-        if (this.member.equals(member)) {
-            member = this.member;
-            sender = this.sender;
-        }
-        else {
-            member = this.sender;
-            sender = this.member;
-        }
-        return createMessage(member,sender);
+    private MessageRequestDto getMessageDto(Member member, Member sender) {
+        return createMessage(member, sender);
     }
 
-    private MessageRequestDto createMessage(Member member, Member sender){
+    private MessageRequestDto createMessage(Member member, Member sender) {
         return MessageRequestDto.builder()
                 .member(member)
                 .content("하이")
@@ -96,7 +96,7 @@ class MessageServiceTest {
     }
 
     @Test
-    void 메시지찾기_엑셉션발생(){
+    void 메시지찾기_엑셉션발생() {
         //given
         //when
 
@@ -105,15 +105,17 @@ class MessageServiceTest {
     }
 
     @Test
-    public void 메시지모두가져오기_사이즈비교_True() throws Exception{
+    void 메시지모두가져오기_사이즈비교_True() throws Exception {
         //given
-        for (int i = 0; i < 5; i++){
-            messageService.save(getMessageDto(member,sender));
+        for (int i = 0; i < 5; i++) {
+            messageService.send(getMessageDto(member, sender));
         }
 
         //when
         List<Message> messages = messageService.getMessages(member);
         //then
-        assertEquals(5,messages.size());
+        assertEquals(5, messages.size());
     }
+
+
 }
