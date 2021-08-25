@@ -1,6 +1,6 @@
 package study.devmeetingstudy.domain.message.enums;
 
-public enum MessageStatus {
+public enum MessageReadStatus {
     READ,NOT_READ
 
 }
