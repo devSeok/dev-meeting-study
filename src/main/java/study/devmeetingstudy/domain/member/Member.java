@@ -1,6 +1,7 @@
 package study.devmeetingstudy.domain.member;
 
 
+import io.jsonwebtoken.lang.Assert;
 import lombok.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,9 @@ public class Member extends BaseTimeEntity {
     @Column(length = 100, unique = true)
     private String email;
 
+    @Column(length = 30, unique = true)
+    private String nickname;
+
     @Column(nullable = false)
     private String password;
 
@@ -59,7 +63,12 @@ public class Member extends BaseTimeEntity {
     }
 
     @Builder
-    public Member(String email, String password, Authority authority, int grade, MemberStatus status) {
+    public Member(Long id, String email, String password, Authority authority, int grade, MemberStatus status) {
+
+        Assert.notNull(email, "이메일은 필수입니다.");
+        Assert.notNull(password, "비밀번호은 필수입니다.");
+
+        this.id = id;
         this.email = email;
         this.password = password;
         this.authority = authority;
