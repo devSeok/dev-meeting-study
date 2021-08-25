@@ -1,6 +1,8 @@
 package study.devmeetingstudy.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.domain.Email;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.email.EmailRequestDto;
 import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
@@ -20,7 +23,7 @@ import study.devmeetingstudy.service.EmailService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@Api(tags = {"1. Auth"})
+@Api(tags = "인증", value = "controller")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class AuthController {
 
     // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
-    @ApiOperation(value = "로그인")
+    @ApiOperation(value = "로그인", notes = "성공시 jwt 토큰값을 쿠키 해더에 넣어서 반환합니다.")
     public ApiResponseDto<Member> login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
@@ -62,7 +65,8 @@ public class AuthController {
     }
 
     @PostMapping("/email") // 이메일 인증 코드 보내기
-    public ApiResponseDto emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
+    @ApiOperation(value = "이메일 인증코드 보내기")
+    public ApiResponseDto<Email> emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
         emailService.sendSimpleMessage(emailRequestDto.getEmail());
 
         return new ApiResponseDto(
@@ -73,7 +77,8 @@ public class AuthController {
     }
 
     @PostMapping("/verifyCode") // 이메일 인증 코드 검증
-    public ApiResponseDto verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
+    @ApiOperation(value = "이메일 인증코드 검증")
+    public ApiResponseDto<Email> verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
 
 
         return new ApiResponseDto(
