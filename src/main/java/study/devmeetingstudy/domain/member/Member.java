@@ -11,7 +11,7 @@ import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -53,9 +53,10 @@ public class Member extends BaseTimeEntity {
     private final List<Message> messages = new ArrayList<>();
 
 
-    public static Member createMember(MemberRequestDto memberRequestDto, PasswordEncoder passwordEncoder) {
+    public static Member createMember(MemberSignupRequestDto memberRequestDto, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(memberRequestDto.getEmail())
+                .nickname(memberRequestDto.getNickname())
                 .password(passwordEncoder.encode(memberRequestDto.getPassword()))
                 .authority(Authority.ROLE_USER)
                 .status(MemberStatus.ACTIVE)
