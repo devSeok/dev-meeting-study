@@ -1,16 +1,18 @@
 package study.devmeetingstudy.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.domain.Email;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.email.EmailRequestDto;
 import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.dto.token.TokenRequestDto;
 import study.devmeetingstudy.service.AuthService;
@@ -19,7 +21,7 @@ import study.devmeetingstudy.service.EmailService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@Api(tags = {"1. Auth"})
+@Api(tags = "인증", value = "controller")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -30,7 +32,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
-    public ApiResponseDto signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "회원가입", response = MemberResponseDto.class),
+    })
+    public ApiResponseDto<Member> signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
 
         return new ApiResponseDto(
                 "성공적으로 회원가입되었습니다",
@@ -40,8 +45,8 @@ public class AuthController {
 
     // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
-    @ApiOperation(value = "로그인")
-    public ApiResponseDto login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    @ApiOperation(value = "로그인", notes = "성공시 jwt 토큰값을 쿠키 해더에 넣어서 반환합니다.")
+    public ApiResponseDto<Member> login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
         return new ApiResponseDto(
@@ -52,7 +57,7 @@ public class AuthController {
 
     @PostMapping("/reissue")
     @ApiOperation(value = "토큰 재발급")
-    public ApiResponseDto reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ApiResponseDto<Member> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
 
         return new ApiResponseDto(
                 "성공적으로 토큰 재발급 되었습니다.",
@@ -61,7 +66,8 @@ public class AuthController {
     }
 
     @PostMapping("/email") // 이메일 인증 코드 보내기
-    public ApiResponseDto emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
+    @ApiOperation(value = "이메일 인증코드 보내기")
+    public ApiResponseDto<Email> emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
         emailService.sendSimpleMessage(emailRequestDto.getEmail());
 
         return new ApiResponseDto(
@@ -72,7 +78,8 @@ public class AuthController {
     }
 
     @PostMapping("/verifyCode") // 이메일 인증 코드 검증
-    public ApiResponseDto verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
+    @ApiOperation(value = "이메일 인증코드 검증")
+    public ApiResponseDto<Email> verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
 
 
         return new ApiResponseDto(
