@@ -63,13 +63,14 @@ public class Member extends BaseTimeEntity {
     }
 
     @Builder
-    public Member(Long id, String email, String password, Authority authority, int grade, MemberStatus status) {
+    public Member(Long id, String email,String nickname, String password, Authority authority, int grade, MemberStatus status) {
 
         Assert.notNull(email, "이메일은 필수입니다.");
         Assert.notNull(password, "비밀번호은 필수입니다.");
 
         this.id = id;
         this.email = email;
+        this.nickname = nickname;
         this.password = password;
         this.authority = authority;
         this.grade = grade;
