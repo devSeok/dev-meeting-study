@@ -1,9 +1,6 @@
 package study.devmeetingstudy.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +12,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.email.EmailRequestDto;
 import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.dto.token.TokenRequestDto;
 import study.devmeetingstudy.service.AuthService;
@@ -34,6 +32,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "회원가입", response = MemberResponseDto.class),
+    })
     public ApiResponseDto<Member> signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
 
         return new ApiResponseDto(
