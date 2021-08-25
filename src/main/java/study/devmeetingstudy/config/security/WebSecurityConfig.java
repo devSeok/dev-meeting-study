@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsUtils;
 import study.devmeetingstudy.config.security.JwtSecurityConfig;
 import study.devmeetingstudy.jwt.JwtAccessDeniedHandler;
 import study.devmeetingstudy.jwt.JwtAuthenticationEntryPoint;
@@ -63,8 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
                 .and()
                     .authorizeRequests()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .antMatchers("/api/auth/**").permitAll()
-                    .antMatchers("/api/test").permitAll()
                     .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
