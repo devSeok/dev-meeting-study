@@ -5,8 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
-import study.devmeetingstudy.domain.message.enums.DeletionStatus;
-import study.devmeetingstudy.domain.message.enums.MessageStatus;
+import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.member.Member;
@@ -37,21 +37,25 @@ public class Message extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_READ'")
-    private MessageStatus status;
+    private MessageReadStatus status;
 
     @Column(nullable = false)
     private String senderName;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_DELETED'")
-    private DeletionStatus delflg;
+    private MessageDeletionStatus delflg;
+
 
     @Builder
-    public Message(Long senderId, String content, String senderName, Member member){
+    public Message(Long id, Long senderId, Member member, String content, MessageReadStatus status, String senderName, MessageDeletionStatus delflg) {
+        this.id = id;
         this.senderId = senderId;
-        this.content = content;
-        this.senderName = senderName;
         this.member = member;
+        this.content = content;
+        this.status = status;
+        this.senderName = senderName;
+        this.delflg = delflg;
     }
 
     /**
@@ -63,17 +67,17 @@ public class Message extends BaseTimeEntity{
         return Message.builder()
                 .senderId(messageRequestDto.getSender().getId())
                 .content(messageRequestDto.getContent())
-                .senderName(messageRequestDto.getSender().getEmail())
+                .senderName(messageRequestDto.getSender().getNickname())
                 .member(messageRequestDto.getMember()).build();
     }
 
-    public static Message changeStatus(Message message){
-        message.setStatus(MessageStatus.READ);
+    public static Message changeReadStatus(Message message, MessageReadStatus status){
+        message.setStatus(status);
         return message;
     }
 
-    private void setStatus(MessageStatus messageStatus){
-        this.status = messageStatus;
+    private void setStatus(MessageReadStatus status){
+        this.status = status;
     }
 
     @Override
@@ -87,5 +91,14 @@ public class Message extends BaseTimeEntity{
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getSenderId(), getContent(), getSenderName());
+    }
+
+    public static Message changeDeletionStatus(Message message, MessageDeletionStatus delflg) {
+        message.setDelflg(delflg);
+        return null;
+    }
+
+    private void setDelflg(MessageDeletionStatus delflg) {
+        this.delflg = delflg;
     }
 }
