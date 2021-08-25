@@ -11,7 +11,8 @@ import study.devmeetingstudy.domain.Email;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.email.EmailRequestDto;
 import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
-import study.devmeetingstudy.dto.member.MemberRequestDto;
+import study.devmeetingstudy.dto.member.MemberLoginRequestDto;
+import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.dto.token.TokenRequestDto;
@@ -35,18 +36,18 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "회원가입", response = MemberResponseDto.class),
     })
-    public ApiResponseDto<Member> signup(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+    public ApiResponseDto<Member> signup(@Valid @RequestBody MemberSignupRequestDto memberSignupRequestDto) {
 
         return new ApiResponseDto(
                 "성공적으로 회원가입되었습니다",
                 200,
-                authService.signup(memberRequestDto));
+                authService.signup(memberSignupRequestDto));
     }
 
     // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "성공시 jwt 토큰값을 쿠키 해더에 넣어서 반환합니다.")
-    public ApiResponseDto<Member> login(@Valid @RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public ApiResponseDto<Member> login(@Valid @RequestBody MemberLoginRequestDto memberRequestDto, HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
         return new ApiResponseDto(
