@@ -14,8 +14,10 @@ import study.devmeetingstudy.common.exception.global.error.exception.UserOutExce
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
+import study.devmeetingstudy.dto.member.MemberLoginRequestDto;
 import study.devmeetingstudy.dto.member.MemberRequestDto;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
+import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.dto.token.TokenRequestDto;
 import study.devmeetingstudy.jwt.TokenProvider;
@@ -34,7 +36,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
+    public MemberResponseDto signup(MemberSignupRequestDto memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
             throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
         }
@@ -45,7 +47,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public TokenDto login(MemberLoginRequestDto memberRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
 
@@ -104,7 +106,7 @@ public class AuthService {
         return tokenDto;
     }
 
-    private void userLoginValidation(Member byEmail, MemberRequestDto memberRequestDto){
+    private void userLoginValidation(Member byEmail, MemberLoginRequestDto memberRequestDto){
         if (byEmail.getStatus() != MemberStatus.ACTIVE) {
             throw new UserOutException("탈퇴한 회원입니다.", ErrorCode.USER_OUT);
         }
