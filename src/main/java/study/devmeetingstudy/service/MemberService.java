@@ -10,8 +10,6 @@ import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.util.SecurityUtil;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -44,5 +42,11 @@ public class MemberService {
     public Member getUserOne(Long id){
         return memberRepository.findById(id)
                 .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
+    }
+
+    //임시로 사용하겠습니당
+    public Member getUserOne(String email){
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("유저 정보가 없습니다."));
     }
 }
