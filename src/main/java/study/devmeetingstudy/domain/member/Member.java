@@ -11,7 +11,7 @@ import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;

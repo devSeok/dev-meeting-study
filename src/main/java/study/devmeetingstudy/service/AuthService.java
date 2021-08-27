@@ -14,11 +14,10 @@ import study.devmeetingstudy.common.exception.global.error.exception.UserOutExce
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.MemberLoginRequestDto;
-import study.devmeetingstudy.dto.member.MemberResponseDto;
-import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberLoginRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
 import study.devmeetingstudy.dto.token.TokenDto;
-import study.devmeetingstudy.dto.token.TokenRequestDto;
+import study.devmeetingstudy.dto.token.request.TokenRequestDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
@@ -35,11 +34,11 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public MemberResponseDto signup(MemberSignupRequestDto memberRequestDto) {
+    public Member signup(MemberSignupRequestDto memberRequestDto) {
         signupValidation(memberRequestDto);
         Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
 
-        return MemberResponseDto.of(memberRepository.save(createMember));
+        return memberRepository.save(createMember);
     }
 
     @Transactional

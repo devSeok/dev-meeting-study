@@ -65,6 +65,6 @@ public class MemberDecodeResolver implements HandlerMethodArgumentResolver {
                         () -> new TokenException("Access Token이 존재하지 않습니다." , ErrorCode.ACCESSTOKEN_NOT_HAVE)
                 );
 
-        return new MemberResolverDto(findMember);
+        return MemberResolverDto.from(findMember);
     }
 }

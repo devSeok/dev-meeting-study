@@ -13,9 +13,8 @@ import study.devmeetingstudy.common.exception.global.error.exception.SignupDupli
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
-import study.devmeetingstudy.dto.member.MemberResponseDto;
-import study.devmeetingstudy.dto.token.TokenDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 
@@ -70,7 +69,7 @@ class AuthServiceTest {
     @DisplayName("회원가입")
     void signup(){
         MemberSignupRequestDto memberDto = requestDto(member.getEmail(),member.getNickname(), member.getPassword());
-        MemberResponseDto signup = authService.signup(memberDto);
+        Member signup = authService.signup(memberDto);
 
         em.flush();
         em.clear();

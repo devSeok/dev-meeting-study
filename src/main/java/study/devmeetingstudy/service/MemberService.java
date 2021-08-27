@@ -7,11 +7,9 @@ import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.MemberResponseDto;
+import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.util.SecurityUtil;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto getMemberInfo(String email) {
         return memberRepository.findByEmail(email)
-                .map(MemberResponseDto::of)  // email 확징
+                .map(MemberResponseDto::from)  // email 확징
                 .orElseThrow(() -> new UserException("유저 정보가 없습니다."));
     }
 
@@ -31,7 +29,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto getMyInfo() {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
-                .map(MemberResponseDto::of)
+                .map(MemberResponseDto::from)
                 .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
     }
 
