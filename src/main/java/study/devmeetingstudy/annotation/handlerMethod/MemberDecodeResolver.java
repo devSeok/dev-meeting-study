@@ -58,20 +58,13 @@ public class MemberDecodeResolver implements HandlerMethodArgumentResolver {
         }
 
         String jwtToken = authorizationHeader.substring(7);
-
         Authentication authentication = tokenProvider.getAuthentication(jwtToken);
-
 
         Member findMember = memberRepository.findById(Long.valueOf(authentication.getName()))
                 .orElseThrow(
                         () -> new TokenException("Access Token이 존재하지 않습니다." , ErrorCode.ACCESSTOKEN_NOT_HAVE)
                 );
 
-        MemberResolverDto dto = new MemberResolverDto();
-
-        dto.setId(findMember.getId());
-        dto.setNickname(findMember.getNickname());
-
-        return dto;
+        return new MemberResolverDto(findMember.getId(), findMember.getNickname());
     }
 }
