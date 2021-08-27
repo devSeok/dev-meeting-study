@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "member")
 @Entity
@@ -89,6 +88,12 @@ public class Member extends BaseTimeEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getEmail());
+    }
+
+    // 참고 : set 메서드는 롬복으로 열어두면 원치 않는 값을 변경되는걸 열어두는 행위이다.
+    // 필요한것만 열어두는 습관을 두자
+    public void changeStatus(MemberStatus status){
+        this.status = status;
     }
 }
 

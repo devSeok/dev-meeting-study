@@ -36,12 +36,12 @@ public class MemberService {
 
     public void deleteMember(Long id){
        Member findMember = getUserOne(id);
-       findMember.setStatus(MemberStatus.OUT);
-
+       findMember.changeStatus(MemberStatus.OUT);
 
     }
 
     public Member getUserOne(Long id){
+
         return memberRepository.findById(id)
                 .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
     }
