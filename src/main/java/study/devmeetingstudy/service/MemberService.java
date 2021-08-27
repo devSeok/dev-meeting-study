@@ -3,6 +3,7 @@ package study.devmeetingstudy.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
@@ -34,10 +35,9 @@ public class MemberService {
                 .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
     }
 
-    public void deleteMember(Long id){
-       Member findMember = getUserOne(id);
+    public void deleteMember(MemberResolverDto dto){
+       Member findMember = getUserOne(dto.getId());
        findMember.changeStatus(MemberStatus.OUT);
-
     }
 
     public Member getUserOne(Long id){

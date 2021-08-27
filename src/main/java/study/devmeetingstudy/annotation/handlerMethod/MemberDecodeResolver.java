@@ -13,11 +13,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import study.devmeetingstudy.annotation.JwtMember;
+import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.TokenException;
+import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.jwt.TokenProvider;
-
-import java.util.Map;
+import study.devmeetingstudy.repository.MemberRepository;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,23 +27,26 @@ public class MemberDecodeResolver implements HandlerMethodArgumentResolver {
 
     private final ObjectMapper objectMapper;
     private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
     /**
      * resolveArgument를 수행할지 결정할 수 있는 메서드이다.
      * true가 리턴되면 resolveArgument가 수행된다.
-     * 위에서 생성한 TokenMemberEmail Annoation과 파라미터의 타입이 String일 경우에만 resolveArgument를 수행시킨다.
+     * 위에서 생성한 TokenMemberEmail Annoation과 파라미터의 타입이 MemberResolverDto 일 경우에만 resolveArgument를 수행시킨다.
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean isTokenMember = parameter
                 .getParameterAnnotation(JwtMember.class) != null;
 
-        boolean isString = String.class.equals(parameter.getParameterType());
+//        boolean isString = String.class.equals(parameter.getParameterType());
 
-        return isTokenMember && isString;
+        boolean isParameter = parameter.getParameterType().equals(MemberResolverDto.class);
+
+        return isTokenMember && isParameter;
     }
 
     @Override
-    public String resolveArgument(
+    public MemberResolverDto resolveArgument(
             MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory
     ) throws Exception {
@@ -57,7 +61,17 @@ public class MemberDecodeResolver implements HandlerMethodArgumentResolver {
 
         Authentication authentication = tokenProvider.getAuthentication(jwtToken);
 
-        // 현재 해당 로그인값 id값만 리턴시켜준다.
-       return authentication.getName();
+
+        Member findMember = memberRepository.findById(Long.valueOf(authentication.getName()))
+                .orElseThrow(
+                        () -> new TokenException("Access Token이 존재하지 않습니다." , ErrorCode.ACCESSTOKEN_NOT_HAVE)
+                );
+
+        MemberResolverDto dto = new MemberResolverDto();
+
+        dto.setId(findMember.getId());
+        dto.setNickname(findMember.getNickname());
+
+        return dto;
     }
 }
