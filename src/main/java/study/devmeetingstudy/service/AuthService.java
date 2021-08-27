@@ -15,7 +15,6 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.dto.member.MemberLoginRequestDto;
-import study.devmeetingstudy.dto.member.MemberRequestDto;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
 import study.devmeetingstudy.dto.token.TokenDto;
@@ -37,10 +36,7 @@ public class AuthService {
 
     @Transactional
     public MemberResponseDto signup(MemberSignupRequestDto memberRequestDto) {
-        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
-        }
-
+        signupValidation(memberRequestDto);
         Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
 
         return MemberResponseDto.of(memberRepository.save(createMember));
@@ -104,6 +100,16 @@ public class AuthService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    private void signupValidation(MemberSignupRequestDto memberRequestDto){
+        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
+            throw new SignupDuplicateException("이미 가입되어 있는 유저입니다.");
+        }
+
+        if (memberRepository.existsByNickname(memberRequestDto.getNickname())) {
+            throw new SignupDuplicateException("이미 사용중인 닉네임입니다.", ErrorCode.NICKNAME_DUPLICATION);
+        }
     }
 
     private void userLoginValidation(Member byEmail, MemberLoginRequestDto memberRequestDto){
