@@ -1,6 +1,7 @@
 package study.devmeetingstudy.domain.message;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
@@ -20,7 +21,7 @@ class MessageTest {
         sender = createMember(2L, "sksk@sksk.sksk", "nick2");
     }
 
-    Member createMember(Long id, String email, String nickname){
+    private Member createMember(Long id, String email, String nickname){
         return Member.builder()
                 .authority(Authority.ROLE_USER)
                 .email(email)
@@ -32,6 +33,7 @@ class MessageTest {
                 .build();
     }
 
+    @DisplayName("메시지 읽음 상태 수정")
     @Test
     void 메시지상태수정_수정후상태비교_True() throws Exception{
         //given
@@ -40,7 +42,7 @@ class MessageTest {
         Message message = getMessage();
 
         //when
-        Message.changeReadStatus(message, MessageReadStatus.READ);
+        Message.changeReadStatus(MessageReadStatus.READ, message);
 
         //then
         assertEquals(MessageReadStatus.READ, message.getStatus());
@@ -60,11 +62,11 @@ class MessageTest {
     }
 
     @Test
-    public void 메시지삭제처리_삭제후상태비교_True() throws Exception{
+    void 메시지삭제처리_삭제후상태비교_True() throws Exception{
         //given
         Message message = getMessage();
         //when
-        Message.changeDeletionStatus(message, MessageDeletionStatus.DELETED);
+        Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
         //then
         assertEquals(MessageDeletionStatus.DELETED, message.getDelflg());
     }
