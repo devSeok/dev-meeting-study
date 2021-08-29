@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.TokenException;
+import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.dto.token.TokenDto;
 
 import javax.servlet.http.HttpServletResponse;
@@ -127,5 +128,19 @@ public class TokenProvider {
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public String crateToken(){
+        // Access Token 생성
+        long now = (new Date()).getTime();
+
+
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        return Jwts.builder()
+                .setSubject("test")       // payload "sub": "name"
+                .claim(AUTHORITIES_KEY, Authority.ROLE_USER)        // payload "auth": "ROLE_USER"
+                .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
+                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .compact();
     }
 }
