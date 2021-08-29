@@ -80,14 +80,14 @@ public class Member extends BaseTimeEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Member)) return false;
         Member member = (Member) o;
-        return Objects.equals(getId(), member.getId()) && Objects.equals(getEmail(), member.getEmail());
+        return grade == member.grade && Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(nickname, member.nickname) && Objects.equals(password, member.password) && authority == member.authority && status == member.status && Objects.equals(messages, member.messages);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getEmail());
+        return Objects.hash(id, email, nickname, password, authority, grade, status, messages);
     }
 
     // 참고 : set 메서드는 롬복으로 열어두면 원치 않는 값을 변경되는걸 열어두는 행위이다.
