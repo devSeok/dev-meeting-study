@@ -2,25 +2,20 @@ package study.devmeetingstudy.service.message;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.service.AuthService;
 
 import javax.persistence.EntityManager;
 
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -67,54 +62,6 @@ class MessageServiceTest {
                 .status(MessageReadStatus.NOT_READ)
                 .build();
         return message;
-    }
-
-    @Test
-    void 메시지생성_객체가같은지_True() {
-        // given
-
-        Message sendMessage = messageService.send(getMessageDto(member, sender));
-
-        // when
-        em.flush();
-        em.clear();
-
-        // then
-        assertEquals(sendMessage, messageService.getMessage(sendMessage.getId()));
-    }
-
-    private MessageRequestDto getMessageDto(Member member, Member sender) {
-        return createMessage(member, sender);
-    }
-
-    private MessageRequestDto createMessage(Member member, Member sender) {
-        return MessageRequestDto.builder()
-                .member(member)
-                .content("하이")
-                .sender(sender)
-                .build();
-    }
-
-    @Test
-    void 메시지찾기_엑셉션발생() {
-        //given
-        //when
-
-        //then
-        assertThrows(MessageNotFoundException.class, () -> messageService.getMessage(1L));
-    }
-
-    @Test
-    void 메시지모두가져오기_사이즈비교_True() throws Exception {
-        //given
-        for (int i = 0; i < 5; i++) {
-            messageService.send(getMessageDto(member, sender));
-        }
-
-        //when
-        List<Message> messages = messageService.getMessages(member);
-        //then
-        assertEquals(5, messages.size());
     }
 
 

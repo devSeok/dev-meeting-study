@@ -71,7 +71,7 @@ public class Message extends BaseTimeEntity{
                 .member(messageRequestDto.getMember()).build();
     }
 
-    public static Message changeReadStatus(Message message, MessageReadStatus status){
+    public static Message changeReadStatus(MessageReadStatus status, Message message){
         message.setStatus(status);
         return message;
     }
@@ -93,7 +93,7 @@ public class Message extends BaseTimeEntity{
         return Objects.hash(getId(), getSenderId(), getContent(), getSenderName());
     }
 
-    public static Message changeDeletionStatus(Message message, MessageDeletionStatus delflg) {
+    public static Message changeDeletionStatus(MessageDeletionStatus delflg, Message message) {
         message.setDelflg(delflg);
         return null;
     }
