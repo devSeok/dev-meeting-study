@@ -10,7 +10,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk, ReduxPromise)));
+export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk, ReduxPromise)));
 
 ReactDOM.render(
   <Provider store={store}>
