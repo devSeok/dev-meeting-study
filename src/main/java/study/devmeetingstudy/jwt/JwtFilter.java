@@ -35,11 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-            System.out.println(jwt);
-            System.out.println("==== 쿠키 들어간거");
-//            tokenProvider.createCookie(response, jwt);
+            tokenProvider.createCookie(response, jwt);
         }
         filterChain.doFilter(request, response);
     }

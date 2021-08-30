@@ -11,7 +11,7 @@ import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "member")
 @Entity
@@ -81,14 +80,20 @@ public class Member extends BaseTimeEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Member)) return false;
         Member member = (Member) o;
-        return Objects.equals(getId(), member.getId()) && Objects.equals(getEmail(), member.getEmail());
+        return grade == member.grade && Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(nickname, member.nickname) && Objects.equals(password, member.password) && authority == member.authority && status == member.status && Objects.equals(messages, member.messages);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getEmail());
+        return Objects.hash(id, email, nickname, password, authority, grade, status, messages);
+    }
+
+    // 참고 : set 메서드는 롬복으로 열어두면 원치 않는 값을 변경되는걸 열어두는 행위이다.
+    // 필요한것만 열어두는 습관을 두자
+    public void changeStatus(MemberStatus status){
+        this.status = status;
     }
 }
 

@@ -1,4 +1,4 @@
-package study.devmeetingstudy.dto.token;
+package study.devmeetingstudy.dto.token.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

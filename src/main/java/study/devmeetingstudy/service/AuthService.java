@@ -14,12 +14,10 @@ import study.devmeetingstudy.common.exception.global.error.exception.UserOutExce
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.MemberLoginRequestDto;
-import study.devmeetingstudy.dto.member.MemberRequestDto;
-import study.devmeetingstudy.dto.member.MemberResponseDto;
-import study.devmeetingstudy.dto.member.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberLoginRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
 import study.devmeetingstudy.dto.token.TokenDto;
-import study.devmeetingstudy.dto.token.TokenRequestDto;
+import study.devmeetingstudy.dto.token.request.TokenRequestDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
@@ -36,14 +34,11 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public MemberResponseDto signup(MemberSignupRequestDto memberRequestDto) {
-        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new SignupDuplicateException("이미 가입되어 있는 유저입니다");
-        }
-
+    public Member signup(MemberSignupRequestDto memberRequestDto) {
+        signupValidation(memberRequestDto);
         Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
 
-        return MemberResponseDto.of(memberRepository.save(createMember));
+        return memberRepository.save(createMember);
     }
 
     @Transactional
@@ -104,6 +99,16 @@ public class AuthService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    private void signupValidation(MemberSignupRequestDto memberRequestDto){
+        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
+            throw new SignupDuplicateException("이미 가입되어 있는 유저입니다.");
+        }
+
+        if (memberRepository.existsByNickname(memberRequestDto.getNickname())) {
+            throw new SignupDuplicateException("이미 사용중인 닉네임입니다.", ErrorCode.NICKNAME_DUPLICATION);
+        }
     }
 
     private void userLoginValidation(Member byEmail, MemberLoginRequestDto memberRequestDto){

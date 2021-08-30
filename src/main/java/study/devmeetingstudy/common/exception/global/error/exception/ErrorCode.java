@@ -26,7 +26,8 @@ public enum ErrorCode {
     LOGIN_INPUT_INVALID(400, "M005", "Login input is invalid"),
     USER_OUT(400, "M006", "탈퇴한 회원입니다"),
     USER_NOT_PASSWORD(400, "M007", "패스워드가 틀렸습니다."),
-
+    NICKNAME_DUPLICATION(400, "M008", "이미 사용중인 닉네임입니다."),
+    EMAIL_CODE_NOTFOUND(400, "M010", "유효하지 않거나 마지막으로 온 유효 번호가 아닙니다."),
 
     // Message
     MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다"),
