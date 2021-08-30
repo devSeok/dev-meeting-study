@@ -6,7 +6,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
-import study.devmeetingstudy.dto.member.MemberResponseDto;
+import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 
 @Data
 @AllArgsConstructor
@@ -21,8 +21,8 @@ public class MessageResponseDto {
     public static MessageResponseDto of(Message message, Member sender, Member member){
         return new MessageResponseDto(
                 message.getId(),
-                MemberResponseDto.of(sender),
-                MemberResponseDto.of(member),
+                MemberResponseDto.from(sender),
+                MemberResponseDto.from(member),
                 message.getContent(),
                 message.getDelflg(),
                 message.getStatus());

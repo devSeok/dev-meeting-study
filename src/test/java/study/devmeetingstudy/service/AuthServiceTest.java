@@ -47,7 +47,7 @@ class AuthServiceTest {
     MemberRepository memberRepository;
 
     @InjectMocks
-     MemberService memberService;
+    MemberService memberService;
 
 
     @Test
@@ -61,7 +61,5 @@ class AuthServiceTest {
                 .status(MemberStatus.ACTIVE)
                 .build();
 
-        Mockito.when(memberRepository.save(Mockito.any(Member.class))).thenReturn(member);
-//        assertNull(memberService.getMemberInfo("test23123@naver.com").getEmail());
     }
 }

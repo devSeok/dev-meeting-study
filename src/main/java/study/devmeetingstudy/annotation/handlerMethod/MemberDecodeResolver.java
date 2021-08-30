@@ -25,7 +25,6 @@ import study.devmeetingstudy.repository.MemberRepository;
 @Component
 public class MemberDecodeResolver implements HandlerMethodArgumentResolver {
 
-    private final ObjectMapper objectMapper;
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
     /**

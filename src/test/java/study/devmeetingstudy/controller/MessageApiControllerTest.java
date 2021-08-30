@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
+import study.devmeetingstudy.common.exception.global.error.exception.TokenException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
@@ -34,12 +36,14 @@ import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
+import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,6 +73,9 @@ class MessageApiControllerTest {
     @Mock
     private MemberService memberService;
 
+    @Mock
+    private MemberRepository memberRepository;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -79,7 +86,7 @@ class MessageApiControllerTest {
                     response.setCharacterEncoding("UTF-8");
                     chain.doFilter(request, response);
                 })))
-                .setCustomArgumentResolvers(new MemberDecodeResolver(new ObjectMapper(), new TokenProvider("c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK")))
+                .setCustomArgumentResolvers(new MemberDecodeResolver(new TokenProvider("c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK"), memberRepository))
                 .build();
     }
 
@@ -118,7 +125,11 @@ class MessageApiControllerTest {
         // mock 객체가 특정한 값을 반환해야 하는 경우.
         Message message = createMessage(1L, member, sender);
         // controller에서 호출한 getUserOne 모킹
-        doReturn(sender).doReturn(member).when(memberService).getUserOne(any(String.class));
+        // sender userOne
+        // member memberInfo
+        doReturn(Optional.of(sender)).when(memberRepository).findById(any(Long.class));
+        doReturn(sender).when(memberService).getUserOne(any(Long.class));
+        doReturn(member).when(memberService).getMemberInfo(any(String.class));
         // 새로 생성된 메시지가 리턴됨.
         doReturn(message).when(messageService).send(any(MessageRequestDto.class));
 
@@ -168,7 +179,7 @@ class MessageApiControllerTest {
         Authentication token = new UsernamePasswordAuthenticationToken(member.getId(), member.getPassword(), Collections.singleton(grantedAuthority));
         // member 기반으로 token 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
-        doReturn(member).when(memberService).getUserOne(any(String.class));
+        doReturn(Optional.of(sender)).when(memberRepository).findById(any(Long.class));
         doReturn(sender).doReturn(sender).doReturn(sender).doReturn(sender).doReturn(sender).when(memberService).getUserOne(any(Long.class));
         doReturn(messages).when(messageService).getMessages(any(Member.class));
 

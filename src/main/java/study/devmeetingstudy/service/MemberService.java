@@ -42,9 +42,4 @@ public class MemberService {
                 .orElseThrow(() -> new UserException("로그인 유저 정보가 없습니다."));
     }
 
-    //임시로 사용하겠습니당
-    public Member getUserOne(String email){
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException("유저 정보가 없습니다."));
-    }
 }

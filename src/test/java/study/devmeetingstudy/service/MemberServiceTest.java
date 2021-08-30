@@ -27,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class MemberServiceTest {
 
     private static String EMAIL = "test@naver.com";
