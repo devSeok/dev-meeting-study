@@ -1,4 +1,4 @@
-package study.devmeetingstudy.dto.member;
+package study.devmeetingstudy.dto.member.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

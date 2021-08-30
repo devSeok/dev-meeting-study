@@ -20,6 +20,8 @@ import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.dto.message.MessageResponseDto;
+import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
