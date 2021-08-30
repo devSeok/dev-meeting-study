@@ -1,6 +1,8 @@
 package study.devmeetingstudy.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,11 @@ import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,13 +49,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // 테스트 Mockito 결합
 @ExtendWith(MockitoExtension.class)
-@Import(HttpEncodingAutoConfiguration.class)
 class MessageApiControllerTest {
-    /** TODO:
-     *      1. 메시지 목록
-     *      2. 메시지 보내기
+    /** TODO: 멤버 인증 처리 관련 테스트 케이스 작성 모두 완료?
+     *      1. 메시지 보내기
+     *      2. 메시지 목록
      *          -
-     *      3. 메시지
+     *      3. 메시지 조회
+ *              - 메시지 읽음 상태 수정
+     *      4. 메시지 삭제 상태 수정
      *
      */
 
@@ -89,8 +95,7 @@ class MessageApiControllerTest {
                 .build();
     }
 
-    @DisplayName("메시지 저장 성공")
-    @WithMockUser
+    @DisplayName("메시지 보내기 201 created")
     @Test
     void sendMessage() throws Exception{
         //given
@@ -111,7 +116,7 @@ class MessageApiControllerTest {
         MessageRequestDto messageRequestDto = new MessageRequestDto("dltmddn@na.na", "Hello");
 
         // mock 객체가 특정한 값을 반환해야 하는 경우.
-        Message message = createMessage(member, sender);
+        Message message = createMessage(1L, member, sender);
         // controller에서 호출한 getUserOne 모킹
         doReturn(sender).doReturn(member).when(memberService).getUserOne(any(String.class));
         // 새로 생성된 메시지가 리턴됨.
@@ -127,13 +132,13 @@ class MessageApiControllerTest {
 
         //then
         final MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
-        String a = mvcResult.getResponse().getContentAsString();
-        System.out.println(a);
+        String content = mvcResult.getResponse().getContentAsString();
+        System.out.println(content);
     }
 
-    private Message createMessage(Member member, Member sender) {
+    private Message createMessage(Long id, Member member, Member sender) {
         return Message.builder()
-                .id(1L)
+                .id(id)
                 .content("하이")
                 .senderName(sender.getNickname())
                 .senderId(sender.getId())
@@ -142,4 +147,50 @@ class MessageApiControllerTest {
                 .status(MessageReadStatus.NOT_READ).build();
     }
 
+    @DisplayName("메시지 목록 200 Ok")
+    @Test
+    void showMessages() throws Exception {
+        // 메시지 5개 생성
+        //given
+        // 메시지를 받는 멤버
+        Member member = createMember(1L, "dltmddn@na.na", "nick1");
+        // 메시지를 보내는 멤버
+        Member sender = createMember(2L, "xonic@na.na", "nick2");
+        List<Message> messages = new ArrayList<>();
+        for (long i = 1; i <= 5; i++){
+            messages.add(createMessage(i, member, sender));
+        }
+
+        // 토큰 생성 및 발급
+        // 현재 로그인 한 멤버는 member 이다.
+        TokenProvider tokenProvider = new TokenProvider("c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK");
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
+        Authentication token = new UsernamePasswordAuthenticationToken(member.getId(), member.getPassword(), Collections.singleton(grantedAuthority));
+        // member 기반으로 token 생성
+        TokenDto tokenDto = tokenProvider.generateTokenDto(token);
+        doReturn(member).when(memberService).getUserOne(any(String.class));
+        doReturn(sender).doReturn(sender).doReturn(sender).doReturn(sender).doReturn(sender).when(memberService).getUserOne(any(Long.class));
+        doReturn(messages).when(messageService).getMessages(any(Member.class));
+
+        //when
+        // 요청 리퀘스트 폼 생성
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/messages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization","bearer " + tokenDto.getAccessToken()));
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        String asString = mvcResult.getResponse().getContentAsString();
+        System.out.println(asString);
+    }
+
+    @DisplayName("메시지 조회 200 Ok")
+    @Test
+    public void showMessage() throws Exception{
+        //given
+
+        //when
+
+        //then
+    }
 }

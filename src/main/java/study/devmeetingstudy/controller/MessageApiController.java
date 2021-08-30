@@ -19,8 +19,12 @@ import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.member.MemberResponseDto;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.dto.message.MessageResponseDto;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = {"1. Messages"})
 @RestController
@@ -38,46 +42,36 @@ public class MessageApiController {
      */
     @PostMapping
     @ApiOperation(value = "메시지 보내기")
-    public ResponseEntity<ApiResponseDto> sendMessage(@RequestBody MessageRequestDto messageRequestDto, @JwtMember String email){
+    public ResponseEntity<ApiResponseDto> sendMessage(@JwtMember String email, @RequestBody MessageRequestDto messageRequestDto){
         // 이게 맞는 코드일까..?
-        Member sender = memberService.getUserOne(email);
+        Member loginMember = memberService.getUserOne(email);
         Member member = memberService.getUserOne(messageRequestDto.getEmail());
-        messageRequestDto.setSender(sender);
+        messageRequestDto.setSender(loginMember);
         messageRequestDto.setMember(member);
 
         Message message = messageService.send(messageRequestDto);
         return new ResponseEntity<>(
                 new ApiResponseDto(
-                        "성공",
+                        "생성됨",
                         HttpStatus.CREATED.value(),
-                        new ResponseMessage(
-                                message.getId(),
-                                message.getSenderId(),
-                                message.getSenderName(),
-                                new MemberResponseDto(member.getId(), member.getNickname(), member.getEmail(), member.getGrade()),
-                                message.getContent(),
-                                message.getDelflg(),
-                                message.getStatus()
-                        )),
+                        MessageResponseDto.of(message, loginMember, member)),
                 HttpStatus.CREATED);
     }
 
-    @Data
-    @AllArgsConstructor
-    class ResponseMessage{
-        private Long id;
-        private Long senderId;
-        private String senderName;
-        private MemberResponseDto member;
-        private String content;
-        private MessageDeletionStatus delflg;
-        private MessageReadStatus status;
+
+    @GetMapping
+    @ApiOperation(value = "메시지 목록")
+    public ResponseEntity<ApiResponseDto> showMessages(@JwtMember String email){
+        Member member = memberService.getUserOne(email);
+        List<Message> messages = messageService.getMessages(member);
+        return new ResponseEntity<>(
+                new ApiResponseDto(
+                        "성공",
+                        HttpStatus.OK.value(),
+                        messages.stream().map((message) ->
+                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), member)).collect(Collectors.toList())),
+                HttpStatus.OK);
     }
 
 
-//    @GetMapping
-//    @ApiOperation(value = "메시지 리스트")
-//    public ResponseEntity<ApiResponseDto> getMessages(){
-//
-//    }
 }

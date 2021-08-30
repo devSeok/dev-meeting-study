@@ -16,6 +16,7 @@ import javax.validation.constraints.NotEmpty;
 @ToString
 public class MessageRequestDto {
 
+    @NotEmpty(message = "이메일은 필수 입니다.")
     @ApiModelProperty(value = "보낼 대상 이메일")
     private String email;
 
