@@ -1,4 +1,4 @@
-import { USER_TYPE, UserDispatchType } from '../_actions/type';
+import { USER_TYPE, UserDispatchType, UserFailDispatch } from '../_actions/type';
 
 function action(state = {}, action: UserDispatchType) {
   switch (action.type) {
@@ -14,7 +14,9 @@ function action(state = {}, action: UserDispatchType) {
       return { ...state, payload: '로그아웃 되었습니다', type: action.type };
     }
     case USER_TYPE.USER_FAIL: {
-      return { ...state, type: action.type };
+      // success와 fail의 공통부분만 사용 가능해서 as 사용함
+      const { payload } = action as UserFailDispatch;
+      return { ...state, err: payload, type: action.type };
     }
     default:
       return { ...state };

@@ -7,13 +7,13 @@ export enum USER_TYPE {
   USER_FAIL = 'USER_FAIL',
 }
 
-export interface PayloadType {
+export interface PayloadSuccessType {
   data: SuccessPayload;
   message: string;
   status: number;
 }
 
-export interface SuccessPayload {
+interface SuccessPayload {
   email: string;
   grade: string;
   accessToken: string;
@@ -21,13 +21,28 @@ export interface SuccessPayload {
   accessTokenExpiresIn: number;
 }
 
+export interface PayloadFailType {
+  type: string;
+  code: string;
+  errors: Error[];
+  message: string;
+  status: number;
+}
+
+interface Error {
+  field: string;
+  value: string;
+  reason: string;
+}
+
 export interface UserSuccessDispatch {
   type: USER_TYPE;
-  payload: PayloadType;
+  payload: PayloadSuccessType;
 }
 
 export interface UserFailDispatch {
   type: USER_TYPE.USER_FAIL;
+  payload: PayloadFailType;
 }
 
 export type UserDispatchType = UserSuccessDispatch | UserFailDispatch;
