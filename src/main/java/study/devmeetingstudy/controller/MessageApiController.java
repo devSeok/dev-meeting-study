@@ -15,6 +15,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.dto.message.MessageResponseDto;
+import study.devmeetingstudy.dto.message.MessageVO;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
@@ -31,22 +32,27 @@ public class MessageApiController {
     private final MessageService messageService;
     private final MemberService memberService;
 
+    /*
+    * TODO
+    *  멤버 확인 코드 작성.
+    * */
+
     /**
      * save Message
      * @return
      */
     @PostMapping
     @ApiOperation(value = "메시지 보내기")
-    public ResponseEntity<ApiResponseDto> sendMessage(@JwtMember MemberResolverDto resolverDto, @RequestBody MessageRequestDto messageRequestDto){
+    public ResponseEntity<ApiResponseDto<MessageResponseDto>> sendMessage(@JwtMember MemberResolverDto memberResolverDto, @RequestBody MessageRequestDto messageRequestDto){
         // 이게 맞는 코드일까..?
-        Member loginMember = memberService.getUserOne(resolverDto.getId());
+        Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
         messageRequestDto.setSender(loginMember);
         messageRequestDto.setMember(member);
 
-        Message message = messageService.send(messageRequestDto);
+        Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
         return new ResponseEntity<>(
-                new ApiResponseDto<MessageResponseDto>(
+                new ApiResponseDto<>(
                         "생성됨",
                         HttpStatus.CREATED.value(),
                         MessageResponseDto.of(message, loginMember, member)),
@@ -55,15 +61,37 @@ public class MessageApiController {
 
     @GetMapping
     @ApiOperation(value = "메시지 목록")
-    public ResponseEntity<ApiResponseDto> showMessages(@JwtMember MemberResolverDto resolverDto){
-        Member member = memberService.getUserOne(resolverDto.getId());
-        List<Message> messages = messageService.getMessages(member);
+    public ResponseEntity<ApiResponseDto<List<MessageResponseDto>>> showMessages(@JwtMember MemberResolverDto MemberResolverDto){
+        Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
+        List<Message> messages = messageService.getMessages(loginMember);
         return new ResponseEntity<>(
-                new ApiResponseDto<List<MessageResponseDto>>(
+                new ApiResponseDto<>(
                         "성공",
                         HttpStatus.OK.value(),
                         messages.stream().map((message) ->
-                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), member)).collect(Collectors.toList())),
+                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember)).collect(Collectors.toList())),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/{messageId}")
+    @ApiOperation(value = "메시지 조회")
+    public ResponseEntity<ApiResponseDto<MessageResponseDto>> showMessage(@JwtMember MemberResolverDto MemberResolverDto, @PathVariable Long messageId){
+        Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
+        // 같은 멤버 처리
+        Message message = messageService.getMessage(messageId);
+        return new ResponseEntity<>(
+                new ApiResponseDto<>(
+                        "성공",
+                        HttpStatus.OK.value(),
+                        MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                ,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{messageId}")
+    @ApiOperation(value = "메시지 삭제")
+    public ResponseEntity<Void> deleteMessage(@JwtMember MemberResolverDto memberResolverDto, @PathVariable Long messageId){
+        Member loginMember = memberService.getUserOne(memberResolverDto.getId());
+        messageService.deleteMessage(messageId);
+        return ResponseEntity.noContent().build();
     }
 }

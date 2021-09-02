@@ -8,6 +8,7 @@ import study.devmeetingstudy.common.exception.global.error.exception.MessageNotF
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.dto.message.MessageVO;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class MessageService {
      * @return Message
      */
     @Transactional
-    public Message send(MessageRequestDto messageRequestDto){
-        Message message = Message.create(messageRequestDto);
+    public Message send(MessageVO messageVO){
+        Message message = Message.create(messageVO);
         return messageRepository.save(message);
     }
 
@@ -37,4 +38,7 @@ public class MessageService {
         return messageRepository.findMessagesDesc(member);
     }
 
+    public void deleteMessage(Long id) {
+
+    }
 }

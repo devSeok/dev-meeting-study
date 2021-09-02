@@ -10,6 +10,7 @@ import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.dto.message.MessageVO;
 
 
 import javax.persistence.*;
@@ -60,15 +61,15 @@ public class Message extends BaseTimeEntity{
 
     /**
      * PK memberId에 저장될 value는 보낼 대상 Id 이다.
-     * @param messageRequestDto
+     * @param messageVO
      * @return
      */
-    public static Message create(MessageRequestDto messageRequestDto){
+    public static Message create(MessageVO messageVO){
         return Message.builder()
-                .senderId(messageRequestDto.getSender().getId())
-                .content(messageRequestDto.getContent())
-                .senderName(messageRequestDto.getSender().getNickname())
-                .member(messageRequestDto.getMember()).build();
+                .senderId(messageVO.getSender().getId())
+                .content(messageVO.getContent())
+                .senderName(messageVO.getSender().getNickname())
+                .member(messageVO.getMember()).build();
     }
 
     public static Message changeReadStatus(MessageReadStatus status, Message message){
