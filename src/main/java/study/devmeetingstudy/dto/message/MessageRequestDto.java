@@ -12,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 // Message 생성자를 주입할 때도 쓰인다.
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MessageRequestDto {
 
     @NotEmpty(message = "이메일은 필수 입니다.")

@@ -7,10 +7,9 @@ import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.dto.message.MessageVO;
+import study.devmeetingstudy.vo.MessageVO;
 
 
 import javax.persistence.*;

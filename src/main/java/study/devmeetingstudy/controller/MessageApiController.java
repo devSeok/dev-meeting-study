@@ -2,7 +2,6 @@ package study.devmeetingstudy.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.dto.message.MessageResponseDto;
-import study.devmeetingstudy.dto.message.MessageVO;
+import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
@@ -47,8 +46,6 @@ public class MessageApiController {
         // 이게 맞는 코드일까..?
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
-        messageRequestDto.setSender(loginMember);
-        messageRequestDto.setMember(member);
 
         Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
         return new ResponseEntity<>(

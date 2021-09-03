@@ -1,10 +1,11 @@
-package study.devmeetingstudy.dto.message;
+package study.devmeetingstudy.vo;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.dto.message.MessageRequestDto;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class MessageVO {
     private String content;
@@ -18,5 +19,4 @@ public class MessageVO {
                 sender
         );
     }
-
 }
