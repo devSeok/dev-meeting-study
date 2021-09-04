@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
-import study.devmeetingstudy.dto.message.MessageVO;
+import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
+import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
 import java.util.List;
@@ -25,20 +26,40 @@ public class MessageService {
      */
     @Transactional
     public Message send(MessageVO messageVO){
-        Message message = Message.create(messageVO);
-        return messageRepository.save(message);
+        Message createMessage = Message.create(messageVO);
+        return messageRepository.save(createMessage);
+    }
+    
+    /*
+        TODO : 통합테스트 과정에서 확인하기.
+     */
+    public Message getMessage(Long id) throws MessageNotFoundException{
+        Message foundMessage = messageRepository.findById(id)
+                .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
+        return readMessage(foundMessage);
     }
 
-    public Message getMessage(Long id){
-        return messageRepository.findById(id)
-                .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
+    @Transactional
+    public Message readMessage(Message message){
+        if (isNotRead(message.getStatus())) return Message.changeReadStatus(MessageReadStatus.READ, message);
+        return message;
+    }
+
+    private boolean isNotRead(MessageReadStatus messageReadStatus){
+        return MessageReadStatus.NOT_READ == messageReadStatus;
     }
 
     public List<Message> getMessages(Member member){
         return messageRepository.findMessagesDesc(member);
     }
 
-    public void deleteMessage(Long id) {
+    public Message deleteMessage(Long id) {
+        Message foundMessage = getMessage(id);
+        if (isNotDeleted(foundMessage.getDelflg())) return Message.changeDeletionStatus(MessageDeletionStatus.DELETED, foundMessage);
+        return foundMessage;
+    }
 
+    private boolean isNotDeleted(MessageDeletionStatus messageDeletionStatus){
+        return messageDeletionStatus == MessageDeletionStatus.NOT_DELETED;
     }
 }
