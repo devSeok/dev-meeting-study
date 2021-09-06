@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import ReduxThunk from 'redux-thunk';
-import ReduxPromise from 'redux-promise';
-import rootReducer from './_reducers/index';
+// import { createStore, applyMiddleware } from 'redux';
+// import ReduxPromise from 'redux-promise';
+// import rootReducer from './_reducers/index';
 import { BrowserRouter } from 'react-router-dom';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { store } from './store';
 
-export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk, ReduxPromise)));
+// export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk, ReduxPromise)));
 
 ReactDOM.render(
   <Provider store={store}>
