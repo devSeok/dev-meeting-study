@@ -7,6 +7,7 @@ import { UserDispatchType, PayloadType, USER_TYPE } from './type';
 export interface Register {
   email: string;
   password: string;
+  nickname: string;
 }
 
 export interface Login {

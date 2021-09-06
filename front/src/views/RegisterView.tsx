@@ -26,9 +26,9 @@ function RegisterView() {
   };
 
   const onRegister = async () => {
-    const { email, password } = inputs;
+    const { email, password, nickname } = inputs;
     if (email !== '' && password !== '') {
-      const response = await dispatch(registerUser({ email, password }));
+      const response = await dispatch(registerUser({ email, password, nickname }));
       // response가 항상 true를 리턴한다고 ts에러 발생 해서 임시로 ignore 사용
       // @ts-ignore
       if (response) {
