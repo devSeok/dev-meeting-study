@@ -17,8 +17,9 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### front vue.cli ###
+### front ###
 front/node_modules/
+front/package-lock.json/
 
 ### IntelliJ IDEA ###
 .idea
