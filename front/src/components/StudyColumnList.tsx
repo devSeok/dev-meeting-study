@@ -20,7 +20,8 @@ interface Post {
 function StudyColumnList({ items, index }: any) {
   return (
     <div style={{ width: '500px', justifyContent: 'flex-start' }}>
-      <h3 style={{ borderBottom: '1px solid #000' }}>총 {items.length}개</h3>
+      <h3>총 {items.length}개</h3>
+      <hr />
       <ul style={{ padding: '0px 10px' }}>
         {index === 1 &&
           items.map((item: Study, idx: number) => {
