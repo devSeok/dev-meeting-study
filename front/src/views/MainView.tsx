@@ -123,6 +123,7 @@ function OpenStudyView() {
                 </>
               )}
             </div>
+            {/* 검색 아이콘 로그인 옆으로 이동 예정 */}
             <Icon>
               <SearchIcon />
             </Icon>

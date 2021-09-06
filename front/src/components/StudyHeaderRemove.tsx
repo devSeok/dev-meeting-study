@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import logo from '../asset/image/logo_out_book.png';
 
 const HeaderWrap = styled.header`
   position: relative;
@@ -14,9 +15,7 @@ const HeaderWrap = styled.header`
 `;
 
 const Logo = styled.div`
-  position: absolute;
-  top: 0;
-  left: 5%;
+  position: relative;
   z-index: 1;
   font-size: 2em;
 
@@ -37,19 +36,13 @@ const MenuList = styled.ul`
   width: calc(100% - 2px);
 `;
 
-const MenuItem = styled.li`
-  width: 350px;
-  height: 35px;
-  text-align: center;
-  line-height: 35px;
-  background-color: white;
-  border: 1px solid black;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+const MenuItemParent = styled.li`
   cursor: pointer;
+  line-height: 100px;
 
   &:hover {
     background-color: #98bcda;
-    opcity: 0.8;
+    opacity: 0.5;
   }
 
   @media screen and (max-width: 992px) {
@@ -61,25 +54,32 @@ const MenuItem = styled.li`
   }
 `;
 
+const MenuItem = styled(MenuItemParent)`
+  width: 350px;
+  height: 100dpx;
+  text-align: center;
+  background-color: white;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid black;
+`;
+const MenuUser = styled(MenuItemParent)`
+  margin: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+`;
+
 function StudyHeader() {
   return (
     <HeaderWrap>
-      <Logo>
-        <p>
-          <Link to="/">#</Link>
-        </p>
-      </Logo>
       <MenuList>
-        <MenuItem>
-          <Link to="/login" style={{ width: '100%', height: '100%', display: 'inline-block' }}>
-            로그인
-          </Link>
-        </MenuItem>
-        <MenuItem>
-          <Link to="/register" style={{ width: '100%', height: '100%', display: 'inline-block' }}>
-            회원가입
-          </Link>
-        </MenuItem>
+        <Logo>
+          <p>
+            <Link to="/">
+              <img src={logo} alt="Logo" style={{ width: '100px' }} />
+            </Link>
+          </p>
+        </Logo>
+        {/* 로그인 위치 수정 예정 */}
         <MenuItem>
           <Link to="/study/create" style={{ width: '100%', height: '100%', display: 'inline-block' }}>
             스터디 등록
@@ -90,6 +90,16 @@ function StudyHeader() {
             내 스터디
           </Link>
         </MenuItem>
+        <MenuUser>
+          <Link to="/login" style={{ width: '100%', height: '100%', display: 'inline-block' }}>
+            로그인
+          </Link>
+        </MenuUser>
+        <MenuUser>
+          <Link to="/register" style={{ width: '100%', height: '100%', display: 'inline-block' }}>
+            회원가입
+          </Link>
+        </MenuUser>
       </MenuList>
     </HeaderWrap>
   );
