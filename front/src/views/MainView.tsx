@@ -138,7 +138,7 @@ function OpenStudyView() {
                       bottom: '10px',
                     }}
                   >
-                    <h2>{item.title}</h2>
+                    <h2 style={{ marginBottom: '10px' }}>{item.title}</h2>
                     <span>{item.type}</span>
                   </div>
                 </Item>
