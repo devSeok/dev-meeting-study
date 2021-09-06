@@ -1,19 +1,15 @@
 import Send from './interceptors';
-import { Register, Login } from '../_actions/user_actions';
-
-interface Token {
-  accessToken: string;
-  refreshToken: string;
-  accessTokenExpiresIn?: number;
-}
+import { RegisterType, LoginType, Token } from '../ToolKit/userType';
 
 enum Method {
   POST = 'POST',
   GET = 'GET',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
 }
 
 // 회원가입
-const register_user = (user: Register) => {
+const register_user = (user: RegisterType) => {
   return Send({
     method: Method.POST,
     url: '/api/auth/signup',
@@ -22,7 +18,7 @@ const register_user = (user: Register) => {
 };
 
 // 로그인
-const login_user = (user: Login) => {
+const login_user = (user: LoginType) => {
   return Send({
     method: Method.POST,
     url: '/api/auth/login',

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../_actions/user_actions';
 import { Link, useHistory } from 'react-router-dom';
 import StudyHeader from '../components/StudyHeader';
 import { Main, Section, InputWrap, Input, InputTitle, InputSub, InputSubLabel, Button } from '../elements';
+import { login } from '../ToolKit/user';
 
 function LoginView() {
   const dispatch = useDispatch();
@@ -29,13 +29,13 @@ function LoginView() {
       email,
       password,
     };
-
-    const response = await dispatch(loginUser(obj));
-    // response가 항상 true를 리턴한다고 ts에러 발생 해서 임시로 ignore 사용
+    // 'AsyncThunkAction<{ type: USER_TYPE; payload: ResLogin; }, Login, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
     // @ts-ignore
-    if (response) {
-      history.push('/');
-    }
+    await dispatch(login(obj)).then((res: { payload: { payload: { status: number } } }) => {
+      if (res.payload.payload.status === 200) {
+        history.push('/');
+      }
+    });
   };
 
   return (
