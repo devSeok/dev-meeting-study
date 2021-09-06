@@ -43,10 +43,8 @@ public class MessageApiController {
     @PostMapping
     @ApiOperation(value = "메시지 보내기")
     public ResponseEntity<ApiResponseDto<MessageResponseDto>> sendMessage(@JwtMember MemberResolverDto memberResolverDto, @RequestBody MessageRequestDto messageRequestDto){
-        // 이게 맞는 코드일까..?
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
-
         Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
         return new ResponseEntity<>(
                 new ApiResponseDto<>(
