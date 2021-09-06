@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { registerUser } from '../_actions/user_actions';
+import { register } from '../ToolKit/user';
 import StudyHeader from '../components/StudyHeader';
 import { Main, Section, InputWrap, Input, InputTitle, Button } from '../elements';
 
@@ -26,14 +26,20 @@ function RegisterView() {
   };
 
   const onRegister = async () => {
-    const { email, password } = inputs;
-    if (email !== '' && password !== '') {
-      const response = await dispatch(registerUser({ email, password }));
-      // response가 항상 true를 리턴한다고 ts에러 발생 해서 임시로 ignore 사용
+    const { email, password, nickname } = inputs;
+    if (email !== '' && password !== '' && nickname !== '') {
+      const obj = {
+        email,
+        password,
+        nickname,
+      };
+      // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
       // @ts-ignore
-      if (response) {
-        history.push('/login');
-      }
+      await dispatch(register(obj)).then((res: { payload: { payload: { status: number } } }) => {
+        if (res.payload.payload.status === 200) {
+          history.push('/');
+        }
+      });
     }
   };
 
