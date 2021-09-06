@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.annotation.JwtMember;
+import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
@@ -99,6 +101,10 @@ public class AuthService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    public Boolean JwtWithParameter(Long id, MemberResolverDto dto){
+        return dto.getId().equals(id);
     }
 
     private void signupValidation(MemberSignupRequestDto memberRequestDto){
