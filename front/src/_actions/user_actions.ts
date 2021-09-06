@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import { register_user, login_user, reissueToken } from '../API/index';
 
-import { UserDispatchType, PayloadType, USER_TYPE } from './type';
+import { UserDispatchType, PayloadSuccessType, PayloadFailType, USER_TYPE } from './type';
 
 export interface Register {
   email: string;
@@ -40,7 +40,7 @@ const registerUser =
   (user: Register) =>
   async (dispatch: Dispatch<UserDispatchType>): Promise<boolean> => {
     try {
-      const { data }: AxiosResponse<PayloadType> = await register_user(user);
+      const { data }: AxiosResponse<PayloadSuccessType> = await register_user(user);
 
       saveLocalStorage(data.data);
 
@@ -51,8 +51,13 @@ const registerUser =
       return true;
     } catch (err) {
       console.log(err.response.data);
+      const data: PayloadFailType = {
+        type: USER_TYPE.USER_REGISTER,
+        ...err.response.data,
+      };
       dispatch({
         type: USER_TYPE.USER_FAIL,
+        payload: data,
       });
       return false;
     }
@@ -63,7 +68,7 @@ const loginUser =
   (user: Login) =>
   async (dispatch: Dispatch<UserDispatchType>): Promise<boolean> => {
     try {
-      const { data }: AxiosResponse<PayloadType> = await login_user(user);
+      const { data }: AxiosResponse<PayloadSuccessType> = await login_user(user);
 
       saveLocalStorage(data.data);
 
@@ -75,8 +80,13 @@ const loginUser =
       return true;
     } catch (err) {
       console.log(err.response.data);
+      const data: PayloadFailType = {
+        type: USER_TYPE.USER_LOGIN,
+        ...err.response.data,
+      };
       dispatch({
         type: USER_TYPE.USER_FAIL,
+        payload: data,
       });
       return false;
     }
@@ -104,7 +114,7 @@ const checkToken =
         if (diffTime < 59405 && diffTime > 0) {
           const accessToken = localStorage.getItem('accessToken') as string;
           const refreshToken = localStorage.getItem('refreshToken') as string;
-          const { data }: AxiosResponse<PayloadType> = await reissueToken({ accessToken, refreshToken });
+          const { data }: AxiosResponse<PayloadSuccessType> = await reissueToken({ accessToken, refreshToken });
           saveLocalStorage(data.data);
           dispatch({
             type: USER_TYPE.USER_REISSUE,
@@ -124,8 +134,13 @@ const checkToken =
     } catch (err) {
       console.log(err.response.data);
       alert('토큰 갱신 실패');
+      const data: PayloadFailType = {
+        type: USER_TYPE.USER_REISSUE,
+        ...err.response.data,
+      };
       dispatch({
         type: USER_TYPE.USER_FAIL,
+        payload: data,
       });
       return false;
     }
