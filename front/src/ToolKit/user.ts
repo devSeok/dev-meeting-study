@@ -124,13 +124,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(register.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(register.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(register.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(register.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
 
     // 로그인
@@ -138,13 +138,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(login.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(login.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(login.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(login.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
 
     // 토큰 체크
@@ -152,13 +152,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(checkToken.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(checkToken.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(checkToken.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(checkToken.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
   },
 });
