@@ -1,17 +1,21 @@
 package study.devmeetingstudy.domain.study;
 
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorColumn
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Study extends BaseTimeEntity {
 
@@ -34,5 +38,12 @@ public abstract class Study extends BaseTimeEntity {
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyFile> files = new ArrayList<>();
 
-
+    public Study(Subject subject, String title, int maxMember, LocalDateTime startDate, LocalDateTime endDate, StudyType studyType) {
+        this.subject = subject;
+        this.title = title;
+        this.maxMember = maxMember;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.studyType = studyType;
+    }
 }
