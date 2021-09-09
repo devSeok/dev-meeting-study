@@ -29,10 +29,7 @@ public class MessageService {
         Message createMessage = Message.create(messageVO);
         return messageRepository.save(createMessage);
     }
-    
-    /*
-        TODO : 통합테스트 과정에서 확인하기.
-     */
+
     public Message getMessage(Long id) throws MessageNotFoundException{
         Message foundMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
