@@ -14,10 +14,12 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.dto.message.MessageResponseDto;
+import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.message.MessageService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class MessageApiController {
 
     private final MessageService messageService;
     private final MemberService memberService;
+    private final AuthService authService;
 
     /*
     * TODO
@@ -46,12 +49,10 @@ public class MessageApiController {
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
         Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
-        return new ResponseEntity<>(
-                new ApiResponseDto<>(
-                        "생성됨",
-                        HttpStatus.CREATED.value(),
-                        MessageResponseDto.of(message, loginMember, member)),
-                HttpStatus.CREATED);
+        return ResponseEntity.created(URI.create("/api/messages/"+message.getId()))
+                .body(
+                        new ApiResponseDto<>("생성됨", HttpStatus.CREATED.value(), MessageResponseDto.of(message, loginMember, member)
+                ));
     }
 
     @GetMapping
@@ -59,13 +60,13 @@ public class MessageApiController {
     public ResponseEntity<ApiResponseDto<List<MessageResponseDto>>> showMessages(@JwtMember MemberResolverDto MemberResolverDto){
         Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
         List<Message> messages = messageService.getMessages(loginMember);
-        return new ResponseEntity<>(
-                new ApiResponseDto<>(
-                        "성공",
-                        HttpStatus.OK.value(),
-                        messages.stream().map((message) ->
-                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember)).collect(Collectors.toList())),
-                HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(
+                        new ApiResponseDto<>("성공", HttpStatus.OK.value(),
+                                messages.stream().map((message) -> MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                                        .collect(Collectors.toList()))
+                );
+
     }
 
     @GetMapping("/{messageId}")
@@ -74,19 +75,19 @@ public class MessageApiController {
         Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
         // 같은 멤버 처리
         Message message = messageService.getMessage(messageId);
-        return new ResponseEntity<>(
-                new ApiResponseDto<>(
-                        "성공",
-                        HttpStatus.OK.value(),
-                        MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
-                ,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(
+                        new ApiResponseDto<>("성공", HttpStatus.OK.value(), MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                );
+
     }
 
     @DeleteMapping("/{messageId}")
     @ApiOperation(value = "메시지 삭제")
     public ResponseEntity<Void> deleteMessage(@JwtMember MemberResolverDto memberResolverDto, @PathVariable Long messageId){
-        Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        messageService.deleteMessage(messageId);
+        Message message = messageService.getMessage(messageId);
+        authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
+        messageService.deleteMessage(message);
         return ResponseEntity.noContent().build();
     }
 }
