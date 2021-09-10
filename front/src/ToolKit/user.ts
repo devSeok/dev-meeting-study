@@ -56,6 +56,15 @@ export const checkToken = createAsyncThunk('CHECK_TOKEN', async (arg, { rejectWi
     const diffTime = expiresIn - now;
     // const diffTime = 50000;
 
+    window.addEventListener('storage', (e) => {
+      if (e.isTrusted) {
+        // accessTokenExpiresIn값 변경
+        localStorage.setItem('accessTokenExpiresIn', '9999999999999999999999999999');
+        // 페이지 리로드
+        window.location.reload();
+      }
+    });
+
     if (expiresIn) {
       // 로컬 스토리지에 accessTokenExpiresIn 시간 조작하면 인증된 토큰으로 나옴
       if (diffTime > 1800000) {

@@ -21,7 +21,7 @@ export default function auth(SpecificComponent: React.FC, option: boolean | null
             if (option) {
               history.push('/login');
             }
-            if (res.payload.message === '만료된 토큰') {
+            if (res.payload.message === '만료된 토큰' || res.payload.message === '비정상적인 토큰') {
               dispatch(logout());
             }
           }
