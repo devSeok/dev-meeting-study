@@ -157,11 +157,9 @@ class MessageServiceTest {
         //given
         Long messageId = 1L;
         Message message = createMessage(1L, loginMember, member);
-        doReturn(Optional.of(message)).when(messageRepository).findById(messageId);
-
         //when
 
-        messageService.deleteMessage(messageId);
+        messageService.deleteMessage(message);
 
         //then
         assertEquals(MessageDeletionStatus.DELETED, message.getDelflg());

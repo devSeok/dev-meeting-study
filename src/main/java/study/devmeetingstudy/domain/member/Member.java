@@ -82,7 +82,7 @@ public class Member extends BaseTimeEntity {
         if (this == o) return true;
         if (!(o instanceof Member)) return false;
         Member member = (Member) o;
-        return grade == member.grade && Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(nickname, member.nickname) && Objects.equals(password, member.password) && authority == member.authority && status == member.status && Objects.equals(messages, member.messages);
+        return grade == member.grade && Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(nickname, member.nickname) && Objects.equals(password, member.password) && authority == member.authority && status == member.status;
     }
 
     @Override

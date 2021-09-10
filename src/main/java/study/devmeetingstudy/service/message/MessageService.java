@@ -30,7 +30,7 @@ public class MessageService {
         return messageRepository.save(createMessage);
     }
 
-    public Message getMessage(Long id) throws MessageNotFoundException{
+    public Message getMessage(Long id){
         Message foundMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
         return readMessage(foundMessage);
@@ -50,10 +50,9 @@ public class MessageService {
         return messageRepository.findMessagesDesc(member);
     }
 
-    public Message deleteMessage(Long id) {
-        Message foundMessage = getMessage(id);
-        if (isNotDeleted(foundMessage.getDelflg())) return Message.changeDeletionStatus(MessageDeletionStatus.DELETED, foundMessage);
-        return foundMessage;
+    public Message deleteMessage(Message message) {
+        if (isNotDeleted(message.getDelflg())) return Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
+        return message;
     }
 
     private boolean isNotDeleted(MessageDeletionStatus messageDeletionStatus){
