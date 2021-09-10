@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { register } from '../ToolKit/user';
+import { DispatchRes } from '../ToolKit/axiosType';
 import StudyHeader from '../components/StudyHeader';
 import { Main, Section, InputWrap, Input, InputTitle, Button } from '../elements';
 
@@ -33,11 +34,17 @@ function RegisterView() {
         password,
         nickname,
       };
+
       // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
       // @ts-ignore
-      await dispatch(register(obj)).then((res: { payload: { payload: { status: number } } }) => {
-        if (res.payload.payload.status === 200) {
-          history.push('/');
+      await dispatch(register(obj)).then((res: DispatchRes) => {
+        console.log('res', res);
+        if (res.error?.message !== 'Rejected') {
+          if (res.payload.payload.status === 200) {
+            history.push('/login');
+          }
+        } else {
+          alert('회원가입에 실패했습니다');
         }
       });
     }

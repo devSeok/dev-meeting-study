@@ -34,3 +34,14 @@ export interface PayloadFailType {
   message: string;
   status: number;
 }
+
+export interface DispatchRes {
+  error?: {
+    message: string;
+  };
+  payload: {
+    payload: {
+      status: number;
+    };
+  };
+}
