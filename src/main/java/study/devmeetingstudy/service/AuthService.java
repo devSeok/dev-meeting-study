@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
-import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
-import study.devmeetingstudy.common.exception.global.error.exception.SignupDuplicateException;
-import study.devmeetingstudy.common.exception.global.error.exception.UserException;
-import study.devmeetingstudy.common.exception.global.error.exception.UserOutException;
+import study.devmeetingstudy.common.exception.global.error.exception.*;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
@@ -103,7 +100,11 @@ public class AuthService {
         return tokenDto;
     }
 
-    public Boolean JwtWithParameter(Long id, MemberResolverDto dto){
+    public void checkUserInfo(Long id, MemberResolverDto dto){
+        if (!jwtWithParameter(id, dto)) throw new UserInfoMismatchException("유저 정보가 일치하지 않습니다.");
+    }
+
+    private boolean jwtWithParameter(Long id, MemberResolverDto dto){
         return dto.getId().equals(id);
     }
 
