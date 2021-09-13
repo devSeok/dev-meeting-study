@@ -38,6 +38,9 @@ public abstract class Study extends BaseTimeEntity {
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyFile> files = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    private List<StudyMember> studyMembers = new ArrayList<>();
+
     public Study(Subject subject, String title, int maxMember, LocalDateTime startDate, LocalDateTime endDate, StudyType studyType) {
         this.subject = subject;
         this.title = title;
