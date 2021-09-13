@@ -1,19 +1,13 @@
-package study.devmeetingstudy.service.message;
+package study.devmeetingstudy.service;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
@@ -23,10 +17,8 @@ import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageRequestDto;
 import study.devmeetingstudy.repository.message.MessageRepository;
-import study.devmeetingstudy.service.AuthService;
+import study.devmeetingstudy.service.MessageService;
 import study.devmeetingstudy.vo.MessageVO;
-
-import javax.persistence.EntityManager;
 
 
 import java.util.ArrayList;
@@ -39,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 
 
 @ExtendWith(MockitoExtension.class)
-class MessageServiceTest {
+class essageServiceTest {
 
     private Member member;
     private Member loginMember;
@@ -112,7 +104,7 @@ class MessageServiceTest {
         doReturn(Optional.of(createdMessage)).when(messageRepository).findById(messageId);
 
         //when
-        Message message = messageService.getMessage(messageId);
+        Message message = messageService.findMessage(messageId);
 
         //then
         assertEquals(MessageReadStatus.READ, message.getStatus());
@@ -127,7 +119,7 @@ class MessageServiceTest {
         doReturn(Optional.empty()).when(messageRepository).findById(messageId);
 
         //when
-        MessageNotFoundException messageNotFoundException = assertThrows(MessageNotFoundException.class, () -> messageService.getMessage(messageId));
+        MessageNotFoundException messageNotFoundException = assertThrows(MessageNotFoundException.class, () -> messageService.findMessage(messageId));
         String message = messageNotFoundException.getMessage();
 
         //then
@@ -145,7 +137,7 @@ class MessageServiceTest {
         doReturn(createdMessages).when(messageRepository).findMessagesDesc(loginMember);
 
         //when
-        List<Message> messages = messageService.getMessages(loginMember);
+        List<Message> messages = messageService.findMessages(loginMember);
 
         //then
         assertEquals(5, messages.size());
