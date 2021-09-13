@@ -39,7 +39,7 @@ import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.service.MemberService;
-import study.devmeetingstudy.service.message.MessageService;
+import study.devmeetingstudy.service.MessageService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ class MessageControllerUnitTest {
      */
 
     @InjectMocks
-    private MessageApiController messageApiController;
+    private MessageController messageApiController;
 
     @Mock
     private MessageService messageService;
@@ -196,7 +196,7 @@ class MessageControllerUnitTest {
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(member).doReturn(loginMember).doReturn(loginMember).doReturn(loginMember).doReturn(loginMember).doReturn(loginMember).when(memberService).getUserOne(any(Long.class));
-        doReturn(messages).when(messageService).getMessages(any(Member.class));
+        doReturn(messages).when(messageService).findMessages(any(Member.class));
 
         //when
         // 요청 리퀘스트 폼 생성
@@ -229,7 +229,7 @@ class MessageControllerUnitTest {
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(loginMember).doReturn(member).when(memberService).getUserOne(anyLong());
-        doReturn(readMessage).when(messageService).getMessage(anyLong());
+        doReturn(readMessage).when(messageService).findMessage(anyLong());
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -259,7 +259,7 @@ class MessageControllerUnitTest {
         // loginMember 기반으로 token 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(createdMessage).when(messageService).getMessage(anyLong());
+        doReturn(createdMessage).when(messageService).findMessage(anyLong());
         doNothing().when(authService).checkUserInfo(anyLong(), any(MemberResolverDto.class));
         doReturn(deletedMessage).when(messageService).deleteMessage(any(Message.class));
 
@@ -288,7 +288,7 @@ class MessageControllerUnitTest {
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
         // sender 입장에서 확인한다.
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(createdMessage).when(messageService).getMessage(anyLong());
+        doReturn(createdMessage).when(messageService).findMessage(anyLong());
         doThrow(new UserInfoMismatchException("유저 정보가 일치하지 않습니다.")).when(authService).checkUserInfo(anyLong(), any(MemberResolverDto.class));
 
         //when

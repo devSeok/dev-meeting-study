@@ -3,24 +3,72 @@ import styled from 'styled-components';
 import { Main, Section, Icon } from '../elements';
 import StudyHeader from '../components/StudyHeaderRemove';
 import SearchIcon from '@material-ui/icons/Search';
+import StudyFooter from '../components/StudyFooter';
+import Items from '../components/Items';
+// import Pagination from '../components/Pagination';
+// import axios from 'axios';
 
-const study = [
+export const study = [
   {
+    id: 1,
     title: '오픈 스터디',
     type: '온라인',
   },
   {
+    id: 2,
     title: '오픈 스터디',
     type: '오프라인',
   },
   {
+    id: 3,
     title: '오픈 스터디',
     type: '온라인',
   },
   {
+    id: 4,
     title: '오픈 스터디',
     type: '오프라인',
   },
+  {
+    id: 5,
+    title: '오픈 스터디',
+    type: '온라인',
+  },
+  {
+    id: 6,
+    title: '오픈 스터디',
+    type: '오프라인',
+  },
+  // {
+  //   id: 7,
+  //   title: '오픈 스터디',
+  //   type: '온라인',
+  // },
+  // {
+  //   id: 8,
+  //   title: '오픈 스터디',
+  //   type: '오프라인',
+  // },
+  // {
+  //   id: 9,
+  //   title: '오픈 스터디',
+  //   type: '온라인',
+  // },
+  // {
+  //   id: 10,
+  //   title: '오픈 스터디',
+  //   type: '오프라인',
+  // },
+  // {
+  //   id: 11,
+  //   title: '오픈 스터디',
+  //   type: '온라인',
+  // },
+  // {
+  //   id: 12,
+  //   title: '오픈 스터디',
+  //   type: '오프라인',
+  // },
 ];
 
 const Select = styled.select`
@@ -35,12 +83,13 @@ const Select = styled.select`
 `;
 
 const ItemList = styled.ul`
-  display: flex;
+  display: inline-flex;
+  align-content: flex-start;
   flex-wrap: wrap;
   margin-top: 30px;
 `;
 
-const Item = styled.li`
+export const Item = styled.li`
   width: 360px;
   height: 200px;
   position: relative;
@@ -55,6 +104,18 @@ const Item = styled.li`
 `;
 
 function OpenStudyView() {
+  // const [posts, setPosts] = useState([]);
+  // const [loading, setLoading] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [postsPerPage, setPostsPerPage] = useState(4);
+
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     setLoading(true);
+  //     const res = await axios.get(study); //json-server 안돌아가는거 알아봐야됌
+  //   };
+  // });
+
   const [inputs, setInputs] = useState({
     studyType: 'online',
     sido: '',
@@ -71,6 +132,10 @@ function OpenStudyView() {
     });
     console.log(inputs);
   };
+  // const indexOfLastPost = currentPage * postsPerPage;
+  // const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  // const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  // const paginate = (pageNumber: any) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -129,25 +194,12 @@ function OpenStudyView() {
             </Icon>
           </div>
           <ItemList>
-            {study.map((item, index) => {
-              return (
-                <Item key={index}>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      left: '20px',
-                      bottom: '10px',
-                    }}
-                  >
-                    <h2 style={{ marginBottom: '10px' }}>{item.title}</h2>
-                    <span>{item.type}</span>
-                  </div>
-                </Item>
-              );
-            })}
+            <Items items={study} />
+            {/* <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} paginate={paginate} /> */}
           </ItemList>
         </Section>
       </Main>
+      <StudyFooter />
     </>
   );
 }

@@ -1,6 +1,7 @@
 package study.devmeetingstudy.controller;
 
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import study.devmeetingstudy.annotation.JwtMember;
@@ -11,6 +12,7 @@ import study.devmeetingstudy.service.StudyService;
 
 import javax.validation.Valid;
 
+@Api(tags = {"3. Study"})
 @RestController
 @RequestMapping("/api/study")
 @RequiredArgsConstructor

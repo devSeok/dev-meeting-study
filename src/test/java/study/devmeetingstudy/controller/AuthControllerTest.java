@@ -38,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RequiredArgsConstructor
 class AuthControllerTest {
 
+
     private MockMvc mvc;
 
     private PasswordEncoder passwordEncoder;
@@ -72,7 +73,7 @@ class AuthControllerTest {
     public void signupTest() throws Exception{
 
 
-        given(authService.signup(any())).willReturn(buildMember("teats@naver.com","test","tsds"));
+//        given(authService.signup(any())).willReturn(buildMember("teats@naver.com","test","tsds"));
 
 
 //        mvc.perform(MockMvcRequestBuilders

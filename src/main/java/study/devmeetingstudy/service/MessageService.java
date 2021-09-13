@@ -1,4 +1,4 @@
-package study.devmeetingstudy.service.message;
+package study.devmeetingstudy.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,8 @@ public class MessageService {
         return messageRepository.save(createMessage);
     }
 
-    public Message getMessage(Long id){
+    @Transactional
+    public Message findMessage(Long id){
         Message foundMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
         return readMessage(foundMessage);
@@ -46,7 +47,7 @@ public class MessageService {
         return MessageReadStatus.NOT_READ == messageReadStatus;
     }
 
-    public List<Message> getMessages(Member member){
+    public List<Message> findMessages(Member member){
         return messageRepository.findMessagesDesc(member);
     }
 
