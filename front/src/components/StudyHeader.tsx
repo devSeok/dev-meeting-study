@@ -26,13 +26,13 @@ const HW740 = styled.div`
 function StudyHeader({ children }: any) {
   const history = useHistory();
 
-  const onPrev = () => {
-    history.goBack();
+  const onPushMainPage = () => {
+    history.push('/');
   };
   return (
     <Header>
       <HW740>
-        <Icon onClick={onPrev}>
+        <Icon onClick={onPushMainPage}>
           <ChevronLeftIcon />
         </Icon>
         <h3 style={{ margin: '0', marginLeft: '-20px', fontWeight: 'lighter' }}>{children}</h3>

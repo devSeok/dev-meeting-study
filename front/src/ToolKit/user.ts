@@ -56,6 +56,15 @@ export const checkToken = createAsyncThunk('CHECK_TOKEN', async (arg, { rejectWi
     const diffTime = expiresIn - now;
     // const diffTime = 50000;
 
+    window.addEventListener('storage', (e) => {
+      if (e.isTrusted) {
+        // accessTokenExpiresIn값 변경
+        localStorage.setItem('accessTokenExpiresIn', '9999999999999999999999999999');
+        // 페이지 리로드
+        window.location.reload();
+      }
+    });
+
     if (expiresIn) {
       // 로컬 스토리지에 accessTokenExpiresIn 시간 조작하면 인증된 토큰으로 나옴
       if (diffTime > 1800000) {
@@ -124,13 +133,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(register.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(register.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(register.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(register.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
 
     // 로그인
@@ -138,13 +147,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(login.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(login.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(login.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(login.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
 
     // 토큰 체크
@@ -152,13 +161,13 @@ const user = createSlice({
       state.status = 'loading';
       state.user = {};
     });
-    builder.addCase(checkToken.fulfilled, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(checkToken.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.user = { type, payload };
     });
-    builder.addCase(checkToken.rejected, (state) => {
-      state.status = 'loading';
-      state.user = {};
+    builder.addCase(checkToken.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.user = { type, payload };
     });
   },
 });
