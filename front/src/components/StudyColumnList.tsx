@@ -3,13 +3,12 @@ import { Icon } from '../elements';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import person from '../asset/image/person.png';
 
-
-
 interface Study {
   title: string;
   type: string;
   maxUser: number;
   lang: string[];
+  id: number;
 }
 
 interface Post {
