@@ -13,6 +13,8 @@ import study.devmeetingstudy.vo.MessageVO;
 
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -48,7 +50,9 @@ public class Message extends BaseTimeEntity{
 
 
     @Builder
-    public Message(Long id, Long senderId, Member member, String content, MessageReadStatus status, String senderName, MessageDeletionStatus delflg) {
+    public Message(Long id, Long senderId, Member member, String content, MessageReadStatus status, String senderName, MessageDeletionStatus delflg, LocalDateTime createdDate, LocalDateTime lastUpdateDate) {
+        // TODO : null로 들어가기 때문에 당연히 CurrentDate 가 될 것으로 예상.
+        super(createdDate, lastUpdateDate);
         this.id = id;
         this.senderId = senderId;
         this.member = member;

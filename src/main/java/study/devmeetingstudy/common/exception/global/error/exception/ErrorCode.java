@@ -28,9 +28,13 @@ public enum ErrorCode {
     USER_NOT_PASSWORD(400, "M007", "패스워드가 틀렸습니다."),
     NICKNAME_DUPLICATION(400, "M008", "이미 사용중인 닉네임입니다."),
     EMAIL_CODE_NOTFOUND(400, "M010", "유효하지 않거나 마지막으로 온 유효 번호가 아닙니다."),
+    USER_INFO_MISMATCH(400, "M011", "유저 정보가 일치하지 않습니다."),
 
     // Message
     MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다"),
+
+    // Address
+    ADDRESS_NOT_FOUND(400, "A001", "주소 정보가 없습니다"),
 
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),

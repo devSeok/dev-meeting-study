@@ -8,6 +8,8 @@ import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 public class MessageResponseDto {
@@ -17,6 +19,9 @@ public class MessageResponseDto {
     private String content;
     private MessageDeletionStatus delflg;
     private MessageReadStatus status;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastUpdateDate;
+
 
     public static MessageResponseDto of(Message message, Member sender, Member member){
         return new MessageResponseDto(
@@ -25,6 +30,8 @@ public class MessageResponseDto {
                 MemberResponseDto.from(member),
                 message.getContent(),
                 message.getDelflg(),
-                message.getStatus());
+                message.getStatus(),
+                message.getCreatedDate(),
+                message.getLastUpdateDate());
     }
 }
