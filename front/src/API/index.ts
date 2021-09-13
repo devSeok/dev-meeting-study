@@ -17,6 +17,23 @@ const register_user = (user: RegisterType) => {
   });
 };
 
+// 이메일 인증 번호 요청
+const register_check_email = (email: string) => {
+  return Send({
+    method: Method.POST,
+    url: '/api/auth/email',
+    data: { email },
+  });
+};
+// 이메일 인증 번호 인증
+const register_check_num = (auth_number: number, email: string) => {
+  return Send({
+    method: Method.POST,
+    url: '/api/auth/verifyCode',
+    data: { auth_number, email },
+  });
+};
+
 // 로그인
 const login_user = (user: LoginType) => {
   return Send({
@@ -51,4 +68,4 @@ const member = (email: string) => {
   });
 };
 
-export { register_user, login_user, reissueToken, myInfo, member };
+export { register_user, register_check_email, register_check_num, login_user, reissueToken, myInfo, member };
