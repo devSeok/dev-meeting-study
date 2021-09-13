@@ -32,6 +32,7 @@ function LoginView() {
     // 'AsyncThunkAction<{ type: USER_TYPE; payload: ResLogin; }, Login, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
     // @ts-ignore
     await dispatch(login(obj)).then((res: { payload: { payload: { status: number } } }) => {
+      console.log(res.payload.payload.status);
       if (res.payload.payload.status === 200) {
         history.push('/');
       }
