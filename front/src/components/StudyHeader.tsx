@@ -13,6 +13,7 @@ const Header = styled.header`
   padding: 15px 0px;
   font-size: 25px;
   font-weight: bold;
+  margin-bottom: 100px;
 `;
 
 // HeaderWidth

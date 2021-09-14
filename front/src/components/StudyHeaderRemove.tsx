@@ -6,7 +6,7 @@ import logo from '../asset/image/logo_out_book.png';
 const HeaderWrap = styled.header`
   position: relative;
   z-index: 0;
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 740px) {
     & {
       margin: 0;
     }
@@ -18,7 +18,7 @@ const Logo = styled.div`
   z-index: 1;
   font-size: 2em;
 
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 740px) {
     & {
       display: none;
     }
@@ -46,20 +46,14 @@ const MenuItem = styled.li`
   text-align: center;
   margin: 5px;
   padding: 15px;
-  /* background-color: white;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
-  border: 1px solid black; */
 
   &:hover {
     background-color: #98bcda;
     opacity: 0.5;
   }
-  @media screen and (max-width: 992px) {
+  @media screen and (max-width: 740px) {
     & {
-      /* text-align: center;
-      padding: 0.5em 0;
-      width: 100%; */
-      visibility: hidden;
+      display: none;
     }
   }
 `;
