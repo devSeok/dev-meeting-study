@@ -91,7 +91,7 @@ function RegisterView() {
         // @ts-ignore
         await dispatch(register(obj)).then((res: { payload: { payload: { status: number } } }) => {
           if (res.payload.payload.status === 200) {
-            history.push('/');
+            history.push('/login');
           }
         });
       } else {
