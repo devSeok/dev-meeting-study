@@ -78,20 +78,20 @@ public class MessageController {
 
     }
 
+    // TODO 보낸 메시지 기능 추가하기
     @GetMapping("/{messageId}")
     @ApiOperation(value = "메시지 조회", notes = "로그인 한 유저에 대한 messageId에 해당하는 리소스를 조회하며, 읽음 상태를 변경합니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
     })
-    public ResponseEntity<ApiResponseDto<MessageResponseDto>> showMessage(@JwtMember MemberResolverDto MemberResolverDto, @PathVariable Long messageId){
-        Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
-        // 같은 멤버 처리
+    public ResponseEntity<ApiResponseDto<MessageResponseDto>> showMessage(@JwtMember MemberResolverDto memberResolverDto, @PathVariable Long messageId){
+        Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Message message = messageService.findMessage(messageId);
+        authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
         return ResponseEntity.ok()
                 .body(
                         new ApiResponseDto<>("성공", HttpStatus.OK.value(), MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
                 );
-
     }
 
     @DeleteMapping("/{messageId}")

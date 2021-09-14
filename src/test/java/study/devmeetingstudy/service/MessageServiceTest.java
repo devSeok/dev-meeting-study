@@ -31,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 
 
 @ExtendWith(MockitoExtension.class)
-class essageServiceTest {
+class MessageServiceTest {
 
     private Member member;
     private Member loginMember;
