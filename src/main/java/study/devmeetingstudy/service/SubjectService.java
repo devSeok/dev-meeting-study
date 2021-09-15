@@ -19,12 +19,14 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
-
+    @Transactional
     public Subject saveSubject(SubjectRequestDto subjectRequestDto) {
-        return null;
+        Subject subject = Subject.create(subjectRequestDto);
+        return subjectRepository.save(subject);
     }
 
     public List<Subject> findSubjects() {
-        return null;
+        List<Subject> subjects = subjectRepository.findAll();
+        return subjects;
     }
 }
