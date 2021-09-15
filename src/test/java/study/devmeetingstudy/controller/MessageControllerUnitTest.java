@@ -218,7 +218,7 @@ class MessageControllerUnitTest {
     void showMessage() throws Exception{
         //given
         // 메시지 생성
-        Message createdMessage = createMessage(1L, loginMember, member);
+        Message createdMessage = createMessage(1L, member, loginMember);
 
         //생성 후 메시지 읽음 상태 수정
         Message readMessage = Message.changeReadStatus(MessageReadStatus.READ, createdMessage);
@@ -230,6 +230,7 @@ class MessageControllerUnitTest {
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(loginMember).doReturn(member).when(memberService).getUserOne(anyLong());
         doReturn(readMessage).when(messageService).findMessage(anyLong());
+        doNothing().when(authService).checkUserInfo(anyLong(), any(MemberResolverDto.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -243,6 +244,44 @@ class MessageControllerUnitTest {
         JSONObject data = (JSONObject) getDataOfJSON(body);
 
         assertEquals(MessageReadStatus.READ.toString(), data.get("status"));
+    }
+
+    @DisplayName("메시지 조회 400 Bad Request")
+    @Test
+    void showMessage_UserInfoNotFoundException() throws Exception{
+        //given
+        // 메시지 생성
+        Message createdMessage = createMessage(1L, loginMember, member);
+
+        //생성 후 메시지 읽음 상태 수정
+        Message readMessage = Message.changeReadStatus(MessageReadStatus.READ, createdMessage);
+        // 토큰 생성 및 발급
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(loginMember.getAuthority().toString());
+        Authentication token = new UsernamePasswordAuthenticationToken(loginMember.getId(), loginMember.getPassword(), Collections.singleton(grantedAuthority));
+        // loginMember 기반으로 token 생성
+        TokenDto tokenDto = tokenProvider.generateTokenDto(token);
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+
+        doReturn(loginMember).doReturn(member).when(memberService).getUserOne(anyLong());
+
+        doReturn(readMessage).when(messageService).findMessage(anyLong());
+
+        doThrow(new UserInfoMismatchException("유저 정보가 일치하지 않습니다.")).when(authService).checkUserInfo(anyLong(), any(MemberResolverDto.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/messages/" + createdMessage.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "bearer " + tokenDto.getAccessToken()));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest()).andReturn();
+        String body = mvcResult.getResponse().getContentAsString();
+        System.out.println(body);
+//        JSONObject data = (JSONObject) getDataOfJSON(body);
+
+//        assertEquals(MessageReadStatus.READ.toString(), data.get("status"));
     }
 
     @DisplayName("메시지 삭제 204 No Content")
