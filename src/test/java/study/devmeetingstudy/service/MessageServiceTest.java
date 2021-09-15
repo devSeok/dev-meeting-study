@@ -96,7 +96,7 @@ class MessageServiceTest {
 
     @DisplayName("메시지 조회")
     @Test
-    public void getMessage() throws Exception{
+    void getMessage() throws Exception{
         //given
         Long messageId = 1L;
         Message createdMessage = createMessage(messageId, loginMember, member);
@@ -112,7 +112,7 @@ class MessageServiceTest {
 
     @DisplayName("메시지 조회 MessageNotFoundException")
     @Test
-    public void getMessage_messageNotFoundException() throws Exception{
+    void getMessage_messageNotFoundException() throws Exception{
         //given
         Long messageId = 1L;
 
