@@ -172,6 +172,6 @@ const user = createSlice({
   },
 });
 
-export const { logout } = user.actions;
 
+export const { logout } = user.actions;
 export default user.reducer;

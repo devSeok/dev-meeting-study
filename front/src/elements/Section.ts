@@ -8,6 +8,6 @@ export const Section = styled.section`
   align-items: center;
   @media screen and (max-width: 740px) {
     overflow-y: scroll;
-    /* margin-top: -80px; */
+    margin-bottom: 100px;
   }
 `;

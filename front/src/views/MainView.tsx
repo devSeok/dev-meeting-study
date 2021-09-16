@@ -120,13 +120,19 @@ export const Item = styled.li`
   }
   @media screen and (max-width: 740px) {
     & {
-      // margin-top: 100px;
       width: 100%;
       margin-right: 0px;
     }
     &:nth-child(odd) {
       margin-right: 0px;
     }
+  }
+`;
+const SidoGungu = styled(Select)`
+  @media screen and (max-width: 740px) {
+    transform: translateX(35px);
+    margin-top: 10px;
+    white-space: pre-wrap;
   }
 `;
 
@@ -196,31 +202,30 @@ function OpenStudyView() {
 
               {inputs.studyType === 'offline' && (
                 <>
-                  <Select id="city-select" name="sido" onChange={onChange}>
+                  {/* innerwidth는 한번만 실행되므로 차후에 변경 예정 */}
+                  {window.innerWidth < 740 && <br />}
+                  <SidoGungu id="city-select" name="sido" onChange={onChange}>
                     <option value="sido1">시도1</option>
                     <option value="sido2">시도2</option>
-                  </Select>
-                  <Select id="city-select" name="gun" onChange={onChange}>
+                  </SidoGungu>
+                  <SidoGungu id="city-select" name="gun" onChange={onChange}>
                     <option value="gun1">군1</option>
                     <option value="gun2">군2</option>
-                  </Select>
-                  <Select id="city-select" name="gu" onChange={onChange}>
+                  </SidoGungu>
+                  <SidoGungu id="city-select" name="gu" onChange={onChange}>
                     <option value="gu1">구1</option>
                     <option value="gu2">구2</option>
-                  </Select>
+                  </SidoGungu>
                 </>
               )}
             </div>
-            {/* 검색 아이콘 로그인 옆으로 이동 예정 */}
             <Icon>
               <SearchIcon style={{ fontSize: '45px', marginRight: '25px' }} />
             </Icon>
           </div>
-
           <ItemList>
             <Items items={currentPosts} />
           </ItemList>
-
           <Pagination postsPerPage={postsPerPage} totalPosts={study.length} paginate={paginate} />
         </Section>
       </Main>
