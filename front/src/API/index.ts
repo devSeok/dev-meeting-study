@@ -26,7 +26,7 @@ const register_check_email = (email: string) => {
   });
 };
 // 이메일 인증 번호 인증
-const register_check_num = (auth_number: number, email: string) => {
+const register_check_num = (auth_number: string, email: string) => {
   return Send({
     method: Method.POST,
     url: '/api/auth/verifyCode',
