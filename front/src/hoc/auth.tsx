@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { checkToken } from '../ToolKit/user';
-import { logout } from '../ToolKit/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkToken, userStatus, logout } from '../ToolKit/user';
 
 export default function auth(SpecificComponent: React.FC, option: boolean | null) {
   function AuthenticationCheck() {
     const dispatch = useDispatch();
     const history = useHistory();
+    const user = useSelector(userStatus);
+
     useEffect(() => {
       const check = async () => {
         // 'AsyncThunkAction<TokenCheck, void, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
@@ -28,7 +29,7 @@ export default function auth(SpecificComponent: React.FC, option: boolean | null
         });
       };
       check();
-    }, []);
+    }, [user]);
     return <SpecificComponent />;
   }
   return AuthenticationCheck;

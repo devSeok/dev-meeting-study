@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { InitialState } from '../ToolKit/user';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../asset/image/logo_out_book.png';
+import { auth, logout } from '../ToolKit/user';
 
 const HeaderWrap = styled.header`
-  position: relative;
+  position: sticky;
+  top: 20px;
   z-index: 0;
   @media screen and (max-width: 992px) {
     & {
@@ -65,6 +69,17 @@ const MenuItem = styled.li`
 `;
 
 function StudyHeader() {
+  const dispatch = useDispatch();
+  const isAuth = useSelector(auth);
+
+  const onLogout = () => {
+    console.log('로그아웃');
+
+    dispatch(logout());
+  };
+
+  console.log('isAuth', isAuth.success);
+
   return (
     <HeaderWrap>
       <MenuList>
@@ -76,12 +91,18 @@ function StudyHeader() {
           </p>
         </Logo>
         <RightMenu />
-        <MenuItem>
-          <Link to="/login">로그인</Link>
-        </MenuItem>
-        <MenuItem>
-          <Link to="/register">회원가입</Link>
-        </MenuItem>
+        {isAuth.success ? (
+          <MenuItem onClick={onLogout}>로그아웃</MenuItem>
+        ) : (
+          <>
+            <MenuItem>
+              <Link to="/login">로그인</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/register">회원가입</Link>
+            </MenuItem>
+          </>
+        )}
       </MenuList>
     </HeaderWrap>
   );
