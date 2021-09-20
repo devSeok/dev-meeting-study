@@ -35,13 +35,13 @@ export interface PayloadFailType {
   status: number;
 }
 
-export interface DispatchRes {
-  error?: {
-    message: string;
-  };
+export interface DispatchReduxFailRes {
   payload: {
+    code: string;
+    message: string;
+    status?: number;
     payload: {
-      status: number;
+      status?: number;
     };
   };
 }
