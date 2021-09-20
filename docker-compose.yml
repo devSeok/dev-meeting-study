@@ -50,7 +50,8 @@ services:
                         - |
                           apk --no-cache add tzdata && \
                           cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
-                          echo "Asia/Seoul" > /etc/timezone
+                          echo "Asia/Seoul" > /etc/timezone && \
+                          ./gradlew clean build
                           java -jar build/libs/dev-meeting-study-0.0.1-SNAPSHOT.jar
 
 
