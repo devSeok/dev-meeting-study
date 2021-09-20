@@ -31,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 
 
 @ExtendWith(MockitoExtension.class)
-class essageServiceTest {
+class MessageServiceTest {
 
     private Member member;
     private Member loginMember;
@@ -96,7 +96,7 @@ class essageServiceTest {
 
     @DisplayName("메시지 조회")
     @Test
-    public void getMessage() throws Exception{
+    void getMessage() throws Exception{
         //given
         Long messageId = 1L;
         Message createdMessage = createMessage(messageId, loginMember, member);
@@ -112,7 +112,7 @@ class essageServiceTest {
 
     @DisplayName("메시지 조회 MessageNotFoundException")
     @Test
-    public void getMessage_messageNotFoundException() throws Exception{
+    void getMessage_messageNotFoundException() throws Exception{
         //given
         Long messageId = 1L;
 
