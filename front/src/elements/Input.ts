@@ -11,4 +11,12 @@ export const Input = styled.input`
   border-radius: 5px;
   font-size: 1em;
   outline: none;
+
+  &.success {
+    border: 1px solid blue;
+  }
+
+  &.failure {
+    border: 1px solid red;
+  }
 `;
