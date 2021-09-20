@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Main, Section, Icon } from '../elements';
-import StudyHeader from '../components/StudyHeaderRemove';
 import SearchIcon from '@material-ui/icons/Search';
+import StudyHeader from '../components/StudyHeaderRemove';
 import StudyFooter from '../components/StudyFooter';
 import Items from '../components/Items';
 import Pagination from '../components/Pagination';
