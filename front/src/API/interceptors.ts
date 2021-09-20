@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 const token = localStorage.getItem('accessToken');
 
 const instance: AxiosInstance = axios.create({
-  baseURL: 'http://backend.api',
+  baseURL: 'http://api.dev-meeting-study.site',
   headers: {
     // 토큰이 있으면 토큰 추가, 없으면 null
     Authorization: token ? `Bearer ${token}` : null,
