@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { login_user, register_user, reissueToken } from '../API/index';
 import { RegisterType, LoginType, Token, TokenCheck, USER_TYPE } from './userType';
 import { ResRegister, ResLogin, PayloadSuccessType, PayloadFailType } from './axiosType';
+import { ReducerType } from '../rootReducer';
 
 export const register = createAsyncThunk('REGISTER', async (user: RegisterType, { dispatch, rejectWithValue }) => {
   try {
@@ -18,6 +19,11 @@ export const register = createAsyncThunk('REGISTER', async (user: RegisterType, 
       ...error,
       type: USER_TYPE.USER_REGISTER,
     };
+
+    // errorHandler(err.response.data.code);
+    // console.log('Err', err.response.data.code);
+    console.log(obj);
+
     return rejectWithValue(obj);
   }
 });
@@ -111,12 +117,37 @@ const saveLocalStorage = (token: Token) => {
   localStorage.setItem('accessTokenExpiresIn', JSON.stringify(token.accessTokenExpiresIn));
 };
 
+interface AuthType {
+  type: string;
+  payload: {
+    type: string;
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface InitialState {
+  user: {};
+  status: string;
+  auth: AuthType;
+}
+
+const State: InitialState = {
+  user: {},
+  status: '',
+  auth: {
+    type: '',
+    payload: {
+      type: '',
+      success: false,
+      message: '',
+    },
+  },
+};
+
 const user = createSlice({
   name: 'user',
-  initialState: {
-    user: {},
-    status: '',
-  },
+  initialState: State,
   reducers: {
     // 로그아웃
     logout(state) {
@@ -159,19 +190,23 @@ const user = createSlice({
     // 토큰 체크
     builder.addCase(checkToken.pending, (state) => {
       state.status = 'loading';
-      state.user = {};
+      // state.auth = {};
     });
     builder.addCase(checkToken.fulfilled, (state, { type, payload }) => {
       state.status = 'success';
-      state.user = { type, payload };
+      state.auth = { type, payload };
     });
     builder.addCase(checkToken.rejected, (state, { type, payload }) => {
+      const data = payload as AuthType;
       state.status = 'failed';
-      state.user = { type, payload };
+      state.auth.type = type;
+      state.auth.payload = data.payload;
     });
   },
 });
 
 
 export const { logout } = user.actions;
+export const userStatus = (state: ReducerType) => state.users.user;
+export const auth = (state: ReducerType) => state.users.auth.payload;
 export default user.reducer;
