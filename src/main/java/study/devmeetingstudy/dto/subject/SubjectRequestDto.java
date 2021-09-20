@@ -12,7 +12,14 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class SubjectRequestDto {
 
-    @NotEmpty(message = "스터디 제목은 필수입니다.")
-    @ApiModelProperty(value = "스터디 주제", required = true, example = "자바")
+    @ApiModelProperty(value = "스터디 주제 ID", example = "1", dataType = "Long")
+    private Long id;
+
+    @NotEmpty(message = "스터디 주제는 필수입니다.")
+    @ApiModelProperty(value = "스터디 주제", required = true, example = "자바", dataType = "String")
     private String subjectName;
+
+    public SubjectRequestDto(String subjectName){
+        this.subjectName = subjectName;
+    }
 }

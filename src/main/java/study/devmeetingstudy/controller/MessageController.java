@@ -1,16 +1,16 @@
 package study.devmeetingstudy.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
+import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
+import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
@@ -48,59 +48,83 @@ public class MessageController {
      */
     @PostMapping
     @ApiOperation(value = "메시지 보내기", notes = "로그인 한 유저가 email 대상에게 메시지를 보냅니다. (메시지 리소스를 생성합니다.)")
-    @ApiResponses({
-            @ApiResponse(code = 201, message = "생성됨")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "메시지 생성 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
-    public ResponseEntity<ApiResponseDto<MessageResponseDto>> sendMessage(@JwtMember MemberResolverDto memberResolverDto, @Valid @RequestBody MessageRequestDto messageRequestDto){
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<ApiResponseDto<MessageResponseDto>> saveMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
+                                                                          @Valid @RequestBody MessageRequestDto messageRequestDto){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
         Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
-        return ResponseEntity.created(URI.create("/api/messages/"+message.getId()))
+        return ResponseEntity
+                .created(URI.create("/api/messages/" + message.getId()))
                 .body(
-                        new ApiResponseDto<>("생성됨", HttpStatus.CREATED.value(), MessageResponseDto.of(message, loginMember, member))
+                        ApiResponseDto.<MessageResponseDto>builder()
+                                .message("생성됨")
+                                .status(HttpStatus.CREATED.value())
+                                .data(MessageResponseDto.of(message, loginMember, member))
+                                .build()
                 );
     }
 
     @GetMapping
     @ApiOperation(value = "메시지 목록", notes = "로그인 한 유저에 대한 메시지 목록을 조회합니다.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "성공")
+            @ApiResponse(code = 200, message = "메시지 목록 조회 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
-    public ResponseEntity<ApiResponseDto<List<MessageResponseDto>>> showMessages(@JwtMember MemberResolverDto MemberResolverDto){
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<List<MessageResponseDto>>> getMessages(@ApiIgnore @JwtMember MemberResolverDto MemberResolverDto){
         Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
         List<Message> messages = messageService.findMessages(loginMember);
-        return ResponseEntity.ok()
-                .body(
-                        new ApiResponseDto<>("성공", HttpStatus.OK.value(),
-                                messages.stream().map((message) -> MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
-                                        .collect(Collectors.toList()))
-                );
-
+        return ResponseEntity.ok(
+                ApiResponseDto.<List<MessageResponseDto>>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(messages.stream()
+                                .map((message) ->
+                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                                .collect(Collectors.toList()))
+                        .build()
+        );
     }
 
     // TODO 보낸 메시지 기능 추가하기
-    @GetMapping("/{messageId}")
+    @GetMapping("/{id}")
     @ApiOperation(value = "메시지 조회", notes = "로그인 한 유저에 대한 messageId에 해당하는 리소스를 조회하며, 읽음 상태를 변경합니다.")
+    @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "성공")
+            @ApiResponse(code = 200, message = "메시지 조회 성공 (메시지 읽음 상태 업데이트)"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
-    public ResponseEntity<ApiResponseDto<MessageResponseDto>> showMessage(@JwtMember MemberResolverDto memberResolverDto, @PathVariable Long messageId){
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<MessageResponseDto>> getMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
+                                                                         @PathVariable Long id){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        Message message = messageService.findMessage(messageId);
+        Message message = messageService.findMessage(id);
         authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
-        return ResponseEntity.ok()
-                .body(
-                        new ApiResponseDto<>("성공", HttpStatus.OK.value(), MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
-                );
+        return ResponseEntity.ok(
+                ApiResponseDto.<MessageResponseDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                        .build()
+        );
     }
 
-    @DeleteMapping("/{messageId}")
+    @DeleteMapping("/{id}")
     @ApiOperation(value = "메시지 삭제", notes = "로그인 한 유저에 대한 messageId에 해당하는 리소스를 삭제합니다 (삭제 상태 업데이트 처리)")
+    @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
-            @ApiResponse(code = 204, message = "삭제됨")
+            @ApiResponse(code = 204, message = "메시지 삭제 성공 (메시지 삭제 상태 업데이트)"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
-    public ResponseEntity<Void> deleteMessage(@JwtMember MemberResolverDto memberResolverDto, @PathVariable Long messageId){
-        Message message = messageService.findMessage(messageId);
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
+                                              @PathVariable Long id){
+        Message message = messageService.findMessage(id);
         authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
         messageService.deleteMessage(message);
         return ResponseEntity.noContent().build();

@@ -4,10 +4,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class AddressRequestDto {
 
     @ApiModelProperty(value = "도/특별시/광역시", required = true, example = "서울특별시")
@@ -18,5 +18,11 @@ public class AddressRequestDto {
 
     @ApiModelProperty(value = "읍/면/동", required = true, example = "서초동")
     private String address3;
+
+    public AddressRequestDto(String address1, String address2, String address3){
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
+    }
     
 }

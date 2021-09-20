@@ -1,12 +1,15 @@
 package study.devmeetingstudy.annotation.dto;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.domain.member.Member;
 
 
 @Data
 @AllArgsConstructor
+@ApiIgnore
 public class MemberResolverDto {
 
     private Long id;

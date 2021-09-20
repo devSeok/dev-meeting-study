@@ -2,10 +2,11 @@ package study.devmeetingstudy.controller;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
 import study.devmeetingstudy.common.exception.global.error.exception.EmailVerifyCodeNotFoundException;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
@@ -27,11 +28,13 @@ import study.devmeetingstudy.service.EmailService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.URI;
 
 @Api(tags = "인증", value = "controller")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
     private final AuthService authService;
 
@@ -40,61 +43,89 @@ public class AuthController {
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "회원가입", response = MemberResponseDto.class),
+            @ApiResponse(code = 200, message = "회원가입 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
-    public ApiResponseDto<MemberSignupResponseDto> signup(
-            @Valid @RequestBody MemberSignupRequestDto memberSignupRequestDto
-    ) {
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<ApiResponseDto<MemberSignupResponseDto>> signup(@Valid @RequestBody MemberSignupRequestDto memberSignupRequestDto) {
         Member signup = authService.signup(memberSignupRequestDto);
-
-        return new ApiResponseDto<MemberSignupResponseDto>(
-                "성공적으로 회원가입되었습니다",
-                200,
-                MemberSignupResponseDto.from(signup));
+        return ResponseEntity.created(URI.create("/api/member" + signup.getEmail()))
+                .body(
+                        ApiResponseDto.<MemberSignupResponseDto>builder()
+                                .message("생성됨")
+                                .status(HttpStatus.CREATED.value())
+                                .data(MemberSignupResponseDto.from(signup))
+                                .build()
+                );
     }
 
     // set cookie 참고 사이트 : https://dncjf64.tistory.com/292
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "성공시 jwt 토큰값을 쿠키 해더에 넣어서 반환합니다.")
-    public ApiResponseDto<MemberLoginTokenResponseDto> login(
-            @Valid @RequestBody MemberLoginRequestDto memberRequestDto,
-            HttpServletResponse response
-    ) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "로그인 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<MemberLoginTokenResponseDto>> login(@Valid @RequestBody MemberLoginRequestDto memberRequestDto,
+                                                             HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
-        return new ApiResponseDto<MemberLoginTokenResponseDto>(
-                "성공적으로 로그인 되었습니다.",
-                200,
-                MemberLoginTokenResponseDto.from(login));
+        return ResponseEntity.ok(
+                ApiResponseDto.<MemberLoginTokenResponseDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(MemberLoginTokenResponseDto.from(login))
+                        .build()
+        );
     }
 
     @PostMapping("/reissue")
     @ApiOperation(value = "토큰 재발급")
-    public ApiResponseDto<TokenReissueResponseDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "토큰 재발급 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<TokenReissueResponseDto>> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         TokenDto reissue = authService.reissue(tokenRequestDto);
 
-        return new ApiResponseDto<TokenReissueResponseDto>(
-                "성공적으로 토큰 재발급 되었습니다.",
-                200,
-                TokenReissueResponseDto.from(reissue)
-               );
+        return ResponseEntity.ok(
+                ApiResponseDto.<TokenReissueResponseDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(TokenReissueResponseDto.from(reissue))
+                        .build()
+        );
     }
 
     @PostMapping("/email") // 이메일 인증 코드 보내기
     @ApiOperation(value = "이메일 인증코드 보내기")
-    public ApiResponseDto<Boolean> emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "인증코드 보내기 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<Boolean>> emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
         emailService.sendSimpleMessage(emailRequestDto.getEmail());
 
-        return new ApiResponseDto<Boolean>(
-                "성공적으로 메일을 보냈습니다",
-                200,
-                Boolean.TRUE
+        return ResponseEntity.ok(
+                ApiResponseDto.<Boolean>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(Boolean.TRUE)
+                        .build()
         );
     }
 
     @PostMapping("/verifyCode") // 이메일 인증 코드 검증
     @ApiOperation(value = "이메일 인증코드 검증")
-    public ApiResponseDto<Boolean> verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "메일 인증 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResponseDto<Boolean>> verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
         boolean emailCheckBool = emailService.emailCheck(code);
 
         if (!emailCheckBool) {
@@ -103,11 +134,12 @@ public class AuthController {
                     ErrorCode.EMAIL_CODE_NOTFOUND
             );
         }
-
-        return new ApiResponseDto<Boolean>(
-                "메일인증이 성공되었습니다.",
-                200,
-                Boolean.TRUE
+        return ResponseEntity.ok(
+                ApiResponseDto.<Boolean>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(Boolean.TRUE)
+                        .build()
         );
     }
 }
