@@ -205,9 +205,8 @@ const user = createSlice({
   },
 });
 
-export const { logout } = user.actions;
 
+export const { logout } = user.actions;
 export const userStatus = (state: ReducerType) => state.users.user;
 export const auth = (state: ReducerType) => state.users.auth.payload;
-
 export default user.reducer;

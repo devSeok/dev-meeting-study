@@ -22,6 +22,7 @@ function Items({ items }: ItemsProps) {
                 bottom: '10px',
               }}
             >
+              {item.id}
               <h2 style={{ marginBottom: '10px' }}>{item.title}</h2>
               <span>{item.type}</span>
             </div>

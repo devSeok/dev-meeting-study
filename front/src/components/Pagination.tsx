@@ -4,7 +4,7 @@ import styled from 'styled-components';
 interface PaginationProps {
   postsPerPage: number;
   totalPosts: number;
-  paginate: any;
+  paginate: (page: number) => void;
 }
 
 const PageNumberUl = styled.ul`

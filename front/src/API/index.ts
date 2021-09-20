@@ -1,5 +1,6 @@
 import Send from './interceptors';
 import { RegisterType, LoginType, Token } from '../ToolKit/userType';
+import Pagination from '../components/Pagination';
 
 enum Method {
   POST = 'POST',
@@ -67,5 +68,7 @@ const member = (email: string) => {
     url: `/api/member/${email}`,
   });
 };
+
+// const pagination = () => {}
 
 export { register_user, register_check_email, register_check_num, login_user, reissueToken, myInfo, member };

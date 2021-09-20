@@ -15,7 +15,7 @@ const Select = styled.select`
 `;
 
 const WrapInput = styled(InputWrap)`
-  width: 100%;
+  width: 90%;
 `;
 
 const SelectOffline = styled(Select)`
