@@ -2,10 +2,9 @@ package study.devmeetingstudy.domain.study;
 
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.request.StudyStoreRequestDto;
+import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,7 +30,7 @@ public class Online extends Study{
         this.link = link;
     }
 
-    public static Online createOnline(StudyStoreRequestDto dto, Optional<Subject> subject){
+    public static Online createOnline(StudySaveRequestDto dto, Optional<Subject> subject){
         return Online.builder()
                 .subject(subject.get())
                 .title(dto.getTitle())

@@ -18,12 +18,14 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    public Address store(AddressRequestDto addressRequestDto){
-
-        return null;
+    @Transactional
+    public Address saveAddress(AddressRequestDto addressRequestDto){
+        Address address = Address.create(addressRequestDto);
+        return addressRepository.save(address);
     }
 
     public Address findAddress(Long addressId) {
         return addressRepository.findById(addressId).orElseThrow(() -> new AddressNotFoundException("해당 id로 주소를 찾을 수 없습니다"));
     }
+
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.request.StudyStoreRequestDto;
+import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class Offline extends Study{
         this.address = address;
     }
 
-    public static Offline createOffline(StudyStoreRequestDto dto, Optional<Subject> subject,  Optional<Address> findAddress){
+    public static Offline createOffline(StudySaveRequestDto dto, Optional<Subject> subject, Optional<Address> findAddress){
         return Offline.builder()
                 .subject(subject.get())
                 .title(dto.getTitle())

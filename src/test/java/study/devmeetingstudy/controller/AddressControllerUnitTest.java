@@ -95,7 +95,7 @@ class AddressControllerUnitTest {
 
         AddressRequestDto addressRequestDto = new AddressRequestDto("경기도","광주시","오포읍");
         Address expectedAddress = createAddress(addressRequestDto);
-        doReturn(expectedAddress).when(addressService).store(any(AddressRequestDto.class));
+        doReturn(expectedAddress).when(addressService).saveAddress(any(AddressRequestDto.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(

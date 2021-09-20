@@ -40,7 +40,7 @@ services:
                         dockerfile: Dockerfile
                 container_name: backend_v1
                 environment:
-                        - VIRTUAL_HOST=backend.api
+                        - VIRTUAL_HOST=api.dev-meeting-study.site
                         - VIRTUAL_PORT=8080
                 volumes:
                         - ./:/var/www/dev-meeting-study
@@ -50,7 +50,8 @@ services:
                         - |
                           apk --no-cache add tzdata && \
                           cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
-                          echo "Asia/Seoul" > /etc/timezone
+                          echo "Asia/Seoul" > /etc/timezone && \
+                          ./gradlew clean build
                           java -jar build/libs/dev-meeting-study-0.0.1-SNAPSHOT.jar
 
 
