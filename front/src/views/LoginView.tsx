@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { login } from '../ToolKit/user';
-import { DispatchRes } from '../ToolKit/axiosType';
+import { DispatchReduxFailRes } from '../ToolKit/axiosType';
 import StudyHeader from '../components/StudyHeader';
 import { Main, Section, InputWrap, Input, InputTitle, InputSub, InputSubLabel, Button } from '../elements';
 
 function LoginView() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
   });
+
+  const { email, password } = inputs;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,14 +37,18 @@ function LoginView() {
 
     // 'AsyncThunkAction<{ type: USER_TYPE; payload: ResLogin; }, Login, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
     // @ts-ignore
-    await dispatch(login(obj)).then((res: DispatchRes) => {
-      console.log('res', res);
-      if (res.error?.message !== 'Rejected') {
-        if (res.payload.payload.status === 200) {
-          history.push('/');
-        }
+    await dispatch(login(obj)).then((res: DispatchReduxFailRes) => {
+      if (res.payload.payload?.status === 200) {
+        history.push('/');
       } else {
-        alert('로그인에 실패했습니다');
+        alert(res.payload.message);
+
+        setInputs({
+          email: '',
+          password: '',
+        });
+        // email input에 포커싱
+        emailRef.current?.focus();
       }
     });
   };
@@ -52,7 +60,15 @@ function LoginView() {
         <Section>
           <InputWrap>
             <InputTitle htmlFor="email">이메일</InputTitle>
-            <Input id="email" name="email" type="email" onChange={onChange} placeholder="이메일" />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              ref={emailRef}
+              onChange={onChange}
+              placeholder="이메일"
+            />
             <InputSub style={{ display: 'flex', alignItems: 'center' }}>
               <input id="save-id" type="checkbox" />
               <InputSubLabel htmlFor="save-id">아이디 저장</InputSubLabel>
@@ -60,7 +76,15 @@ function LoginView() {
           </InputWrap>
           <InputWrap>
             <InputTitle htmlFor="password">비밀번호</InputTitle>
-            <Input id="password" name="password" type="password" onChange={onChange} placeholder="비밀번호" />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              value={password}
+              ref={passwordRef}
+              onChange={onChange}
+              placeholder="비밀번호"
+            />
             <InputSub>
               <InputSubLabel>비밀번호를 잊어버리셨나요?</InputSubLabel>
             </InputSub>
