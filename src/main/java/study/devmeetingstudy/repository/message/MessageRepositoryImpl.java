@@ -13,12 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageRepositoryImpl implements MessageRepositoryCustom{
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     @Override
     public List<Message> findMessagesDesc(Member member) {
-        return em.createQuery("select ms from Message ms where ms.member.id = :memberId order by ms.id desc", Message.class)
+        return em.createQuery("select ms from Message ms where ms.member.id = :memberId and ms.delflg = 'NOT_DELETED' order by ms.id desc", Message.class)
                 .setParameter("memberId",member.getId())
                 .getResultList();
     }

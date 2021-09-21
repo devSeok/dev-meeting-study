@@ -12,6 +12,7 @@ import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
@@ -34,6 +35,7 @@ public class MessageService {
     public Message findMessage(Long id){
         Message foundMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new MessageNotFoundException("해당 id로 메시지를 찾을 수 없습니다."));
+
         return readMessage(foundMessage);
     }
 
@@ -51,7 +53,11 @@ public class MessageService {
         return messageRepository.findMessagesDesc(member);
     }
 
+    // 영속성 관리
+    @Transactional
     public Message deleteMessage(Message message) {
+        // 다시 조회하여 영속화 후 변경 감지.
+        message = findMessage(message.getId());
         if (isNotDeleted(message.getDelflg())) return Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
         return message;
     }

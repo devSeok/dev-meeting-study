@@ -99,7 +99,7 @@ public class Message extends BaseTimeEntity{
 
     public static Message changeDeletionStatus(MessageDeletionStatus delflg, Message message) {
         message.setDelflg(delflg);
-        return null;
+        return message;
     }
 
     private void setDelflg(MessageDeletionStatus delflg) {
