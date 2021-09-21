@@ -39,8 +39,4 @@ out/
 
 ### VS Code ###
 .vscode/
-src/main/resources/application-develop.yml
-src/main/resources/application-prod.yml
-src/main/resources/application-local.yml
 front/package-lock.json
-src/main/resources/aws.yml
