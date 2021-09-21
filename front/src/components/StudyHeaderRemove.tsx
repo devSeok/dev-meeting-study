@@ -45,6 +45,7 @@ const RightMenu = styled.li`
 `;
 
 const MenuItem = styled.li`
+  display: inline-block;
   cursor: pointer;
   width: 100px;
   text-align: center;
@@ -89,12 +90,13 @@ function StudyHeader() {
           <MenuItem onClick={onLogout}>로그아웃</MenuItem>
         ) : (
           <>
-            <MenuItem>
-              <Link to="/login">로그인</Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/register">회원가입</Link>
-            </MenuItem>
+            <Link to="/login">
+              <MenuItem>로그인</MenuItem>
+            </Link>
+
+            <Link to="/register">
+              <MenuItem>회원가입</MenuItem>
+            </Link>
           </>
         )}
       </MenuList>
