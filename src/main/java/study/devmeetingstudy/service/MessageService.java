@@ -39,7 +39,6 @@ public class MessageService {
         return readMessage(foundMessage);
     }
 
-    @Transactional
     public Message readMessage(Message message){
         if (isNotRead(message.getStatus())) return Message.changeReadStatus(MessageReadStatus.READ, message);
         return message;
@@ -55,11 +54,12 @@ public class MessageService {
 
     // 영속성 관리
     @Transactional
-    public Message deleteMessage(Message message) {
-        // 다시 조회하여 영속화 후 변경 감지.
-        message = findMessage(message.getId());
-        if (isNotDeleted(message.getDelflg())) return Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
-        return message;
+    public void deleteMessage(Message message) {
+        if (isNotDeleted(message.getDelflg())) {
+            Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
+            // 영속화 후 변경 감지.
+            messageRepository.save(message);
+        }
     }
 
     private boolean isNotDeleted(MessageDeletionStatus messageDeletionStatus){
