@@ -148,12 +148,16 @@ class MessageServiceTest {
     void deleteMessage() throws Exception{
         //given
         Long messageId = 1L;
-        Message message = createMessage(1L, loginMember, member);
+        Message notDeletedMessage = createMessage(1L, loginMember, member);
+        Message deletedMessage = createMessage(1L, loginMember, member);
+        Message.changeDeletionStatus(MessageDeletionStatus.DELETED, deletedMessage);
+
+        doReturn(deletedMessage).when(messageRepository).save(any(Message.class));
         //when
 
-        messageService.deleteMessage(message);
+        messageService.deleteMessage(notDeletedMessage);
 
         //then
-        assertEquals(MessageDeletionStatus.DELETED, message.getDelflg());
+        assertEquals(MessageDeletionStatus.DELETED, deletedMessage.getDelflg());
     }
 }

@@ -300,7 +300,7 @@ class MessageControllerUnitTest {
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(createdMessage).when(messageService).findMessage(anyLong());
         doNothing().when(authService).checkUserInfo(anyLong(), any(MemberResolverDto.class));
-        doReturn(deletedMessage).when(messageService).deleteMessage(any(Message.class));
+        doNothing().when(messageService).deleteMessage(any(Message.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
