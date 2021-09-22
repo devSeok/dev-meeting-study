@@ -60,6 +60,4 @@ public class StudySaveRequestDto {
     @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.", example = "ONLINE", required = true)
     private AddressRequestDto address;
 
-    @ApiModelProperty(value = "파일", notes = "MultipartFile 형식으로 넣어주세요.")
-    private List<MultipartFile> files;
 }

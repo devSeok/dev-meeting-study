@@ -13,6 +13,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.StudyResponseDto;
 import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
@@ -20,29 +21,32 @@ import study.devmeetingstudy.service.StudyService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Api(tags = {"3. Study"})
 @RestController
-@RequestMapping("/api/study")
+@RequestMapping("/api/studies")
 @RequiredArgsConstructor
 @Slf4j
 public class StudyController {
 
     private final StudyService studyService;
+    private final Uploader uploader;
 
+    //@RequestBody StudySaveRequestDto studySaveRequestDto,
     @PostMapping
     @ApiResponses({
             @ApiResponse(code = 201, message = "생성됨")
     })
-    public ResponseEntity<ApiResponseDto<StudyResponseDto>> saveStudy(@RequestBody StudySaveRequestDto studySaveRequestDto,
-                                                                      @ApiIgnore @JwtMember MemberResolverDto resolverDto,
-                                                                      HttpServletRequest httpServletRequest){
-        log.info(httpServletRequest.getContextPath());
-        List<MultipartFile> files = studySaveRequestDto.getFiles();
-        for (MultipartFile file : files){
-            System.out.println(file);
-        }
+    public ResponseEntity<ApiResponseDto<StudyResponseDto>> saveStudy(@RequestParam("files") MultipartFile files,
+                                                                      @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
+//        for (MultipartFile file : files){
+//            String aStatic = uploader.upload(file, "static");
+//            System.out.println(aStatic);
+//        }
+        String aStatic = uploader.upload(files, "static");
+        System.out.println(aStatic);
 //        Study study = studyService.saveStudy(studySaveRequestDto, resolverDto);
         return null;
     }

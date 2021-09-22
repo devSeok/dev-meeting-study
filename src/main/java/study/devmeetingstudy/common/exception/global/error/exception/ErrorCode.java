@@ -16,7 +16,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
-
+    NOT_CONVERT_ERROR(400, "C007", "convert MultipartFile to File failed"),
 
     // Member
     EMAIL_DUPLICATION(400, "M001", "이미 가입되어 있는 유저 입니다."),
