@@ -2,7 +2,7 @@ package study.devmeetingstudy.dto.study.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import study.devmeetingstudy.domain.Subject;
@@ -19,10 +19,12 @@ import java.util.List;
 
 // TODO : enums 벨리데이션 어노테이션을 만들어야된다.
 @Data
+@NoArgsConstructor
 public class StudySaveRequestDto {
 
     @ApiModelProperty(value = "제목", example = "자바 스터디원 모집합니다", required = true, dataType = "String")
     @NotBlank(message = "제목은 필수입니다.")
+    @NotNull
     private String title;
 
     @ApiModelProperty(value = "최대 인원", example = "5", required = true, dataType = "Integer")
@@ -60,4 +62,19 @@ public class StudySaveRequestDto {
     @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.", example = "ONLINE", required = true)
     private AddressRequestDto address;
 
+    @ApiModelProperty(value = "파일", notes = "이미지 파일, 일단 하나만 넘기고 추후에 확장 할 수 있도록.")
+    private List<MultipartFile> files;
+
+    @Builder
+    public StudySaveRequestDto(String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, SubjectRequestDto subject, StudyInstanceType studyInstanceType, AddressRequestDto address, List<MultipartFile> files) {
+        this.title = title;
+        this.maxMember = maxMember;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.studyType = studyType;
+        this.subject = subject;
+        this.studyInstanceType = studyInstanceType;
+        this.address = address;
+        this.files = files;
+    }
 }

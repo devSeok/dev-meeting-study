@@ -10,6 +10,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @NoArgsConstructor
 public class AddressRequestDto {
 
+    @ApiModelProperty(value = "주소 아이디", required = false, example = "1")
+    private Long id;
+
     @ApiModelProperty(value = "도/특별시/광역시", required = true, example = "서울특별시")
     private String address1;
 
