@@ -2,12 +2,13 @@ package study.devmeetingstudy.dto.subject;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectRequestDto {

@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressRequestDto;
+import study.devmeetingstudy.dto.study.StudyFileDto;
 import study.devmeetingstudy.dto.subject.SubjectRequestDto;
 
 import javax.validation.constraints.NotBlank;
@@ -18,6 +20,7 @@ import java.util.List;
 
 
 // TODO : enums 벨리데이션 어노테이션을 만들어야된다.
+// ModelAttibute annotation을 사용하기 위해 Setter를 만들어준다.
 @Data
 @NoArgsConstructor
 public class StudySaveRequestDto {
@@ -48,7 +51,7 @@ public class StudySaveRequestDto {
 
     // 카테고리 타입
     // 찾아 넣는다.
-    @ApiModelProperty(value = "스터디 주제", notes = "서브젝트 목록을 요청한 뒤 해당 id를 넘겨주세요.", example = "subject : {id : 1, subjectName : \"자바\"}", required = true)
+    @ApiModelProperty(value = "스터디 주제", notes = "서브젝트 목록을 요청한 뒤 해당 id를 넘겨주세요.", example = "\"subject\" : {\"id\" : 1, \"subjectName\" : \"자바\"}", required = true)
     @NotBlank(message = "스터디 주제는 필수입니다.")
     @NotNull
     private SubjectRequestDto subject;
@@ -59,14 +62,11 @@ public class StudySaveRequestDto {
     @NotNull
     private StudyInstanceType studyInstanceType;
 
-    @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.", example = "ONLINE", required = true)
+    @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.", required = true)
     private AddressRequestDto address;
 
-    @ApiModelProperty(value = "파일", notes = "이미지 파일, 일단 하나만 넘기고 추후에 확장 할 수 있도록.")
-    private List<MultipartFile> files;
-
     @Builder
-    public StudySaveRequestDto(String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, SubjectRequestDto subject, StudyInstanceType studyInstanceType, AddressRequestDto address, List<MultipartFile> files) {
+    public StudySaveRequestDto(String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, SubjectRequestDto subject, StudyInstanceType studyInstanceType, AddressRequestDto address) {
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
@@ -75,6 +75,5 @@ public class StudySaveRequestDto {
         this.subject = subject;
         this.studyInstanceType = studyInstanceType;
         this.address = address;
-        this.files = files;
     }
 }

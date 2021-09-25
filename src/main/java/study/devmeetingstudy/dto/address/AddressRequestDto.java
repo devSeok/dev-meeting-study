@@ -1,12 +1,10 @@
 package study.devmeetingstudy.dto.address;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class AddressRequestDto {
 
