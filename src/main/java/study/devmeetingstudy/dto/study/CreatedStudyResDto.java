@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import study.devmeetingstudy.domain.study.Offline;
 import study.devmeetingstudy.domain.study.Online;
@@ -16,8 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class CreatedStudyResDto {
 
     @ApiModelProperty(value = "스터디 아이디", example = "1")

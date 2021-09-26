@@ -1,6 +1,8 @@
 package study.devmeetingstudy.dto.study;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.Getter;
 import study.devmeetingstudy.domain.study.Online;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class CreatedOnlineStudyResDto extends CreatedStudyResDto {
 
     @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.")
