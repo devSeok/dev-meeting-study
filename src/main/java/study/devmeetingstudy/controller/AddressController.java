@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
-import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.Address;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
-import study.devmeetingstudy.dto.address.AddressResponseDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
+import study.devmeetingstudy.dto.address.AddressResDto;
 import study.devmeetingstudy.service.AddressService;
 
 import java.net.URI;
@@ -32,14 +32,14 @@ public class AddressController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResponseDto<AddressResponseDto>> saveAddress(@RequestBody AddressRequestDto addressRequestDto){
-        Address address = addressService.saveAddress(addressRequestDto);
+    public ResponseEntity<ApiResDto<AddressResDto>> saveAddress(@RequestBody AddressReqDto addressReqDto){
+        Address address = addressService.saveAddress(addressReqDto);
         return ResponseEntity.created(URI.create("/api/addresses" + address.getId()))
                 .body(
-                        ApiResponseDto.<AddressResponseDto>builder()
+                        ApiResDto.<AddressResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data(AddressResponseDto.from(address))
+                                .data(AddressResDto.from(address))
                                 .build()
                 );
     }
@@ -53,13 +53,13 @@ public class AddressController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<AddressResponseDto>> getAddress(@PathVariable Long id){
+    public ResponseEntity<ApiResDto<AddressResDto>> getAddress(@PathVariable Long id){
         Address foundAddress = addressService.findAddress(id);
         return ResponseEntity.ok(
-                ApiResponseDto.<AddressResponseDto>builder()
+                ApiResDto.<AddressResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(AddressResponseDto.from(foundAddress))
+                        .data(AddressResDto.from(foundAddress))
                         .build()
         );
     }

@@ -7,7 +7,7 @@ import study.devmeetingstudy.domain.member.Member;
 
 @Getter
 @AllArgsConstructor
-public class MemberResponseDto {
+public class MemberResDto {
 
     @ApiModelProperty(value = "멤버 아이디", example = "1", dataType = "Long")
     private Long id;
@@ -21,7 +21,7 @@ public class MemberResponseDto {
     @ApiModelProperty(value = "멤버 매너 점수", example = "5")
     private int grade;
 
-    public static MemberResponseDto from(Member member) {
-        return new MemberResponseDto(member.getId(), member.getNickname(),member.getEmail(), member.getGrade());
+    public static MemberResDto from(Member member) {
+        return new MemberResDto(member.getId(), member.getNickname(),member.getEmail(), member.getGrade());
     }
 }

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import study.devmeetingstudy.domain.Address;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.repository.AddressRepository;
 
 import java.util.Optional;
@@ -30,13 +30,13 @@ class AddressServiceTest {
     @Test
     void saveAddress() {
         //given
-        AddressRequestDto addressRequestDto = new AddressRequestDto("경기도", "광주시", "오포읍");
-        Address expectedAddress = Address.create(addressRequestDto);
+        AddressReqDto addressReqDto = new AddressReqDto("경기도", "광주시", "오포읍");
+        Address expectedAddress = Address.create(addressReqDto);
         doReturn(expectedAddress).when(addressRepository).save(any(Address.class));
 
         //when
 
-        Address saveAddress = addressService.saveAddress(addressRequestDto);
+        Address saveAddress = addressService.saveAddress(addressReqDto);
 
         //then
         assertEquals(expectedAddress, saveAddress);

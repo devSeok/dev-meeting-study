@@ -2,12 +2,11 @@ package study.devmeetingstudy.dto.address;
 
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import study.devmeetingstudy.domain.Address;
 
 @Getter
-public class AddressResponseDto {
+public class AddressResDto {
 
     @ApiModelProperty(value = "주소 Id", example = "1")
     private final Long id;
@@ -20,15 +19,15 @@ public class AddressResponseDto {
 
     @ApiModelProperty(value = "읍/면/동", required = true, example = "서초동")
     private final String address3;
-    private AddressResponseDto(Long id, String address1, String address2, String address3) {
+    private AddressResDto(Long id, String address1, String address2, String address3) {
         this.id = id;
         this.address1 = address1;
         this.address2 = address2;
         this.address3 = address3;
     }
 
-    public static AddressResponseDto from(Address address){
-        return new AddressResponseDto(
+    public static AddressResDto from(Address address){
+        return new AddressResDto(
                 address.getId(),
                 address.getAddress1(),
                 address.getAddress2(),

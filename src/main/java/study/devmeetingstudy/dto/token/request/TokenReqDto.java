@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
-public class TokenRequestDto {
+public class TokenReqDto {
 
     @NotEmpty(message = "기존 accessToken 값이 있어야됩니다.")
     @ApiModelProperty(value = "액세스 토큰", required = true, example = "asd")

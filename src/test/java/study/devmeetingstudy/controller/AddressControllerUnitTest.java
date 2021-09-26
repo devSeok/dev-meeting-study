@@ -26,7 +26,7 @@ import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
@@ -69,8 +69,6 @@ class AddressControllerUnitTest {
                 })))
                 .setCustomArgumentResolvers(new MemberDecodeResolver(tokenProvider, memberRepository))
                 .build();
-        // 메시지를 받는 멤버
-        // 메시지를 보내는 멤버
         loginMember = createMember(1L, "dltmddn@na.na", "nick1");
     }
 
@@ -93,16 +91,15 @@ class AddressControllerUnitTest {
         // 토큰 생성 및 발급
         TokenDto tokenDto = getTokenDto();
 
-        AddressRequestDto addressRequestDto = new AddressRequestDto("경기도","광주시","오포읍");
-        Address expectedAddress = createAddress(addressRequestDto);
-        doReturn(expectedAddress).when(addressService).saveAddress(any(AddressRequestDto.class));
+        AddressReqDto addressReqDto = new AddressReqDto("경기도","광주시","오포읍");
+        Address expectedAddress = createAddress(addressReqDto);
+        doReturn(expectedAddress).when(addressService).saveAddress(any(AddressReqDto.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/addresses/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "bearer " + tokenDto.getAccessToken())
-                        .content(new ObjectMapper().writeValueAsString(addressRequestDto)));
+                        .content(new ObjectMapper().writeValueAsString(addressReqDto)));
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
@@ -138,15 +135,14 @@ class AddressControllerUnitTest {
         // 토큰 생성 및 발급
         TokenDto tokenDto = getTokenDto();
 
-        AddressRequestDto addressRequestDto = new AddressRequestDto("경기도", "광주시", "오포읍");
-        Address expectedAddress = createAddress(addressRequestDto);
+        AddressReqDto addressReqDto = new AddressReqDto("경기도", "광주시", "오포읍");
+        Address expectedAddress = createAddress(addressReqDto);
         doReturn(expectedAddress).when(addressService).findAddress(any(Long.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/addresses/" + expectedAddress.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "bearer " + tokenDto.getAccessToken()));
+                        .contentType(MediaType.APPLICATION_JSON));
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
@@ -162,12 +158,12 @@ class AddressControllerUnitTest {
         assertEquals(expectedAddress,  address);
     }
 
-    private Address createAddress(AddressRequestDto addressRequestDto){
+    private Address createAddress(AddressReqDto addressReqDto){
         return Address.builder()
                 .id(1L)
-                .address1(addressRequestDto.getAddress1())
-                .address2(addressRequestDto.getAddress2())
-                .address3(addressRequestDto.getAddress3())
+                .address1(addressReqDto.getAddress1())
+                .address2(addressReqDto.getAddress2())
+                .address3(addressReqDto.getAddress3())
                 .build();
     }
 }

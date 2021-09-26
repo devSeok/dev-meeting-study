@@ -3,7 +3,7 @@ package study.devmeetingstudy.vo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.dto.message.MessageReqDto;
 
 @Getter
 @AllArgsConstructor
@@ -12,9 +12,9 @@ public class MessageVO {
     private Member member;
     private Member sender;
 
-    public static MessageVO of(MessageRequestDto messageRequestDto, Member member, Member sender){
+    public static MessageVO of(MessageReqDto messageReqDto, Member member, Member sender){
         return new MessageVO(
-                messageRequestDto.getContent(),
+                messageReqDto.getContent(),
                 member,
                 sender
         );

@@ -29,24 +29,28 @@ public abstract class Study extends BaseTimeEntity {
 
     private String title;
     private int maxMember;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-    private List<StudyFile> files = new ArrayList<>();
+    private final List<StudyFile> files = new ArrayList<>();
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-    private List<StudyMember> studyMembers = new ArrayList<>();
+    private final List<StudyMember> studyMembers = new ArrayList<>();
 
-    public Study(Subject subject, String title, int maxMember, LocalDateTime startDate, LocalDateTime endDate, StudyType studyType) {
+    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType) {
         this.subject = subject;
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
         this.endDate = endDate;
         this.studyType = studyType;
+    }
+
+    public static boolean isInstanceOnline(Study study){
+        return study instanceof Online;
     }
 }

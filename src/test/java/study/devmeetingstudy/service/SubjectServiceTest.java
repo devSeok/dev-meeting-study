@@ -5,10 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import study.devmeetingstudy.domain.Subject;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.repository.SubjectRepository;
 
 import java.util.ArrayList;
@@ -31,12 +30,12 @@ class SubjectServiceTest {
     @Test
     void saveSubject() throws Exception{
         //given
-        SubjectRequestDto subjectRequestDto = new SubjectRequestDto("Java");
-        Subject expectedSubject = Subject.create(subjectRequestDto);
+        SubjectReqDto subjectReqDto = new SubjectReqDto("Java");
+        Subject expectedSubject = Subject.create(subjectReqDto);
         doReturn(expectedSubject).when(subjectRepository).save(any(Subject.class));
 
         //when
-        Subject savedSubject = subjectService.saveSubject(subjectRequestDto);
+        Subject savedSubject = subjectService.saveSubject(subjectReqDto);
 
         //then
         assertNotNull(savedSubject);
@@ -50,7 +49,7 @@ class SubjectServiceTest {
         String[] subjects = {"Java", "Typescript"};
         List<Subject> expectedSubjectList = new ArrayList<>();
         for (int i = 0 ; i < subjects.length; i++){
-            expectedSubjectList.add(Subject.create(new SubjectRequestDto(subjects[i])));
+            expectedSubjectList.add(Subject.create(new SubjectReqDto(subjects[i])));
         }
         doReturn(expectedSubjectList).when(subjectRepository).findAll();
 

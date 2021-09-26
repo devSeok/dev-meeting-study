@@ -1,8 +1,8 @@
 cloud:
   aws:
     credentials:
-      accessKey: AKIAUHYO4W7ETC6253MT
-      secretKey: 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
+      accessKey: AKIAUHYO4W7E4M6BZDPN
+      secretKey: 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
     s3:
       bucket: dev-meeting-study-bucket
     region:

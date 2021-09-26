@@ -1,29 +1,23 @@
 package study.devmeetingstudy.dto.study.request;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
-import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
-import study.devmeetingstudy.dto.study.StudyFileDto;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
 
 
 // TODO : enums 벨리데이션 어노테이션을 만들어야된다.
 // ModelAttibute annotation을 사용하기 위해 Setter를 만들어준다.
 @Data
 @NoArgsConstructor
-public class StudySaveRequestDto {
+public class StudySaveReqDto {
 
     @ApiModelProperty(value = "제목", example = "자바 스터디원 모집합니다", required = true, dataType = "String")
     @NotBlank(message = "제목은 필수입니다.")
@@ -54,7 +48,7 @@ public class StudySaveRequestDto {
     @ApiModelProperty(value = "스터디 주제", notes = "서브젝트 목록을 요청한 뒤 해당 id를 넘겨주세요.", example = "\"subject\" : {\"id\" : 1, \"subjectName\" : \"자바\"}", required = true)
     @NotBlank(message = "스터디 주제는 필수입니다.")
     @NotNull
-    private SubjectRequestDto subject;
+    private SubjectReqDto subject;
 
     //TODO : @Valid Resolver 작성해야함. (온라인인지 오프라인인지 확인 필요함)
     @ApiModelProperty(value = "스터디 타입 (온라인, 오프라인)", notes = "스터디 타입 (ONLINE, OFFLINE 만 가능)", example = "ONLINE", required = true)
@@ -62,11 +56,23 @@ public class StudySaveRequestDto {
     @NotNull
     private StudyInstanceType studyInstanceType;
 
-    @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.", required = true)
-    private AddressRequestDto address;
+    @ApiModelProperty(value = "주소", notes = "StudyInstanceType이 오프라인이면, 주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정.")
+    private AddressReqDto address;
+
+    @ApiModelProperty(value = "링크 주소", notes = "StudyInstanceType이 온라인이면, 필요하다면 링크를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정.")
+    private String link;
+
+    @ApiModelProperty(value = "링크 소프트웨어 종류",
+            notes = "StudyInstanceType이 온라인이면, 소프트웨어 종류를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정. 예) 디스코드, 구글 밋 등", example = "디스코드")
+    private String onlineType;
 
     @Builder
-    public StudySaveRequestDto(String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, SubjectRequestDto subject, StudyInstanceType studyInstanceType, AddressRequestDto address) {
+    public StudySaveReqDto(String title, int maxMember,
+                           LocalDate startDate, LocalDate endDate,
+                           StudyType studyType, SubjectReqDto subject,
+                           StudyInstanceType studyInstanceType,
+                           AddressReqDto address, String link,
+                           String onlineType) {
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
@@ -75,5 +81,7 @@ public class StudySaveRequestDto {
         this.subject = subject;
         this.studyInstanceType = studyInstanceType;
         this.address = address;
+        this.link = link;
+        this.onlineType = onlineType;
     }
 }

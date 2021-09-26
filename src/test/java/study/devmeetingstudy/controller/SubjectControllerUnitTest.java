@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +27,7 @@ import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
-import study.devmeetingstudy.dto.subject.SubjectResponseDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
@@ -38,11 +36,9 @@ import study.devmeetingstudy.service.SubjectService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,16 +94,16 @@ class SubjectControllerUnitTest {
     public void saveSubject() throws Exception{
         //given
         TokenDto tokenDto = getTokenDto();
-        SubjectRequestDto subjectRequestDto = new SubjectRequestDto("자바");
-        Subject expectedSubject = createSubject(1L, subjectRequestDto.getSubjectName());
-        doReturn(expectedSubject).when(subjectService).saveSubject(any(SubjectRequestDto.class));
+        SubjectReqDto subjectReqDto = new SubjectReqDto("자바");
+        Subject expectedSubject = createSubject(1L, subjectReqDto.getSubjectName());
+        doReturn(expectedSubject).when(subjectService).saveSubject(any(SubjectReqDto.class));
 
         //when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/subjects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization","bearer " + tokenDto.getAccessToken())
-                        .content(new ObjectMapper().writeValueAsString(subjectRequestDto)));
+                        .content(new ObjectMapper().writeValueAsString(subjectReqDto)));
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();

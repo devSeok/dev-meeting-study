@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubjectRequestDto {
+public class SubjectReqDto {
 
     @ApiModelProperty(value = "스터디 주제 ID", example = "1", dataType = "Long")
     private Long id;
@@ -20,7 +20,7 @@ public class SubjectRequestDto {
     @ApiModelProperty(value = "스터디 주제", required = true, example = "자바", dataType = "String")
     private String subjectName;
 
-    public SubjectRequestDto(String subjectName){
+    public SubjectReqDto(String subjectName){
         this.subjectName = subjectName;
     }
 }

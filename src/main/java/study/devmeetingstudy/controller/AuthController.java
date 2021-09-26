@@ -9,20 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
 import study.devmeetingstudy.common.exception.global.error.exception.EmailVerifyCodeNotFoundException;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
-import study.devmeetingstudy.common.exception.global.error.exception.UserException;
-import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
-import study.devmeetingstudy.domain.Email;
+import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.dto.email.EmailRequestDto;
-import study.devmeetingstudy.dto.email.EmailVerifyCodeRequestDto;
-import study.devmeetingstudy.dto.member.request.MemberLoginRequestDto;
-import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
-import study.devmeetingstudy.dto.token.response.MemberLoginTokenResponseDto;
-import study.devmeetingstudy.dto.member.response.MemberResponseDto;
-import study.devmeetingstudy.dto.member.response.MemberSignupResponseDto;
+import study.devmeetingstudy.dto.email.EmailReqDto;
+import study.devmeetingstudy.dto.email.EmailVerifyCodeReqDto;
+import study.devmeetingstudy.dto.member.request.MemberLoginReqDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupReqDto;
+import study.devmeetingstudy.dto.token.response.MemberLoginTokenResDto;
+import study.devmeetingstudy.dto.member.response.MemberSignupResDto;
 import study.devmeetingstudy.dto.token.TokenDto;
-import study.devmeetingstudy.dto.token.request.TokenRequestDto;
-import study.devmeetingstudy.dto.token.response.TokenReissueResponseDto;
+import study.devmeetingstudy.dto.token.request.TokenReqDto;
+import study.devmeetingstudy.dto.token.response.TokenReissueResDto;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.service.EmailService;
 
@@ -47,14 +44,14 @@ public class AuthController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResponseDto<MemberSignupResponseDto>> signup(@Valid @RequestBody MemberSignupRequestDto memberSignupRequestDto) {
-        Member signup = authService.signup(memberSignupRequestDto);
+    public ResponseEntity<ApiResDto<MemberSignupResDto>> signup(@Valid @RequestBody MemberSignupReqDto memberSignupReqDto) {
+        Member signup = authService.signup(memberSignupReqDto);
         return ResponseEntity.created(URI.create("/api/member" + signup.getEmail()))
                 .body(
-                        ApiResponseDto.<MemberSignupResponseDto>builder()
+                        ApiResDto.<MemberSignupResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data(MemberSignupResponseDto.from(signup))
+                                .data(MemberSignupResDto.from(signup))
                                 .build()
                 );
     }
@@ -67,15 +64,15 @@ public class AuthController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<MemberLoginTokenResponseDto>> login(@Valid @RequestBody MemberLoginRequestDto memberRequestDto,
-                                                             HttpServletResponse response) {
+    public ResponseEntity<ApiResDto<MemberLoginTokenResDto>> login(@Valid @RequestBody MemberLoginReqDto memberRequestDto,
+                                                                   HttpServletResponse response) {
         TokenDto login = authService.login(memberRequestDto, response);
 
         return ResponseEntity.ok(
-                ApiResponseDto.<MemberLoginTokenResponseDto>builder()
+                ApiResDto.<MemberLoginTokenResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(MemberLoginTokenResponseDto.from(login))
+                        .data(MemberLoginTokenResDto.from(login))
                         .build()
         );
     }
@@ -87,14 +84,14 @@ public class AuthController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<TokenReissueResponseDto>> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        TokenDto reissue = authService.reissue(tokenRequestDto);
+    public ResponseEntity<ApiResDto<TokenReissueResDto>> reissue(@RequestBody TokenReqDto tokenReqDto) {
+        TokenDto reissue = authService.reissue(tokenReqDto);
 
         return ResponseEntity.ok(
-                ApiResponseDto.<TokenReissueResponseDto>builder()
+                ApiResDto.<TokenReissueResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(TokenReissueResponseDto.from(reissue))
+                        .data(TokenReissueResDto.from(reissue))
                         .build()
         );
     }
@@ -106,11 +103,11 @@ public class AuthController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<Boolean>> emailAuth(@RequestBody EmailRequestDto emailRequestDto) throws Exception {
-        emailService.sendSimpleMessage(emailRequestDto.getEmail());
+    public ResponseEntity<ApiResDto<Boolean>> emailAuth(@RequestBody EmailReqDto emailReqDto) throws Exception {
+        emailService.sendSimpleMessage(emailReqDto.getEmail());
 
         return ResponseEntity.ok(
-                ApiResponseDto.<Boolean>builder()
+                ApiResDto.<Boolean>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
                         .data(Boolean.TRUE)
@@ -125,7 +122,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<Boolean>> verifyCode(@RequestBody EmailVerifyCodeRequestDto code) {
+    public ResponseEntity<ApiResDto<Boolean>> verifyCode(@RequestBody EmailVerifyCodeReqDto code) {
         boolean emailCheckBool = emailService.emailCheck(code);
 
         if (!emailCheckBool) {
@@ -135,7 +132,7 @@ public class AuthController {
             );
         }
         return ResponseEntity.ok(
-                ApiResponseDto.<Boolean>builder()
+                ApiResDto.<Boolean>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
                         .data(Boolean.TRUE)

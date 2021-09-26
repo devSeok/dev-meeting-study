@@ -8,7 +8,7 @@ import study.devmeetingstudy.domain.Subject;
 
 @Data
 @AllArgsConstructor
-public class SubjectResponseDto {
+public class SubjectResDto {
 
     @ApiModelProperty(value = "스터디 주제 아이디", example = "1")
     private Long id;
@@ -16,8 +16,8 @@ public class SubjectResponseDto {
     @ApiModelProperty(value = "스터디 주제 이름", example = "Java")
     private String name;
 
-    public static SubjectResponseDto from(Subject subject){
-        return new SubjectResponseDto(
+    public static SubjectResDto from(Subject subject){
+        return new SubjectResDto(
                 subject.getId(),
                 subject.getName()
         );
