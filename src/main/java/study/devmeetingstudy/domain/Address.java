@@ -2,11 +2,9 @@ package study.devmeetingstudy.domain;
 
 
 import lombok.*;
-import study.devmeetingstudy.domain.study.Offline;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -39,11 +37,11 @@ public class Address {
         this.address3 = address3;
     }
 
-    public static Address create(AddressRequestDto addressRequestDto) {
+    public static Address create(AddressReqDto addressReqDto) {
         return Address.builder()
-                .address1(addressRequestDto.getAddress1())
-                .address2(addressRequestDto.getAddress2())
-                .address3(addressRequestDto.getAddress3())
+                .address1(addressReqDto.getAddress1())
+                .address2(addressReqDto.getAddress2())
+                .address3(addressReqDto.getAddress3())
                 .build();
     }
 

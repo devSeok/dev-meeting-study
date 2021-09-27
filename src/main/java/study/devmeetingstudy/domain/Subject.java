@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
 
 import javax.persistence.*;
 
@@ -27,9 +27,9 @@ public class Subject{
         this.name = name;
     }
 
-    public static Subject create(SubjectRequestDto subjectRequestDto){
+    public static Subject create(SubjectReqDto subjectReqDto){
         return Subject.builder()
-                .name(subjectRequestDto.getSubjectName())
+                .name(subjectReqDto.getSubjectName())
                 .build();
     }
 

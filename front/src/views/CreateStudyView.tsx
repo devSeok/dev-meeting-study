@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Main, Section, InputWrap, Input, InputTitle, Button, Icon } from '../elements';
+import moment from 'moment';
+import { getSubjects, saveStudty } from '../API/index';
+import { StudyType } from '../ToolKit/userType';
+import { Main, Section, InputWrap, Input, InputTitle, Button } from '../elements';
 import StudyHeader from '../components/StudyHeader';
 
 const Select = styled.select`
@@ -15,32 +18,159 @@ const Select = styled.select`
 `;
 
 const WrapInput = styled(InputWrap)`
-  width: 90%;
+  width: 100%;
 `;
 
 const SelectOffline = styled(Select)`
   width: 32%;
 `;
 
+const Textarea = styled.textarea`
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 200px;
+  max-height: 200px;
+  border-radius: 5px;
+  font-size: 20px;
+`;
+
 function CreateStudyView() {
+  const [subjects, setSubjects] = useState([]);
   const [inputs, setInputs] = useState({
     title: '',
-    studyList: '종류1',
-    maxUser: 0,
-    studyType: 'online',
+    studyType: 'FREE',
+    maxMember: 2,
+    studyInstanceType: 'ONLINE',
+    subject: {
+      id: 1,
+      subjectName: '자바',
+    },
+    contents: '',
+    startDate: moment().format('YYYY-MM-DD'),
+    endDate: '',
+    files: [null],
     sido: '',
     gun: '',
     gu: '',
-    contents: '',
-    image: '',
   });
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const {
+    title,
+    studyType,
+    maxMember,
+    studyInstanceType,
+    subject,
+    contents,
+    startDate,
+    endDate,
+    files,
+    sido,
+    gun,
+    gu,
+  } = inputs;
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setInputs({
-      ...inputs,
-      [name]: value,
-    });
+    console.log(`name ${name}`);
+    console.log(`value ${value}`);
+
+    if (name !== 'subject') {
+      setInputs({
+        ...inputs,
+        [name]: value,
+      });
+    } else {
+      const options = Array.from(e.target.children);
+
+      const idx = options.filter((item: Element) => {
+        if (item.innerHTML === value) {
+          return item;
+        }
+      });
+
+      console.log('idx', idx);
+
+      setInputs({
+        ...inputs,
+        subject: {
+          id: parseInt(idx[0].id),
+          subjectName: value,
+        },
+      });
+    }
+  };
+
+  const getSubject = async () => {
+    const {
+      data: { data },
+    } = await getSubjects();
+    setSubjects(data);
+  };
+
+  useEffect(() => {
+    getSubject();
+  }, []);
+
+  const checkInouts = () => {
+    if (title !== '' && contents !== '' && endDate !== '') {
+      if (studyInstanceType === 'ONLINE') {
+        return true;
+      } else {
+        if (sido !== '' && gun !== '' && gu !== '') {
+          alert('시도, 군, 구를 입력해주세요.');
+          return false;
+        } else {
+          return true;
+        }
+      }
+    } else {
+      alert('모든 입력 칸을 입력해주세요.');
+      return false;
+    }
+  };
+
+  const onSaveStudy = async () => {
+    try {
+      if (checkInouts()) {
+        alert('스터디 생성 중');
+
+        const study: StudyType = {
+          title,
+          studyType,
+          maxMember,
+          studyInstanceType,
+          subject: {
+            id: subject.id,
+            subjectName: subject.subjectName,
+          },
+          contents,
+          startDate,
+          endDate,
+          files,
+          address: {
+            address1: sido,
+            address2: gun,
+            address3: gu,
+          },
+        };
+
+        // console.log(study);
+
+        const res = await saveStudty(study);
+
+        console.log(res);
+
+        if (res.status === 200) {
+          alert('스터디 등록 성공!');
+        } else {
+          alert('뭔지 모를 에러로 인해 실패');
+        }
+      }
+    } catch (err: any) {
+      const res = err.response;
+
+      alert(`스터디 등록 중 에러 발생! ${res.data.message}`);
+    }
   };
 
   return (
@@ -50,29 +180,49 @@ function CreateStudyView() {
         <Section>
           <WrapInput>
             <InputTitle htmlFor="title">제목</InputTitle>
-            <Input id="title" name="title" type="text" onChange={onChange} placeholder="제목" />
+            <Input id="title" name="title" type="text" onChange={onChange} value={title} placeholder="제목" />
           </WrapInput>
           <WrapInput>
             <InputTitle htmlFor="study-list-select">스터디 종류</InputTitle>
-            <Select id="study-list-select" name="studyList" onChange={onChange}>
-              <option value="1">종류1</option>
-              <option value="2">종류2</option>
+            <Select id="study-list-select" name="studyInstanceType" value={studyInstanceType} onChange={onChange}>
+              <option value="FREE">무료</option>
+              <option value="PAY">유료</option>
             </Select>
           </WrapInput>
           <WrapInput>
             <InputTitle htmlFor="max-user">최대 인원 수</InputTitle>
-            <Input id="max-user" name="maxUser" type="number" onChange={onChange} placeholder="최대 인원 수" />
+            <Input
+              id="max-user"
+              name="maxMember"
+              type="number"
+              onChange={onChange}
+              value={maxMember}
+              placeholder="최대 인원 수"
+            />
           </WrapInput>
           <WrapInput>
             <InputTitle htmlFor="study-type">스터디 타입</InputTitle>
-            <Select id="type-select" name="studyType" onChange={onChange}>
-              <option value="online">온라인</option>
-              <option value="offline">오프라인</option>
+            <Select id="type-select" name="studyType" value={studyType} onChange={onChange}>
+              <option value="ONLINE">온라인</option>
+              {/* 오프라인은 배포 이후 지원 */}
+              {/* <option value="OFFLINE">오프라인</option> */}
             </Select>
           </WrapInput>
-          {inputs.studyType === 'offline' && (
+          <WrapInput>
+            <InputTitle htmlFor="study-type">언어</InputTitle>
+            <Select id="subject-select" name="subject" onChange={onChange}>
+              {subjects.map((item: { id: number; name: string }) => (
+                <option key={item.id} id={item.id.toString()} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </WrapInput>
+          {inputs.studyType === 'OFFLINE' && (
+            // 오프라인은 배포 이후 지원
             <WrapInput>
-              <InputTitle>오프라인 장소</InputTitle>
+              {/* 오프라인은 배포 이후 지원 */}
+              {/* <InputTitle>오프라인 장소</InputTitle>
               <SelectOffline id="si-select" name="sido" onChange={onChange}>
                 <option value="si">시</option>
                 <option value="sis">시s</option>
@@ -84,18 +234,32 @@ function CreateStudyView() {
               <SelectOffline id="gu-select" name="gu" onChange={onChange}>
                 <option value="gu">구</option>
                 <option value="gus">구s</option>
-              </SelectOffline>
+              </SelectOffline> */}
             </WrapInput>
           )}
-          <WrapInput>
-            <InputTitle htmlFor="contents">내용</InputTitle>
-            <Input id="contents" name="contents" type="text" onChange={onChange} placeholder="내용" />
+          <WrapInput style={{ height: '210px' }}>
+            <InputTitle htmlFor="contents" style={{ top: '-20px' }}>
+              내용
+            </InputTitle>
+            <Textarea name="contents" id="contents" value={contents} placeholder="내용" onChange={onChange}></Textarea>
+          </WrapInput>
+          <WrapInput style={{ display: 'flex' }}>
+            <WrapInput style={{ width: '50%' }}>
+              <InputTitle htmlFor="startDate">시작</InputTitle>
+              <Input name="startDate" id="startDate" type="date" value={startDate} onChange={onChange}></Input>
+            </WrapInput>
+            <div style={{ margin: '0px 6%' }}></div>
+            <WrapInput style={{ width: '50%' }}>
+              <InputTitle htmlFor="endDate">종료</InputTitle>
+              <Input name="endDate" id="endDate" type="date" value={endDate} onChange={onChange}></Input>
+            </WrapInput>
           </WrapInput>
           <WrapInput>
             <InputTitle htmlFor="image">대표 이미지</InputTitle>
-            <Input id="image" name="image" type="file" onChange={onChange} style={{ border: 'none', padding: '0px' }} />
+            <Input id="files" name="files" type="file" onChange={onChange} style={{ border: 'none', padding: '0px' }} />
           </WrapInput>
           <Button
+            onClick={onSaveStudy}
             style={{
               width: '100%',
               marginTop: '20px',

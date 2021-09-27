@@ -1,10 +1,10 @@
 package study.devmeetingstudy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.simple.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.dto.message.MessageReqDto;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.dto.token.TokenDto;
@@ -132,7 +132,7 @@ class MessageControllerUnitTest {
         // sender 기반으로 token 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(token);
 
-        MessageRequestDto messageRequestDto = new MessageRequestDto("dltmddn@na.na", "Hello");
+        MessageReqDto messageReqDto = new MessageReqDto("dltmddn@na.na", "Hello");
 
         // mock 객체가 특정한 값을 반환해야 하는 경우.
         Message message = createMessage(1L, member, loginMember);
@@ -151,7 +151,7 @@ class MessageControllerUnitTest {
                 MockMvcRequestBuilders.post("/api/messages")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization","bearer " + tokenDto.getAccessToken())
-                        .content(new ObjectMapper().writeValueAsString(messageRequestDto)));
+                        .content(new ObjectMapper().writeValueAsString(messageReqDto)));
 
         //then
         final MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
@@ -279,9 +279,6 @@ class MessageControllerUnitTest {
         MvcResult mvcResult = resultActions.andExpect(status().isBadRequest()).andReturn();
         String body = mvcResult.getResponse().getContentAsString();
         System.out.println(body);
-//        JSONObject data = (JSONObject) getDataOfJSON(body);
-
-//        assertEquals(MessageReadStatus.READ.toString(), data.get("status"));
     }
 
     @DisplayName("메시지 삭제 204 No Content")

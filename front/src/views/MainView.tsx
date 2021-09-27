@@ -5,85 +5,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import StudyHeader from '../components/StudyHeaderRemove';
 import StudyFooter from '../components/StudyFooter';
 import Items from '../components/Items';
-import Pagination from '../components/Pagination';
-
-export const study = [
-  {
-    id: 1,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 2,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 3,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 4,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 5,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 6,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 7,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 8,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 9,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 10,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 11,
-    title: '오픈 스터디',
-    type: '온라인',
-  },
-  {
-    id: 12,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 13,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 14,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-  {
-    id: 15,
-    title: '오픈 스터디',
-    type: '오프라인',
-  },
-];
 
 const Select = styled.select`
   height: 40px;
@@ -137,31 +58,22 @@ const SidoGungu = styled(Select)`
 `;
 
 function OpenStudyView() {
-  // const [item, setItems] = useState([]);
-  // const [loading, setLoading] = useState(false); // 비동기 요소시에 loading 만들거 대비
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(4);
-
   const [inputs, setInputs] = useState({
     studyType: 'online',
     sido: '',
     gun: '',
     gu: '',
     studyList: '종류1',
+    callDataCount: 4,
   });
 
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setInputs({
       ...inputs,
-      [name]: value,
+      [name]: name === 'callDataCount' ? parseInt(value) : value,
     });
-    console.log(inputs);
   };
-  const indexOfLastPost = currentPage * postsPerPage; //페이지내 마지막 인덱스 값
-  const indexOfFirstPost = indexOfLastPost - postsPerPage; //페이지내 첫번째 인덱스 값
-  const currentPosts = study.slice(indexOfFirstPost, indexOfLastPost); // 페이지에 보여질 요소
-  const paginate = (pageNumber: any) => setCurrentPage(pageNumber); //  page 번호 (누르면 들어가는 id 지정)
 
   return (
     <>
@@ -174,6 +86,12 @@ function OpenStudyView() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              position: 'sticky',
+              top: '120px',
+              backgroundColor: 'white',
+              // '"1"' 형식은 'ZIndex | undefined' 형식에 할당할 수 없습니다.ts(2322)
+              // @ts-ignore
+              zIndex: '10',
             }}
           >
             <div>
@@ -193,17 +111,23 @@ function OpenStudyView() {
 
               <Select id="type-select" name="studyType" onChange={onChange}>
                 <option value="online">온라인</option>
-                <option value="offline">오프라인</option>
+                {/* 오프라인은 배포 이후 지원 */}
+                {/* <option value="offline">오프라인</option> */}
               </Select>
               <Select id="study-select" name="studyList" onChange={onChange}>
-                <option value="1">종류1</option>
-                <option value="2">종류2</option>
+                <option value="FREE">무료</option>
+                <option value="PAY">유료</option>
               </Select>
-
+              <Select id="call-data-count-select" name="callDataCount" onChange={onChange}>
+                <option value={4}>4개</option>
+                <option value={8}>8개</option>
+                <option value={16}>16개</option>
+              </Select>
               {inputs.studyType === 'offline' && (
                 <>
                   {/* innerwidth는 한번만 실행되므로 차후에 변경 예정 */}
-                  {window.innerWidth < 740 && <br />}
+                  {/* 오프라인은 배포 이후 지원 */}
+                  {/* {window.innerWidth < 740 && <br />}
                   <SidoGungu id="city-select" name="sido" onChange={onChange}>
                     <option value="sido1">시도1</option>
                     <option value="sido2">시도2</option>
@@ -215,7 +139,7 @@ function OpenStudyView() {
                   <SidoGungu id="city-select" name="gu" onChange={onChange}>
                     <option value="gu1">구1</option>
                     <option value="gu2">구2</option>
-                  </SidoGungu>
+                  </SidoGungu> */}
                 </>
               )}
             </div>
@@ -224,9 +148,8 @@ function OpenStudyView() {
             </Icon>
           </div>
           <ItemList>
-            <Items items={currentPosts} />
+            <Items callDataCount={inputs.callDataCount} />
           </ItemList>
-          <Pagination postsPerPage={postsPerPage} totalPosts={study.length} paginate={paginate} />
         </Section>
       </Main>
       <StudyFooter />

@@ -1,24 +1,17 @@
 package study.devmeetingstudy.service;
 
-import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
-import org.h2.engine.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
 import study.devmeetingstudy.repository.MemberRepository;
 
 import java.util.Optional;

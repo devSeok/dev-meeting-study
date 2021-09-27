@@ -7,7 +7,6 @@ import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.UserException;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.response.MemberResponseDto;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.util.SecurityUtil;
 

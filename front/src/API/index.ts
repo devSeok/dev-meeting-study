@@ -1,6 +1,6 @@
 import Send from './interceptors';
-import { RegisterType, LoginType, Token } from '../ToolKit/userType';
 import { SendMessageType } from '../ToolKit/MessageTypes';
+import { RegisterType, LoginType, Token, Addresses, SubjectType, StudyType } from '../ToolKit/userType';
 
 enum Method {
   POST = 'POST',
@@ -13,7 +13,7 @@ enum Method {
 const register_user = (user: RegisterType) => {
   return Send({
     method: Method.POST,
-    url: '/api/auth/signup',
+    url: '/auth/signup',
     data: user,
   });
 };
@@ -22,7 +22,7 @@ const register_user = (user: RegisterType) => {
 const register_check_email = (email: string) => {
   return Send({
     method: Method.POST,
-    url: '/api/auth/email',
+    url: '/auth/email',
     data: { email },
   });
 };
@@ -30,7 +30,7 @@ const register_check_email = (email: string) => {
 const register_check_num = (auth_number: string, email: string) => {
   return Send({
     method: Method.POST,
-    url: '/api/auth/verifyCode',
+    url: '/auth/verifyCode',
     data: { auth_number, email },
   });
 };
@@ -39,7 +39,7 @@ const register_check_num = (auth_number: string, email: string) => {
 const login_user = (user: LoginType) => {
   return Send({
     method: Method.POST,
-    url: '/api/auth/login',
+    url: '/auth/login',
     data: user,
   });
 };
@@ -48,7 +48,7 @@ const login_user = (user: LoginType) => {
 const reissueToken = (token: Token) => {
   return Send({
     method: Method.POST,
-    url: '/api/auth/reissue',
+    url: '/auth/reissue',
     data: token,
   });
 };
@@ -57,7 +57,7 @@ const reissueToken = (token: Token) => {
 const myInfo = () => {
   return Send({
     method: Method.GET,
-    url: '/api/member/me',
+    url: '/member/me',
   });
 };
 
@@ -65,7 +65,7 @@ const myInfo = () => {
 const member = (email: string) => {
   return Send({
     method: Method.GET,
-    url: `/api/member/${email}`,
+    url: `/member/${email}`,
   });
 };
 
@@ -78,6 +78,49 @@ const sendMessages = (message: SendMessageType) => {
   });
 };
 
+// 주소 추가
+const addAddresses = (addresses: Addresses) => {
+  return Send({
+    method: Method.POST,
+    url: '/addresses',
+    data: addresses,
+  });
+};
+
+// 주소 검색
+const searchAddresses = (id: string) => {
+  return Send({
+    method: Method.GET,
+    url: `/addresses/${id}`,
+  });
+};
+
+// subjects 가져오기
+const getSubjects = () => {
+  return Send({
+    method: Method.GET,
+    url: '/subjects',
+  });
+};
+
+// subject 추가하기
+const addSubject = (subject: SubjectType) => {
+  return Send({
+    method: Method.POST,
+    url: '/subjects',
+    data: subject,
+  });
+};
+
+// 스터디 저장
+const saveStudty = (study: StudyType) => {
+  return Send({
+    method: Method.POST,
+    url: '/study',
+    data: study,
+  });
+};
+
 export {
   register_user,
   register_check_email,
@@ -87,4 +130,9 @@ export {
   myInfo,
   member,
   sendMessages,
+  addAddresses,
+  searchAddresses,
+  getSubjects,
+  addSubject,
+  saveStudty,
 };

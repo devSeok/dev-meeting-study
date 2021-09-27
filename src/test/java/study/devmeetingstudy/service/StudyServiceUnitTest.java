@@ -1,4 +1,4 @@
-package study.devmeetingstudy.controller;
+package study.devmeetingstudy.service;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -6,7 +6,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class StudyControllerTest {
+class StudyServiceUnitTest {
 
-    
+
 }

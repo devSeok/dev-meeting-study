@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberSignupRequestDto {
+public class MemberSignupReqDto {
 
     private final static int GRADE = 0;
 

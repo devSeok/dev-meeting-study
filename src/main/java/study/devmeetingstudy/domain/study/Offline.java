@@ -6,11 +6,10 @@ import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
+import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -24,22 +23,22 @@ public class Offline extends Study{
 
     @Builder
     public Offline(Subject subject, String title, int maxMember,
-                  LocalDateTime statDate, LocalDateTime endDate,
-                  StudyType studyType, Address address) {
+                   LocalDate statDate, LocalDate endDate,
+                   StudyType studyType, Address address) {
 
         super(subject, title, maxMember, statDate, endDate, studyType);
         this.address = address;
     }
 
-    public static Offline createOffline(StudySaveRequestDto dto, Optional<Subject> subject, Optional<Address> findAddress){
+    public static Offline create(StudySaveReqDto dto, Subject subject, Address address){
         return Offline.builder()
-                .subject(subject.get())
+                .subject(subject)
                 .title(dto.getTitle())
                 .maxMember(dto.getMaxMember())
-                .statDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .studyType(StudyType.FREE)
-                .address(findAddress.get())
+                .statDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .studyType(dto.getStudyType())
+                .address(address)
                 .build();
     }
 

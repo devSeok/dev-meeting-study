@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ApiResponseDto<T> {
+public class ApiResDto<T> {
 
     private String message;
     private int status;
     private T data;
 
     @Builder
-    public ApiResponseDto(String message, int status, T data){
+    public ApiResDto(String message, int status, T data){
         this.message = message;
         this.status = status;
         this.data = data;

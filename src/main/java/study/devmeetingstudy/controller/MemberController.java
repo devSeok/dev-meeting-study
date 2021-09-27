@@ -13,9 +13,9 @@ import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
-import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.dto.member.response.MemberResponseDto;
+import study.devmeetingstudy.dto.member.response.MemberResDto;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.service.MemberService;
 
@@ -37,14 +37,14 @@ public class MemberController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<MemberResponseDto>> getMyMemberInfo() {
+    public ResponseEntity<ApiResDto<MemberResDto>> getMyMemberInfo() {
         Member memberInfo = memberService.getMyInfo();
 
         return ResponseEntity.ok(
-                ApiResponseDto.<MemberResponseDto>builder()
+                ApiResDto.<MemberResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(MemberResponseDto.from(memberInfo))
+                        .data(MemberResDto.from(memberInfo))
                         .build()
         );
     }
@@ -56,14 +56,14 @@ public class MemberController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<MemberResponseDto>> getMemberInfo(@PathVariable String email) {
+    public ResponseEntity<ApiResDto<MemberResDto>> getMemberInfo(@PathVariable String email) {
         Member memberInfo = memberService.getMemberInfo(email);
 
         return ResponseEntity.ok(
-                ApiResponseDto.<MemberResponseDto>builder()
+                ApiResDto.<MemberResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(MemberResponseDto.from(memberInfo))
+                        .data(MemberResDto.from(memberInfo))
                         .build()
         );
     }
