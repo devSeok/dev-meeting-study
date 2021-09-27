@@ -14,11 +14,12 @@ import java.util.stream.Collectors;
 @Getter
 public class CreatedOnlineStudyResDto extends CreatedStudyResDto {
 
-    @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.")
-    private String onlineType;
-
-    @ApiModelProperty(value = "이미지 경로", notes = "해당 스터디 연관된 파일 (현재는 추가 기능 없이 하나의 파일만)")
+    @ApiModelProperty(value = "링크 주소", example = "https://discord.com/asdfasdfasdfasdf", notes = "StudyInstanceType이 온라인이면, 필요하다면 링크를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정.")
     private String link;
+
+    @ApiModelProperty(value = "소프트웨어 종류", example = "디스코드",
+            notes = "StudyInstanceType이 온라인이면, 소프트웨어 종류를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정. 예) 디스코드, 구글 밋 등")
+    private String onlineType;
 
     public CreatedOnlineStudyResDto(Long id, String title,
                                     int maxMember, LocalDate startDate,

@@ -13,9 +13,9 @@ import java.util.Map;
 public class StudyVO {
 
     private StudySaveReqDto studySaveReqDto;
-    private List<Map<String, String>> uploadFileInfos;
+    private Map<String, String> uploadFileInfo;
 
-    public static StudyVO of(StudySaveReqDto studySaveReqDto, List<Map<String, String>> uploadFileInfos){
-        return new StudyVO(studySaveReqDto, uploadFileInfos);
+    public static StudyVO of(StudySaveReqDto studySaveReqDto, Map<String, String> uploadFileInfo){
+        return new StudyVO(studySaveReqDto, uploadFileInfo);
     }
 }

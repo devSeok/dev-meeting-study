@@ -21,6 +21,7 @@ public class StudyService {
 
     public Study saveStudy(StudyVO studyVO, MemberResolverDto resolverDto){
 
+
         // 카테고리 찾기
 //        Optional<Subject> subjects = subjectRepository.findById(1L);
 //        // 온라인일때 저장

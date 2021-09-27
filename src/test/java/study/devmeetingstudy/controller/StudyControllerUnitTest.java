@@ -117,48 +117,47 @@ class StudyControllerUnitTest {
         SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
 
         //리퀘스트 바디 데이터 생성
-        StudySaveReqDto studySaveReqDto = StudySaveReqDto.builder()
+        StudySaveReqDto studySaveReqDto = getMockReqDto(subjectReqDto);
+
+        Subject subject = Subject.create(subjectReqDto);
+
+        Online online = Online.create(studySaveReqDto, subject);
+
+        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+
+        //업로드 과정
+        Map<String, String> fileInfo = new HashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doReturn(online).when(studyService).saveStudy(any(StudyVO.class), any(MemberResolverDto.class));
+        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
+        //when
+        // multipart는 기본적으로 POST 요청이다.
+        ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
+                        .file(image)
+                        .contentType(MediaType.MULTIPART_MIXED)
+                        .header("Authorization", "bearer " + tokenDto.getAccessToken())
+                        .flashAttr("studySaveReqDto", studySaveReqDto));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
+    }
+
+    private StudySaveReqDto getMockReqDto(SubjectReqDto subjectReqDto) {
+        return StudySaveReqDto.builder()
                 .title("자바 스터디원 구합니다")
                 .maxMember(5)
                 .startDate(LocalDate.of(2021, 9, 24))
                 .endDate(LocalDate.of(2021, 10, 25))
                 .studyType(StudyType.FREE)
                 .studyInstanceType(StudyInstanceType.ONLINE)
-                .subject(subjectReqDto)
+                .subjectId(subjectReqDto.getId())
                 .link("https://dfsdf.sdfd.d.")
                 .onlineType("디스코드")
                 .build();
-
-        Subject subject = Subject.create(subjectReqDto);
-
-        Online online = Online.create(studySaveReqDto, subject);
-
-        MockMultipartFile image = new MockMultipartFile("files", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
-        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
-
-        //업로드 과정
-        Map<String, String> fileInfo = new HashMap<>();
-        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
-        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
-        List<Map<String, String>> uploadImageUrls = new ArrayList<>();
-        uploadImageUrls.add(fileInfo);
-
-        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(online).when(studyService).saveStudy(any(StudyVO.class), any(MemberResolverDto.class));
-        doReturn(uploadImageUrls).when(uploader).uploadFiles(anyList(), anyString());
-        //when
-        // multipart는 기본적으로 POST 요청이다.
-        ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
-                        .file(image)
-                        .file(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .header("Authorization", "bearer " + tokenDto.getAccessToken()));
-
-        //then
-        MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
-        String body = mvcResult.getResponse().getContentAsString();
-        System.out.println(body);
     }
 
     public String getJSON(Object obj) throws JsonProcessingException {
@@ -173,6 +172,8 @@ class StudyControllerUnitTest {
     @Test
     void getStudies() throws Exception{
         //given
+
+
         //when
         //then
     }
