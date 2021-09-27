@@ -25,6 +25,30 @@ export interface TokenCheck {
   err?: PayloadFailType;
 }
 
+export interface Addresses {
+  address1: string;
+  address2: string;
+  address3: string;
+}
+
+export interface SubjectType {
+  id: number;
+  subjectName: string;
+}
+
+export interface StudyType {
+  address: Addresses;
+  endDate: string;
+  files: Array<any>;
+  maxMember: number;
+  startDate: string;
+  contents: string;
+  studyInstanceType: string;
+  studyType: string;
+  subject: SubjectType;
+  title: string;
+}
+
 export enum USER_TYPE {
   USER_REGISTER = 'USER_REGISTER',
   USER_LOGIN = 'USER_LOGIN',

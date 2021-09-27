@@ -8,8 +8,10 @@ import { auth, logout } from '../ToolKit/user';
 
 const HeaderWrap = styled.header`
   position: sticky;
-  top: 20px;
-  z-index: 0;
+  top: 0px;
+  padding-top: 20px;
+  z-index: 10;
+  background-color: white;
   @media screen and (max-width: 740px) {
     & {
       margin: 0;
@@ -38,6 +40,7 @@ const MenuList = styled.ul`
   margin: 1em auto;
   width: calc(100% - 2px);
   align-items: center;
+  margin: 0px;
 `;
 
 const RightMenu = styled.li`
