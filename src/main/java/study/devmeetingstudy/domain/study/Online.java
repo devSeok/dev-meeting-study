@@ -4,11 +4,10 @@ package study.devmeetingstudy.domain.study;
 import lombok.*;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
+import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -22,7 +21,7 @@ public class Online extends Study{
 
     @Builder
     public Online(Subject subject, String title, int maxMember,
-                  LocalDateTime statDate, LocalDateTime endDate,
+                  LocalDate statDate, LocalDate endDate,
                   StudyType studyType, String onlineType, String link) {
 
         super(subject, title, maxMember, statDate, endDate, studyType);
@@ -30,16 +29,16 @@ public class Online extends Study{
         this.link = link;
     }
 
-    public static Online createOnline(StudySaveRequestDto dto, Optional<Subject> subject){
+    public static Online create(StudySaveReqDto dto, Subject subject){
         return Online.builder()
-                .subject(subject.get())
+                .subject(subject)
                 .title(dto.getTitle())
                 .maxMember(dto.getMaxMember())
-                .statDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .studyType(StudyType.FREE)
-                .onlineType("tes")
-                .link("sd")
+                .statDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .studyType(dto.getStudyType())
+                .onlineType(dto.getOnlineType())
+                .link(dto.getLink())
                 .build();
     }
 }

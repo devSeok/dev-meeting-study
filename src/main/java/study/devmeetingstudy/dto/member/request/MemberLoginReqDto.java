@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberLoginRequestDto {
+public class MemberLoginReqDto {
 
     @NotBlank(message = "이메일은 필수입니다.")
     @Email(message = "이메일 형식이 아닙니다.")

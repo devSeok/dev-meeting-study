@@ -10,12 +10,11 @@ import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
-import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
-import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
-import study.devmeetingstudy.dto.message.MessageResponseDto;
+import study.devmeetingstudy.dto.message.MessageReqDto;
+import study.devmeetingstudy.dto.message.MessageResDto;
 import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.service.MemberService;
@@ -53,18 +52,18 @@ public class MessageController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResponseDto<MessageResponseDto>> saveMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
-                                                                          @Valid @RequestBody MessageRequestDto messageRequestDto){
+    public ResponseEntity<ApiResDto<MessageResDto>> saveMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
+                                                                @Valid @RequestBody MessageReqDto messageReqDto){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        Member member = memberService.getMemberInfo(messageRequestDto.getEmail());
-        Message message = messageService.send(new MessageVO(messageRequestDto.getContent(), member, loginMember));
+        Member member = memberService.getMemberInfo(messageReqDto.getEmail());
+        Message message = messageService.send(new MessageVO(messageReqDto.getContent(), member, loginMember));
         return ResponseEntity
                 .created(URI.create("/api/messages/" + message.getId()))
                 .body(
-                        ApiResponseDto.<MessageResponseDto>builder()
+                        ApiResDto.<MessageResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data(MessageResponseDto.of(message, loginMember, member))
+                                .data(MessageResDto.of(message, loginMember, member))
                                 .build()
                 );
     }
@@ -76,16 +75,16 @@ public class MessageController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<List<MessageResponseDto>>> getMessages(@ApiIgnore @JwtMember MemberResolverDto MemberResolverDto){
+    public ResponseEntity<ApiResDto<List<MessageResDto>>> getMessages(@ApiIgnore @JwtMember MemberResolverDto MemberResolverDto){
         Member loginMember = memberService.getUserOne(MemberResolverDto.getId());
         List<Message> messages = messageService.findMessages(loginMember);
         return ResponseEntity.ok(
-                ApiResponseDto.<List<MessageResponseDto>>builder()
+                ApiResDto.<List<MessageResDto>>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
                         .data(messages.stream()
                                 .map((message) ->
-                                MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                                MessageResDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
                                 .collect(Collectors.toList()))
                         .build()
         );
@@ -100,16 +99,16 @@ public class MessageController {
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResponseDto<MessageResponseDto>> getMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
-                                                                         @PathVariable Long id){
+    public ResponseEntity<ApiResDto<MessageResDto>> getMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
+                                                               @PathVariable Long id){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Message message = messageService.findMessage(id);
         authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
         return ResponseEntity.ok(
-                ApiResponseDto.<MessageResponseDto>builder()
+                ApiResDto.<MessageResDto>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(MessageResponseDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
+                        .data(MessageResDto.of(message, memberService.getUserOne(message.getSenderId()), loginMember))
                         .build()
         );
     }

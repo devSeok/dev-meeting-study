@@ -7,16 +7,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.error.exception.*;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.RefreshToken;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.dto.member.request.MemberLoginRequestDto;
-import study.devmeetingstudy.dto.member.request.MemberSignupRequestDto;
+import study.devmeetingstudy.dto.member.request.MemberLoginReqDto;
+import study.devmeetingstudy.dto.member.request.MemberSignupReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
-import study.devmeetingstudy.dto.token.request.TokenRequestDto;
+import study.devmeetingstudy.dto.token.request.TokenReqDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.repository.RefreshTokenRepository;
@@ -33,7 +32,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public Member signup(MemberSignupRequestDto memberRequestDto) {
+    public Member signup(MemberSignupReqDto memberRequestDto) {
         signupValidation(memberRequestDto);
         Member createMember = Member.createMember(memberRequestDto, passwordEncoder);
 
@@ -41,7 +40,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto login(MemberLoginRequestDto memberRequestDto, HttpServletResponse response) {
+    public TokenDto login(MemberLoginReqDto memberRequestDto, HttpServletResponse response) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
 
@@ -71,21 +70,21 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+    public TokenDto reissue(TokenReqDto tokenReqDto) {
         // 1. Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+        if (!tokenProvider.validateToken(tokenReqDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
 
         // 2. Access Token 에서 Member ID 가져오기
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+        Authentication authentication = tokenProvider.getAuthentication(tokenReqDto.getAccessToken());
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
         // 4. Refresh Token 일치하는지 검사
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+        if (!refreshToken.getValue().equals(tokenReqDto.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
@@ -108,7 +107,7 @@ public class AuthService {
         return dto.getId().equals(id);
     }
 
-    private void signupValidation(MemberSignupRequestDto memberRequestDto){
+    private void signupValidation(MemberSignupReqDto memberRequestDto){
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
             throw new SignupDuplicateException("이미 가입되어 있는 유저입니다.");
         }
@@ -118,7 +117,7 @@ public class AuthService {
         }
     }
 
-    private void userLoginValidation(Member byEmail, MemberLoginRequestDto memberRequestDto){
+    private void userLoginValidation(Member byEmail, MemberLoginReqDto memberRequestDto){
         if (byEmail.getStatus() != MemberStatus.ACTIVE) {
             throw new UserOutException("탈퇴한 회원입니다.", ErrorCode.USER_OUT);
         }

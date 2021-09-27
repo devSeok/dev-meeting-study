@@ -15,9 +15,8 @@ import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
-import study.devmeetingstudy.dto.message.MessageRequestDto;
+import study.devmeetingstudy.dto.message.MessageReqDto;
 import study.devmeetingstudy.repository.message.MessageRepository;
-import study.devmeetingstudy.service.MessageService;
 import study.devmeetingstudy.vo.MessageVO;
 
 
@@ -68,8 +67,8 @@ class MessageServiceTest {
         //given
         // 로그인 한 멤버가 멤버에게 메시지 보냄
 
-        MessageRequestDto messageRequestDto = new MessageRequestDto("dltmddn@na.na", "하이");
-        MessageVO messageVO = MessageVO.of(messageRequestDto, member, loginMember);
+        MessageReqDto messageReqDto = new MessageReqDto("dltmddn@na.na", "하이");
+        MessageVO messageVO = MessageVO.of(messageReqDto, member, loginMember);
 
         // messageRepository.save로 생성된 메시지
         Message createdMessage = createMessage(1L, member, loginMember);
@@ -132,7 +131,7 @@ class MessageServiceTest {
         //given
         List<Message> createdMessages = new ArrayList<>();
         for (int i = 0; i < 5; i++){
-            createdMessages.add(Message.create(MessageVO.of(new MessageRequestDto("하이", member.getEmail()), loginMember, member)));
+            createdMessages.add(Message.create(MessageVO.of(new MessageReqDto("하이", member.getEmail()), loginMember, member)));
         }
         doReturn(createdMessages).when(messageRepository).findMessagesDesc(loginMember);
 

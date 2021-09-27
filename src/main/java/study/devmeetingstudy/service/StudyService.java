@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.domain.study.Study;
-import study.devmeetingstudy.dto.study.request.StudySaveRequestDto;
+import study.devmeetingstudy.dto.study.StudyVO;
 import study.devmeetingstudy.repository.AddressRepository;
 import study.devmeetingstudy.repository.StudyRepository;
 import study.devmeetingstudy.repository.SubjectRepository;
@@ -19,7 +19,8 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final AddressRepository addressRepository;
 
-    public Study saveStudy(StudySaveRequestDto dto, MemberResolverDto resolverDto){
+    public Study saveStudy(StudyVO studyVO, MemberResolverDto resolverDto){
+
 
         // 카테고리 찾기
 //        Optional<Subject> subjects = subjectRepository.findById(1L);

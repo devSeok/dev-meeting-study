@@ -1,23 +1,16 @@
 package study.devmeetingstudy.repository;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import study.devmeetingstudy.domain.Subject;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
 
 import javax.persistence.EntityManager;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 class SubjectRepositoryTest {
@@ -31,8 +24,8 @@ class SubjectRepositoryTest {
     @Test
     void findByName() throws Exception{
         //given
-        SubjectRequestDto subjectRequestDto = new SubjectRequestDto("자바");
-        Subject subject = Subject.create(subjectRequestDto);
+        SubjectReqDto subjectReqDto = new SubjectReqDto("자바");
+        Subject subject = Subject.create(subjectReqDto);
         subjectRepository.save(subject);
         em.clear();
         em.flush();

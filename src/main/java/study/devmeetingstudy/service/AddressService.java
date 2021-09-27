@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.AddressNotFoundException;
 import study.devmeetingstudy.domain.Address;
-import study.devmeetingstudy.dto.address.AddressRequestDto;
+import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.repository.AddressRepository;
 
 @Service
@@ -19,8 +19,8 @@ public class AddressService {
     private final AddressRepository addressRepository;
 
     @Transactional
-    public Address saveAddress(AddressRequestDto addressRequestDto){
-        Address address = Address.create(addressRequestDto);
+    public Address saveAddress(AddressReqDto addressReqDto){
+        Address address = Address.create(addressReqDto);
         return addressRepository.save(address);
     }
 

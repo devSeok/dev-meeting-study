@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import study.devmeetingstudy.common.exception.global.response.ApiResponseDto;
+import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.Subject;
-import study.devmeetingstudy.dto.subject.SubjectRequestDto;
-import study.devmeetingstudy.dto.subject.SubjectResponseDto;
+import study.devmeetingstudy.dto.subject.SubjectReqDto;
+import study.devmeetingstudy.dto.subject.SubjectResDto;
 import study.devmeetingstudy.service.SubjectService;
 
 import javax.validation.Valid;
@@ -28,26 +28,26 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<SubjectResponseDto>> saveSubject(@Valid @RequestBody SubjectRequestDto subjectRequestDto){
-        Subject savedSubject = subjectService.saveSubject(subjectRequestDto);
+    public ResponseEntity<ApiResDto<SubjectResDto>> saveSubject(@Valid @RequestBody SubjectReqDto subjectReqDto){
+        Subject savedSubject = subjectService.saveSubject(subjectReqDto);
         return ResponseEntity.created(URI.create("/api/subjects" + savedSubject.getId()))
                 .body(
-                        ApiResponseDto.<SubjectResponseDto>builder()
+                        ApiResDto.<SubjectResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data(SubjectResponseDto.from(savedSubject))
+                                .data(SubjectResDto.from(savedSubject))
                                 .build()
                 );
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<SubjectResponseDto>>> getSubjects(){
+    public ResponseEntity<ApiResDto<List<SubjectResDto>>> getSubjects(){
         List<Subject> subjects = subjectService.findSubjects();
         return ResponseEntity.ok(
-                    ApiResponseDto.<List<SubjectResponseDto>>builder()
+                    ApiResDto.<List<SubjectResDto>>builder()
                             .message("성공")
                             .status(HttpStatus.OK.value())
-                            .data(subjects.stream().map(SubjectResponseDto::from).collect(Collectors.toList()))
+                            .data(subjects.stream().map(SubjectResDto::from).collect(Collectors.toList()))
                             .build()
                 );
     }

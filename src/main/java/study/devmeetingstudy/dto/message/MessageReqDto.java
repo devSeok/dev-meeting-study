@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequestDto {
+public class MessageReqDto {
 
     @NotEmpty(message = "이메일은 필수 입니다.")
     @NotNull
