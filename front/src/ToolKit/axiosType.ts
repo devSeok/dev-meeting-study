@@ -45,3 +45,28 @@ export interface DispatchReduxFailRes {
     };
   };
 }
+
+export interface ResSendMessage {
+  data: {
+    content: string;
+    createdDate: Date;
+    delflg: string;
+    id: number;
+    lastUpdateDate: Date;
+    member: {
+      email: string;
+      grade: number;
+      id: number;
+      nickname: string;
+    };
+    sender: {
+      email: string;
+      grade: number;
+      id: number;
+      nickname: string;
+    };
+    status: string;
+  };
+  message: string;
+  status: number;
+}

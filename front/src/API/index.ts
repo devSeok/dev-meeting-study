@@ -1,6 +1,6 @@
 import Send from './interceptors';
 import { RegisterType, LoginType, Token } from '../ToolKit/userType';
-import Pagination from '../components/Pagination';
+import { SendMessageType } from '../ToolKit/MessageTypes';
 
 enum Method {
   POST = 'POST',
@@ -69,6 +69,22 @@ const member = (email: string) => {
   });
 };
 
-// const pagination = () => {}
+// messages 목록
+const sendMessages = (message: SendMessageType) => {
+  return Send({
+    method: Method.POST,
+    url: 'api/messages',
+    data: message,
+  });
+};
 
-export { register_user, register_check_email, register_check_num, login_user, reissueToken, myInfo, member };
+export {
+  register_user,
+  register_check_email,
+  register_check_num,
+  login_user,
+  reissueToken,
+  myInfo,
+  member,
+  sendMessages,
+};

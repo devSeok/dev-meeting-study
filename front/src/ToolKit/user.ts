@@ -1,10 +1,34 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { login_user, register_user, reissueToken } from '../API/index';
+import { login_user, register_user, reissueToken, sendMessages } from '../API/index';
 import { RegisterType, LoginType, Token, TokenCheck, USER_TYPE } from './userType';
-import { ResRegister, ResLogin, PayloadSuccessType, PayloadFailType } from './axiosType';
+import { ResRegister, ResLogin, PayloadSuccessType, PayloadFailType, ResSendMessage } from './axiosType';
 import { ReducerType } from '../rootReducer';
+import { MESSAGE_TYPE, SendMessageType } from './MessageTypes';
 
-export const register = createAsyncThunk('REGISTER', async (user: RegisterType, { dispatch, rejectWithValue }) => {
+// 메세지 보내기
+export const sendMessage: any = createAsyncThunk(
+  'sendMessage',
+  async (message: SendMessageType, { dispatch, rejectWithValue }) => {
+    try {
+      const { data }: PayloadSuccessType<ResSendMessage> = await sendMessages(message);
+      console.log('data', data);
+      return {
+        type: MESSAGE_TYPE.MESSAGE_SEND,
+        payload: data,
+      };
+    } catch (err: any) {
+      const error: PayloadFailType = err.response.data;
+      const messageObj = {
+        ...error,
+        type: MESSAGE_TYPE.MESSAGE_SEND,
+      };
+      console.log('messageObj', messageObj);
+      return rejectWithValue(messageObj);
+    }
+  },
+);
+
+export const register = createAsyncThunk('user/REGISTER', async (user: RegisterType, { dispatch, rejectWithValue }) => {
   try {
     const { data }: PayloadSuccessType<ResRegister> = await register_user(user);
 
@@ -130,6 +154,7 @@ export interface InitialState {
   user: {};
   status: string;
   auth: AuthType;
+  message: object;
 }
 
 const State: InitialState = {
@@ -143,6 +168,7 @@ const State: InitialState = {
       message: '',
     },
   },
+  message: {},
 };
 
 const user = createSlice({
@@ -202,9 +228,24 @@ const user = createSlice({
       state.auth.type = type;
       state.auth.payload = data.payload;
     });
+
+    // 메세지 로딩
+    builder.addCase(sendMessage.pending, (state) => {
+      state.status = 'loading';
+    });
+    // 메세지 성공
+    builder.addCase(sendMessage.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.message = { type, payload };
+      console.log(payload);
+    });
+    // 메세지 실패
+    builder.addCase(sendMessage.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.message = { type, payload };
+    });
   },
 });
-
 
 export const { logout } = user.actions;
 export const userStatus = (state: ReducerType) => state.users.user;
