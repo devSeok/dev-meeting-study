@@ -8,3 +8,4 @@ export * from './InputSubLabel';
 export * from './InputWarningMes';
 export * from './Button';
 export * from './Icon';
+export * from './TextAreaInput';

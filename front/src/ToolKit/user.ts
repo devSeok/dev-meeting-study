@@ -22,7 +22,7 @@ export const sendMessage: any = createAsyncThunk(
         ...error,
         type: MESSAGE_TYPE.MESSAGE_SEND,
       };
-      console.log('messageObj', messageObj);
+      console.log('Error:messageObj', messageObj);
       return rejectWithValue(messageObj);
     }
   },

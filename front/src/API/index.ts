@@ -73,7 +73,7 @@ const member = (email: string) => {
 const sendMessages = (message: SendMessageType) => {
   return Send({
     method: Method.POST,
-    url: 'api/messages',
+    url: '/messages',
     data: message,
   });
 };
