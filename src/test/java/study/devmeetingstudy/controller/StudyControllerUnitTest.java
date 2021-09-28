@@ -39,7 +39,9 @@ import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
+import study.devmeetingstudy.service.MemberService;
 import study.devmeetingstudy.service.StudyService;
+import study.devmeetingstudy.service.SubjectService;
 
 
 import java.nio.charset.StandardCharsets;
@@ -64,6 +66,12 @@ class StudyControllerUnitTest {
 
     @Mock
     private Uploader uploader;
+
+    @Mock
+    private MemberService memberService;
+
+    @Mock
+    private SubjectService subjectService;
 
     private MockMvc mockMvc;
 
@@ -131,7 +139,10 @@ class StudyControllerUnitTest {
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(online).when(studyService).saveStudy(any(StudyVO.class), any(MemberResolverDto.class));
+        doReturn(loginMember).when(memberService).getUserOne(anyLong());
+        doReturn(subject).when(subjectService).findSubject(anyLong());
+        doReturn(online).when(studyService).saveStudy(any(StudyVO.class));
+
         doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
         //when
         // multipart는 기본적으로 POST 요청이다.
