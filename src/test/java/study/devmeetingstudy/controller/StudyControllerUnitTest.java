@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
-import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Subject;
@@ -30,6 +29,9 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.study.Online;
+import study.devmeetingstudy.domain.study.Study;
+import study.devmeetingstudy.domain.study.StudyFile;
+import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
@@ -39,9 +41,7 @@ import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
-import study.devmeetingstudy.service.MemberService;
-import study.devmeetingstudy.service.StudyService;
-import study.devmeetingstudy.service.SubjectService;
+import study.devmeetingstudy.service.*;
 
 
 import java.nio.charset.StandardCharsets;
@@ -72,6 +72,12 @@ class StudyControllerUnitTest {
 
     @Mock
     private SubjectService subjectService;
+
+    @Mock
+    private StudyFileService studyFileService;
+
+    @Mock
+    private StudyMemberService studyMemberService;
 
     private MockMvc mockMvc;
 
@@ -132,23 +138,30 @@ class StudyControllerUnitTest {
         Online online = Online.create(studySaveReqDto, subject);
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
         Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyFile studyFile = StudyFile.create(online, fileInfo);
+        StudyMember authReader = StudyMember.createAuthReader(loginMember, online);
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
+        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
         doReturn(subject).when(subjectService).findSubject(anyLong());
         doReturn(online).when(studyService).saveStudy(any(StudyVO.class));
+        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
+        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
 
-        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
         //when
         // multipart는 기본적으로 POST 요청이다.
         ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
                         .file(image)
-                        .contentType(MediaType.MULTIPART_MIXED)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "bearer " + tokenDto.getAccessToken())
                         .flashAttr("studySaveReqDto", studySaveReqDto));
 

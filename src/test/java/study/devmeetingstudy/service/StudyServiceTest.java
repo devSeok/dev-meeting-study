@@ -68,7 +68,7 @@ class StudyServiceTest {
         Study study = studyService.saveStudy(StudyVO.of(getMockReqDto(subjectReqDto), subject));
         em.flush();
         em.clear();
-        Study study1 = studyRepository.findById(1L).get();
+        Study findStudy = studyRepository.findById(1L).get();
 
         //then
     }
