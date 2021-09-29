@@ -39,6 +39,8 @@ public enum ErrorCode {
     // Subject
     SUBJECT_NOT_FOUND(400, "S001", "스터디 주제 정보가 없습니다"),
 
+    // validation
+
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),
     COUPON_EXPIRE(400, "CO002", "Coupon was already expired");
