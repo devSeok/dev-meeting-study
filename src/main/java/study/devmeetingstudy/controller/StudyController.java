@@ -57,11 +57,11 @@ public class StudyController {
     })
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> saveStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
-                                                                             @RequestPart("file") MultipartFile file,
+//                                                                             @RequestPart("file") MultipartFile file,
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
 
-        Map<String, String> uploadFileInfo = uploader.upload(file, DomainType.STUDY.value());
+        Map<String, String> uploadFileInfo = uploader.upload(studySaveReqDto.getFile(), DomainType.STUDY.value());
         Subject subject = subjectService.findSubject(studySaveReqDto.getSubjectId());
         Study createdStudy = studyService.saveStudy(StudyVO.of(studySaveReqDto, subject));
         StudyFile studyFile = studyFileService.saveStudyFile(createdStudy, uploadFileInfo);

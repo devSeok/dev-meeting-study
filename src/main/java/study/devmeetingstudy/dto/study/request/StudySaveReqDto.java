@@ -76,6 +76,8 @@ public class StudySaveReqDto {
             notes = "StudyInstanceType이 온라인이면, 소프트웨어 종류를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정. 예) 디스코드, 구글 밋 등")
     private String onlineType;
 
+    private MultipartFile file;
+
     @Builder
     public StudySaveReqDto(String title, int maxMember,
                            LocalDate startDate, LocalDate endDate,
