@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.common.exception.global.error.exception.SubjectNotFoundException;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.repository.SubjectRepository;
@@ -28,5 +29,11 @@ public class SubjectService {
     public List<Subject> findSubjects() {
         List<Subject> subjects = subjectRepository.findAll();
         return subjects;
+    }
+
+
+    public Subject findSubject(Long subjectId) {
+        return subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new SubjectNotFoundException("해당 id로 스터디 주제를 찾을 수 없습니다."));
     }
 }

@@ -6,12 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import study.devmeetingstudy.common.exception.global.error.exception.SubjectNotFoundException;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.repository.SubjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,4 +61,30 @@ class SubjectServiceTest {
         assertEquals(2, subjectList.size());
     }
 
+    @DisplayName("주제 조회")
+    @Test
+    void findSubject() throws Exception{
+        //given
+        Long subjectId = 1L;
+        Subject expectedSubject = Subject.create(new SubjectReqDto(subjectId, "Java"));
+        doReturn(Optional.of(expectedSubject)).when(subjectRepository).findById(subjectId);
+        //when
+        Subject subject = subjectService.findSubject(subjectId);
+        //then
+        assertEquals(expectedSubject, subject);
+    }
+
+    @DisplayName("주제 조회 SubjectNotFoundException")
+    @Test
+    void findSubject_SubjectNotFoundException() throws Exception{
+        //given
+        Long subjectId = 1L;
+        doReturn(Optional.empty()).when(subjectRepository).findById(subjectId);
+        //when
+        SubjectNotFoundException subjectNotFoundException = assertThrows(SubjectNotFoundException.class, () -> subjectService.findSubject(subjectId));
+        String message = subjectNotFoundException.getMessage();
+
+        //then
+        assertEquals("해당 id로 스터디 주제를 찾을 수 없습니다.", message);
+    }
 }
