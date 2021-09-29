@@ -3,6 +3,7 @@ package study.devmeetingstudy.common.exception.global.error;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindException;
 import study.devmeetingstudy.common.exception.global.error.exception.BusinessException;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
 
+import javax.validation.UnexpectedTypeException;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 // 참고 https://cheese10yun.github.io/spring-guide-exception
@@ -83,7 +86,7 @@ public class CustomGlobalExceptionHandler{
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ErrorResponse> handleIOException(final IOException e) {
-        log.error("handleEntityNotFoundException", e);
+        log.error("handleIOException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.NOT_CONVERT_ERROR);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

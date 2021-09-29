@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -122,7 +127,7 @@ class StudyControllerUnitTest {
     }
 
     // 참고: https://ykh6242.tistory.com/115
-    @DisplayName("스터디 생성 201 Created")
+    @DisplayName("스터디(ONLINE) 생성 201 Created, ONLINE, check field NotNull")
     @Test
     void saveStudy() throws Exception{
         //given
@@ -138,7 +143,7 @@ class StudyControllerUnitTest {
         Online online = Online.create(studySaveReqDto, subject);
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
-        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
+//        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
         Map<String, String> fileInfo = new HashMap<>();
@@ -167,7 +172,10 @@ class StudyControllerUnitTest {
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
-        System.out.println(mvcResult.getResponse().getContentAsString());
+        JSONObject data = (JSONObject) getDataOfJSON(mvcResult.getResponse().getContentAsString());
+        assertNotNull(data.get("link"));
+        assertNotNull(data.get("onlineType"));
+        assertNull(data.get("address"));
     }
 
     private StudySaveReqDto getMockReqDto(SubjectReqDto subjectReqDto) {
@@ -190,6 +198,12 @@ class StudyControllerUnitTest {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         return mapper.writeValueAsString(obj);
+    }
+
+    private Object getDataOfJSON(String body) throws ParseException {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject json = (JSONObject) jsonParser.parse(body);
+        return json.get("data");
     }
 
     @DisplayName("스터디 목록 200 Ok")

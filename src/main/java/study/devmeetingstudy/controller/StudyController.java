@@ -26,10 +26,14 @@ import study.devmeetingstudy.dto.study.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.service.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+/* TODO : file이 null이라면 나중에 해당 주제에 맞는 이미지를 넣어주는걸로 바꾸기.
+ *        enum valid 처리하기 (임시방편으로 체크중)
+ */
 @Api(tags = {"3. Study"})
 @RestController
 @RequestMapping("/api/studies")
@@ -52,12 +56,12 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> saveStudy(@ModelAttribute StudySaveReqDto studySaveReqDto,
-                                                                             @RequestPart("file") MultipartFile file,
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> saveStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
+//                                                                             @RequestPart("file") MultipartFile file,
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        // file이 null이라면 나중에 해당 주제에 맞는 이미지를 넣어주는걸로 바꾸기.
-        Map<String, String> uploadFileInfo = uploader.upload(file, DomainType.STUDY.value());
+
+        Map<String, String> uploadFileInfo = uploader.upload(studySaveReqDto.getFile(), DomainType.STUDY.value());
         Subject subject = subjectService.findSubject(studySaveReqDto.getSubjectId());
         Study createdStudy = studyService.saveStudy(StudyVO.of(studySaveReqDto, subject));
         StudyFile studyFile = studyFileService.saveStudyFile(createdStudy, uploadFileInfo);
