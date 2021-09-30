@@ -4,6 +4,7 @@ package study.devmeetingstudy.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,7 @@ import study.devmeetingstudy.domain.enums.DomainType;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
-import study.devmeetingstudy.dto.study.CreatedOfflineStudyResDto;
-import study.devmeetingstudy.dto.study.CreatedOnlineStudyResDto;
-import study.devmeetingstudy.dto.study.CreatedStudyResDto;
-import study.devmeetingstudy.dto.study.StudyVO;
+import study.devmeetingstudy.dto.study.*;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.service.*;
 
@@ -57,7 +55,6 @@ public class StudyController {
     })
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> saveStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
-//                                                                             @RequestPart("file") MultipartFile file,
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
 
@@ -86,6 +83,32 @@ public class StudyController {
                                 .data((CreatedOfflineStudyResDto) createdStudyResDto)
                                 .build()
                 );
+    }
+
+    @GetMapping
+    @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
+    @ApiImplicitParam(name = "file", value = "이미지 파일, 하나만 넣어주세요")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "스터디 목록 조회 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청")
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudies(@ModelAttribute StudySearchCondition studySearchCondition,
+                                                                              Pageable pageable) throws IOException {
+        return null;
+    }
+
+    @GetMapping
+    @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
+    @ApiImplicitParam(name = "file", value = "이미지 파일, 하나만 넣어주세요")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "스터디 조회 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청")
+    })
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
+                                                                             @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
+        return null;
     }
 
 

@@ -3,22 +3,14 @@ package study.devmeetingstudy.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.domain.Subject;
-import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.study.Offline;
 import study.devmeetingstudy.domain.study.Online;
 import study.devmeetingstudy.domain.study.Study;
-import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.dto.study.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
-import study.devmeetingstudy.repository.AddressRepository;
-import study.devmeetingstudy.repository.StudyFileRepository;
-import study.devmeetingstudy.repository.StudyRepository;
-import study.devmeetingstudy.repository.SubjectRepository;
-
-import java.util.Map;
+import study.devmeetingstudy.repository.study.StudyRepository;
 
 @Service
 @Transactional(readOnly = true)
