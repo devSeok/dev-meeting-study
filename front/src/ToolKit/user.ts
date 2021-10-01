@@ -1,32 +1,45 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { login_user, register_user, reissueToken, sendMessages } from '../API/index';
+import { createSlice, createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
+import { listMessages, login_user, register_user, reissueToken, sendMessages } from '../API/index';
 import { RegisterType, LoginType, Token, TokenCheck, USER_TYPE } from './userType';
 import { ResRegister, ResLogin, PayloadSuccessType, PayloadFailType, ResSendMessage } from './axiosType';
 import { ReducerType } from '../rootReducer';
 import { MESSAGE_TYPE, SendMessageType } from './MessageTypes';
 
 // 메세지 보내기
-export const sendMessage: any = createAsyncThunk(
-  'sendMessage',
-  async (message: SendMessageType, { dispatch, rejectWithValue }) => {
-    try {
-      const { data }: PayloadSuccessType<ResSendMessage> = await sendMessages(message);
-      console.log('data', data);
-      return {
-        type: MESSAGE_TYPE.MESSAGE_SEND,
-        payload: data,
-      };
-    } catch (err: any) {
-      const error: PayloadFailType = err.response.data;
-      const messageObj = {
-        ...error,
-        type: MESSAGE_TYPE.MESSAGE_SEND,
-      };
-      console.log('Error:messageObj', messageObj);
-      return rejectWithValue(messageObj);
-    }
+export const sendMessage: AsyncThunk<
+  {
+    type: MESSAGE_TYPE;
+    payload: ResSendMessage;
   },
-);
+  SendMessageType,
+  {}
+> = createAsyncThunk('sendMessage', async (message: SendMessageType, { rejectWithValue }) => {
+  try {
+    const { data }: PayloadSuccessType<ResSendMessage> = await sendMessages(message);
+    console.log('data', data);
+    return {
+      type: MESSAGE_TYPE.MESSAGE_SEND,
+      payload: data,
+    };
+  } catch (err: any) {
+    const error: PayloadFailType = err.response.data;
+    const messageObj = {
+      ...error,
+      type: MESSAGE_TYPE.MESSAGE_SEND,
+    };
+    console.log('Error:messageObj', messageObj);
+    return rejectWithValue(messageObj);
+  }
+});
+
+// 메세지 리스트
+export const listMessage = createAsyncThunk('listMessage', async (message, { rejectWithValue }) => {
+  try {
+    console.log(listMessages);
+  } catch (err: any) {
+    console.log(err);
+  }
+});
 
 export const register = createAsyncThunk('user/REGISTER', async (user: RegisterType, { dispatch, rejectWithValue }) => {
   try {

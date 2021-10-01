@@ -69,12 +69,20 @@ const member = (email: string) => {
   });
 };
 
-// messages 목록
+// messages 보내기
 const sendMessages = (message: SendMessageType) => {
   return Send({
     method: Method.POST,
     url: '/messages',
     data: message,
+  });
+};
+
+// messages 목록
+const listMessages = () => {
+  return Send({
+    method: Method.GET,
+    url: '/messages',
   });
 };
 
@@ -130,6 +138,7 @@ export {
   myInfo,
   member,
   sendMessages,
+  listMessages,
   addAddresses,
   searchAddresses,
   getSubjects,

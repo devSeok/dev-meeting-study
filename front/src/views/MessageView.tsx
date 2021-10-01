@@ -24,7 +24,7 @@ function MessageView({}: MessageViewProps) {
       [name]: value,
     });
   };
-  const onChangeText = (e: any) => {
+const onChangeText = (e: any) => {
     const { name, value } = e.target;
     setTextInputs({
       ...textInputs,
