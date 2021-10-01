@@ -25,10 +25,7 @@ public class StudyService {
     public Study saveStudy(StudyVO studyVO) {
         StudySaveReqDto studySaveReqDto = studyVO.getStudySaveReqDto();
         Subject subject = studyVO.getSubject();
-        if (isInstanceOnline(studySaveReqDto.getStudyInstanceType())) {
-            return studyRepository.save(Online.create(studySaveReqDto, subject));
-        }
-        return studyRepository.save(Offline.create(studySaveReqDto, subject, addressService.findAddress(studySaveReqDto.getAddressId())));
+        return studyRepository.save(Study.create(studySaveReqDto, subject));
     }
 
     private boolean isInstanceOnline(StudyInstanceType studyInstanceType) {

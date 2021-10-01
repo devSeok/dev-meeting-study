@@ -4,7 +4,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
+import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,9 +17,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DiscriminatorColumn
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Study extends BaseTimeEntity {
+//@DiscriminatorColumn
+//@Inheritance(strategy = InheritanceType.JOINED)
+public class Study extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_id")
@@ -27,13 +29,25 @@ public abstract class Study extends BaseTimeEntity {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
+    @Enumerated(EnumType.STRING)
+    private StudyInstanceType dtype;
+
     private String title;
+
     private int maxMember;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
+
+    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL)
+    private Online online;
+
+    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL)
+    private Offline offline;
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private final List<StudyFile> files = new ArrayList<>();
@@ -41,16 +55,34 @@ public abstract class Study extends BaseTimeEntity {
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private final List<StudyMember> studyMembers = new ArrayList<>();
 
-    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType) {
+    @Builder
+    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype) {
         this.subject = subject;
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
         this.endDate = endDate;
         this.studyType = studyType;
+        this.dtype = dtype;
     }
 
-    public static boolean isInstanceOnline(Study study){
-        return study instanceof Online;
+    public static Study create(StudySaveReqDto studySaveReqDto, Subject subject) {
+        return Study.builder()
+                .subject(subject)
+                .title(studySaveReqDto.getTitle())
+                .maxMember(studySaveReqDto.getMaxMember())
+                .startDate(studySaveReqDto.getStartDate())
+                .endDate(studySaveReqDto.getEndDate())
+                .studyType(studySaveReqDto.getStudyType())
+                .dtype(studySaveReqDto.getStudyInstanceType())
+                .build();
     }
+
+    public static boolean isDtypeOnline(Study study){
+        return study.getDtype() == StudyInstanceType.ONLINE;
+    }
+
+//    public static boolean isInstanceOnline(Study study){
+//        return study instanceof Online;
+//    }
 }

@@ -3,7 +3,7 @@ package study.devmeetingstudy.repository.study;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import study.devmeetingstudy.domain.study.Study;
-import study.devmeetingstudy.dto.study.StudySearchCondition;
+import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -18,7 +18,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
     }
 
     public List<Study> findByStudySearchCondition(StudySearchCondition studySearchCondition) {
-
+        return null;
     }
 
 

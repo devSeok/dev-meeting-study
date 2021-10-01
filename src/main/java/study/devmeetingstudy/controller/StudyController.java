@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
@@ -18,10 +17,15 @@ import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.enums.DomainType;
 import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.domain.study.Offline;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.dto.study.*;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
+import study.devmeetingstudy.dto.study.request.StudySearchCondition;
+import study.devmeetingstudy.dto.study.response.CreatedOfflineStudyResDto;
+import study.devmeetingstudy.dto.study.response.CreatedOnlineStudyResDto;
+import study.devmeetingstudy.dto.study.response.CreatedStudyResDto;
 import study.devmeetingstudy.service.*;
 
 import javax.validation.Valid;
@@ -45,6 +49,9 @@ public class StudyController {
     private final SubjectService subjectService;
     private final StudyFileService studyFileService;
     private final StudyMemberService studyMemberService;
+    private final OfflineService offlineService;
+    private final OnlineService onlineService;
+    private final AddressService addressService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
@@ -56,31 +63,38 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> saveStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
+        log.info("StudyController.saveStudy");
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
 
         Map<String, String> uploadFileInfo = uploader.upload(studySaveReqDto.getFile(), DomainType.STUDY.value());
-        Subject subject = subjectService.findSubject(studySaveReqDto.getSubjectId());
-        Study createdStudy = studyService.saveStudy(StudyVO.of(studySaveReqDto, subject));
+
+        Study createdStudy = studyService.saveStudy(StudyVO.of(studySaveReqDto, subjectService.findSubject(studySaveReqDto.getSubjectId())));
+
         StudyFile studyFile = studyFileService.saveStudyFile(createdStudy, uploadFileInfo);
+
         studyMemberService.saveStudyLeader(loginMember, createdStudy);
 
-        CreatedStudyResDto createdStudyResDto = CreatedStudyResDto.of(createdStudy, studyFile);
-        if (CreatedStudyResDto.isInstanceOnlineResDto(createdStudyResDto)){
+        if (Study.isDtypeOnline(createdStudy)) {
             return ResponseEntity.created(URI.create("/api/studies/" + createdStudy.getId()))
                     .body(
                             ApiResDto.<CreatedOnlineStudyResDto>builder()
                                     .message("생성됨")
                                     .status(HttpStatus.CREATED.value())
-                                    .data((CreatedOnlineStudyResDto) createdStudyResDto)
+                                    .data(CreatedOnlineStudyResDto.of(
+                                            StudyVO.of(createdStudy, onlineService.saveOnline(studySaveReqDto, createdStudy)),
+                                            studyFile))
                                     .build()
                     );
         }
+
         return ResponseEntity.created(URI.create("/api/studies/" + createdStudy.getId()))
                 .body(
                         ApiResDto.<CreatedOfflineStudyResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data((CreatedOfflineStudyResDto) createdStudyResDto)
+                                .data(CreatedOfflineStudyResDto.of(
+                                        StudyVO.of(createdStudy, offlineService.saveOffline(addressService.findAddress(studySaveReqDto.getAddressId()), createdStudy)),
+                                        studyFile))
                                 .build()
                 );
     }
@@ -95,10 +109,11 @@ public class StudyController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudies(@ModelAttribute StudySearchCondition studySearchCondition,
                                                                               Pageable pageable) throws IOException {
+        log.info("StudyController.getStudies");
         return null;
     }
 
-    @GetMapping
+    @GetMapping("/{studyId}")
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
     @ApiImplicitParam(name = "file", value = "이미지 파일, 하나만 넣어주세요")
     @ApiResponses({
@@ -106,8 +121,8 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudy(@Valid @ModelAttribute StudySaveReqDto studySaveReqDto,
-                                                                             @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudy(@PathVariable Long studyId) throws IOException {
+        log.info("StudyController.getStudy");
         return null;
     }
 

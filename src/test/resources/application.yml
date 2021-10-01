@@ -12,3 +12,10 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sel: true
+        format_sql: true

@@ -1,4 +1,4 @@
-package study.devmeetingstudy.dto.study;
+package study.devmeetingstudy.dto.study.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -7,12 +7,12 @@ import study.devmeetingstudy.domain.study.Offline;
 import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressResDto;
+import study.devmeetingstudy.dto.study.StudyFileDto;
+import study.devmeetingstudy.dto.study.StudyVO;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
@@ -31,18 +31,18 @@ public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
         this.address = address;
     }
 
-    public static CreatedOfflineStudyResDto of(Offline offline, StudyFile studyFile) {
+    public static CreatedOfflineStudyResDto of(StudyVO studyVO, StudyFile studyFile) {
         return CreatedOfflineStudyResDto.builder()
-                .id(offline.getId())
-                .title(offline.getTitle())
-                .maxMember(offline.getMaxMember())
-                .startDate(offline.getStartDate())
-                .endDate(offline.getEndDate())
-                .studyType(offline.getStudyType())
-                .subject(SubjectResDto.from(offline.getSubject()))
-                .address(AddressResDto.from(offline.getAddress()))
-                .createdDate(offline.getCreatedDate())
-                .lastUpdateDate(offline.getLastUpdateDate())
+                .id(studyVO.getStudy().getId())
+                .title(studyVO.getStudy().getTitle())
+                .maxMember(studyVO.getStudy().getMaxMember())
+                .startDate(studyVO.getStudy().getStartDate())
+                .endDate(studyVO.getStudy().getEndDate())
+                .studyType(studyVO.getStudy().getStudyType())
+                .subject(SubjectResDto.from(studyVO.getStudy().getSubject()))
+                .address(AddressResDto.from(studyVO.getOffline().getAddress()))
+                .createdDate(studyVO.getStudy().getCreatedDate())
+                .lastUpdateDate(studyVO.getStudy().getLastUpdateDate())
                 .file(StudyFileDto.from(studyFile))
                 .build();
     }

@@ -27,14 +27,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
+import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.domain.study.Online;
-import study.devmeetingstudy.domain.study.Study;
-import study.devmeetingstudy.domain.study.StudyFile;
-import study.devmeetingstudy.domain.study.StudyMember;
+import study.devmeetingstudy.domain.study.*;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
@@ -84,6 +82,15 @@ class StudyControllerUnitTest {
     @Mock
     private StudyMemberService studyMemberService;
 
+    @Mock
+    private OnlineService onlineService;
+
+    @Mock
+    private OfflineService offlineService;
+
+    @Mock
+    private AddressService addressService;
+
     private MockMvc mockMvc;
 
     private Member loginMember;
@@ -129,18 +136,19 @@ class StudyControllerUnitTest {
     // 참고: https://ykh6242.tistory.com/115
     @DisplayName("스터디(ONLINE) 생성 201 Created, ONLINE, check field NotNull")
     @Test
-    void saveStudy() throws Exception{
+    void saveOnlineStudy() throws Exception{
         //given
 
         AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
         SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
 
         //리퀘스트 바디 데이터 생성
-        StudySaveReqDto studySaveReqDto = getMockReqDto(subjectReqDto);
+        StudySaveReqDto studySaveReqDto = getMockOnlineReqDto(subjectReqDto);
 
         Subject subject = Subject.create(subjectReqDto);
 
-        Online online = Online.create(studySaveReqDto, subject);
+        Study study = Study.create(studySaveReqDto, subject);
+        Online online = Online.create(studySaveReqDto, study);
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 //        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
@@ -149,17 +157,18 @@ class StudyControllerUnitTest {
         Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
-        StudyFile studyFile = StudyFile.create(online, fileInfo);
-        StudyMember authReader = StudyMember.createAuthReader(loginMember, online);
+        StudyFile studyFile = StudyFile.create(study, fileInfo);
+        StudyMember authReader = StudyMember.createAuthReader(loginMember, study);
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
         doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
+        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
         doReturn(subject).when(subjectService).findSubject(anyLong());
-        doReturn(online).when(studyService).saveStudy(any(StudyVO.class));
         doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
         doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
+        doReturn(online).when(onlineService).saveOnline(any(StudySaveReqDto.class), any(Study.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
@@ -173,12 +182,13 @@ class StudyControllerUnitTest {
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
         JSONObject data = (JSONObject) getDataOfJSON(mvcResult.getResponse().getContentAsString());
+        System.out.println(data);
         assertNotNull(data.get("link"));
         assertNotNull(data.get("onlineType"));
         assertNull(data.get("address"));
     }
 
-    private StudySaveReqDto getMockReqDto(SubjectReqDto subjectReqDto) {
+    private StudySaveReqDto getMockOnlineReqDto(SubjectReqDto subjectReqDto) {
         return StudySaveReqDto.builder()
                 .title("자바 스터디원 구합니다")
                 .maxMember(5)
@@ -204,6 +214,77 @@ class StudyControllerUnitTest {
         JSONParser jsonParser = new JSONParser();
         JSONObject json = (JSONObject) jsonParser.parse(body);
         return json.get("data");
+    }
+
+    @DisplayName("스터디(OFFLINE) 생성 201 Created, OFFLINE, check field NotNull")
+    @Test
+    void saveOfflineStudy() throws Exception{
+        //given
+
+        AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
+        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
+
+        //리퀘스트 바디 데이터 생성
+        StudySaveReqDto studySaveReqDto = getMockOfflineReqDto(subjectReqDto);
+
+        Subject subject = Subject.create(subjectReqDto);
+
+        Study study = Study.create(studySaveReqDto, subject);
+        Address address = Address.create(addressReqDto);
+        Offline offline = Offline.create(address, study);
+
+        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+//        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
+
+        //업로드 과정
+        Map<String, String> fileInfo = new HashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyFile studyFile = StudyFile.create(study, fileInfo);
+        StudyMember authReader = StudyMember.createAuthReader(loginMember, study);
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+
+        doReturn(loginMember).when(memberService).getUserOne(anyLong());
+        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
+        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
+        doReturn(subject).when(subjectService).findSubject(anyLong());
+        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
+        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
+        doReturn(address).when(addressService).findAddress(anyLong());
+        doReturn(offline).when(offlineService).saveOffline(any(Address.class), any(Study.class));
+
+
+        //when
+        // multipart는 기본적으로 POST 요청이다.
+        ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
+                .file(image)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "bearer " + tokenDto.getAccessToken())
+                .flashAttr("studySaveReqDto", studySaveReqDto));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
+        JSONObject data = (JSONObject) getDataOfJSON(mvcResult.getResponse().getContentAsString());
+        System.out.println(data);
+
+        assertNotNull(data.get("address"));
+        assertNull(data.get("link"));
+        assertNull(data.get("onlineType"));
+    }
+
+    private StudySaveReqDto getMockOfflineReqDto(SubjectReqDto subjectReqDto) {
+        return StudySaveReqDto.builder()
+                .title("자바 스터디원 구합니다")
+                .maxMember(5)
+                .startDate(LocalDate.of(2021, 9, 24))
+                .endDate(LocalDate.of(2021, 10, 25))
+                .studyType(StudyType.FREE)
+                .studyInstanceType(StudyInstanceType.OFFLINE)
+                .subjectId(subjectReqDto.getId())
+                .addressId(1L)
+                .build();
     }
 
     @DisplayName("스터디 목록 200 Ok")
