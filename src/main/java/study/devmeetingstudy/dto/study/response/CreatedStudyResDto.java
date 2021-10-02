@@ -50,8 +50,11 @@ public class CreatedStudyResDto {
     @ApiModelProperty(value = "스터디 주제", notes = "서브젝트 목록을 요청한 뒤 해당 id를 넘겨주세요.", example = "\"subject\" : {\"id\" : 1, \"subjectName\" : \"자바\"}")
     private SubjectResDto subject;
 
-    @ApiModelProperty(value = "스터디 파일", notes = "", example = "FREE")
+    @ApiModelProperty(value = "스터디 파일", example = "FREE")
     private StudyFileDto file;
+
+    @ApiModelProperty(value = "스터디 내용", notes = "스터디 내용 들어갑니다.", example = "자바 스터디원 구합니다.")
+    private String content;
 
     // TODO : 온라인이나 오프라인이냐를 어디서 결정하며 어떻게 넣어줘야하는지 생각.
     public static CreatedStudyResDto of(StudyVO studyVO, StudyFile studyFile) {

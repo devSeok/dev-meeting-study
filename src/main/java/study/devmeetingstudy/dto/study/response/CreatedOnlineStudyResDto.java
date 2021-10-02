@@ -30,8 +30,9 @@ public class CreatedOnlineStudyResDto extends CreatedStudyResDto {
                                     LocalDate endDate, StudyType studyType,
                                     SubjectResDto subject, String onlineType,
                                     String link, LocalDateTime createdDate,
-                                    LocalDateTime lastUpdateDate, StudyFileDto file) {
-        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file);
+                                    LocalDateTime lastUpdateDate, StudyFileDto file,
+                                    String content) {
+        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content);
         this.onlineType = onlineType;
         this.link = link;
     }
@@ -50,6 +51,7 @@ public class CreatedOnlineStudyResDto extends CreatedStudyResDto {
                 .createdDate(studyVO.getStudy().getCreatedDate())
                 .lastUpdateDate(studyVO.getStudy().getLastUpdateDate())
                 .file(StudyFileDto.from(studyFile))
+                .content(studyVO.getStudy().getContent())
                 .build();
     }
 }

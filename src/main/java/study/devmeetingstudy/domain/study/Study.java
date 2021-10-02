@@ -40,13 +40,15 @@ public class Study extends BaseTimeEntity {
 
     private LocalDate endDate;
 
+    private String content;
+
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
 
-    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Online online;
 
-    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Offline offline;
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
@@ -56,7 +58,7 @@ public class Study extends BaseTimeEntity {
     private final List<StudyMember> studyMembers = new ArrayList<>();
 
     @Builder
-    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype) {
+    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype, String content) {
         this.subject = subject;
         this.title = title;
         this.maxMember = maxMember;
@@ -64,6 +66,7 @@ public class Study extends BaseTimeEntity {
         this.endDate = endDate;
         this.studyType = studyType;
         this.dtype = dtype;
+        this.content = content;
     }
 
     public static Study create(StudySaveReqDto studySaveReqDto, Subject subject) {
@@ -75,6 +78,7 @@ public class Study extends BaseTimeEntity {
                 .endDate(studySaveReqDto.getEndDate())
                 .studyType(studySaveReqDto.getStudyType())
                 .dtype(studySaveReqDto.getStudyInstanceType())
+                .content(studySaveReqDto.getContent())
                 .build();
     }
 

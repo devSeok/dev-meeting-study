@@ -26,8 +26,8 @@ public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
                                      LocalDate endDate, StudyType studyType,
                                      SubjectResDto subject, AddressResDto address,
                                      LocalDateTime createdDate, LocalDateTime lastUpdateDate,
-                                     StudyFileDto file) {
-        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file);
+                                     StudyFileDto file, String content) {
+        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content);
         this.address = address;
     }
 
@@ -44,6 +44,7 @@ public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
                 .createdDate(studyVO.getStudy().getCreatedDate())
                 .lastUpdateDate(studyVO.getStudy().getLastUpdateDate())
                 .file(StudyFileDto.from(studyFile))
+                .content(studyVO.getStudy().getContent())
                 .build();
     }
 }
