@@ -2,6 +2,7 @@ package study.devmeetingstudy.domain.study;
 
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @DynamicInsert
+@Getter
 public class StudyMember {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +39,7 @@ public class StudyMember {
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'JOIN'")
-    private StudyStatus studystatus;
+    private StudyStatus studyStatus;
 
     @Builder
     public StudyMember(Long id, Member member, Study study, StudyAuth studyAuth, StudyStatus studystatus) {
@@ -45,7 +47,7 @@ public class StudyMember {
         this.member = member;
         this.study = study;
         this.studyAuth = studyAuth;
-        this.studystatus = studystatus;
+        this.studyStatus = studystatus;
     }
 
     public static StudyMember create(Member member, Study study) {
@@ -55,7 +57,7 @@ public class StudyMember {
                 .build();
     }
 
-    public static StudyMember createAuthReader(Member member, Study study){
+    public static StudyMember createAuthLeader(Member member, Study study){
         return StudyMember.builder()
                 .member(member)
                 .study(study)

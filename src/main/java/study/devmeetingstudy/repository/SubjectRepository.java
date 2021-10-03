@@ -8,7 +8,6 @@ import study.devmeetingstudy.domain.member.Member;
 
 import java.util.Optional;
 
-@Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     Optional<Subject> findByName(String SubjectName);

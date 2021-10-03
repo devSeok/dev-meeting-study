@@ -1,4 +1,4 @@
-package study.devmeetingstudy.service;
+package study.devmeetingstudy.service.study;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

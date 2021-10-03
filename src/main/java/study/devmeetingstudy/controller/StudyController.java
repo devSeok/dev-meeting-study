@@ -14,19 +14,19 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.common.uploader.Uploader;
-import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.enums.DomainType;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.domain.study.Offline;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
-import study.devmeetingstudy.dto.study.*;
+import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.dto.study.response.CreatedOfflineStudyResDto;
 import study.devmeetingstudy.dto.study.response.CreatedOnlineStudyResDto;
 import study.devmeetingstudy.dto.study.response.CreatedStudyResDto;
 import study.devmeetingstudy.service.*;
+import study.devmeetingstudy.service.study.*;
+import study.devmeetingstudy.vo.StudyVO;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -43,15 +43,8 @@ import java.util.Map;
 @Slf4j
 public class StudyController {
 
-    private final StudyService studyService;
-    private final Uploader uploader;
     private final MemberService memberService;
-    private final SubjectService subjectService;
-    private final StudyFileService studyFileService;
-    private final StudyMemberService studyMemberService;
-    private final OfflineService offlineService;
-    private final OnlineService onlineService;
-    private final AddressService addressService;
+    private final StudyFacadeService studyFacadeService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
@@ -66,35 +59,25 @@ public class StudyController {
         log.info("StudyController.saveStudy");
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
 
-        Map<String, String> uploadFileInfo = uploader.upload(studySaveReqDto.getFile(), DomainType.STUDY.value());
+        CreatedStudyDto createdStudyDto = studyFacadeService.store(studySaveReqDto, loginMember);
 
-        Study createdStudy = studyService.saveStudy(StudyVO.of(studySaveReqDto, subjectService.findSubject(studySaveReqDto.getSubjectId())));
-
-        StudyFile studyFile = studyFileService.saveStudyFile(createdStudy, uploadFileInfo);
-
-        studyMemberService.saveStudyLeader(loginMember, createdStudy);
-
-        if (Study.isDtypeOnline(createdStudy)) {
-            return ResponseEntity.created(URI.create("/api/studies/" + createdStudy.getId()))
+        if (Study.isDtypeOnline(createdStudyDto.getStudy())) {
+            return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
                     .body(
                             ApiResDto.<CreatedOnlineStudyResDto>builder()
                                     .message("생성됨")
                                     .status(HttpStatus.CREATED.value())
-                                    .data(CreatedOnlineStudyResDto.of(
-                                            StudyVO.of(createdStudy, onlineService.saveOnline(studySaveReqDto, createdStudy)),
-                                            studyFile))
+                                    .data(CreatedOnlineStudyResDto.from(createdStudyDto))
                                     .build()
                     );
         }
 
-        return ResponseEntity.created(URI.create("/api/studies/" + createdStudy.getId()))
+        return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
                 .body(
                         ApiResDto.<CreatedOfflineStudyResDto>builder()
                                 .message("생성됨")
                                 .status(HttpStatus.CREATED.value())
-                                .data(CreatedOfflineStudyResDto.of(
-                                        StudyVO.of(createdStudy, offlineService.saveOffline(addressService.findAddress(studySaveReqDto.getAddressId()), createdStudy)),
-                                        studyFile))
+                                .data(CreatedOfflineStudyResDto.from(createdStudyDto))
                                 .build()
                 );
     }
