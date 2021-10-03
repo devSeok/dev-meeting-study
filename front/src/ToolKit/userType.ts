@@ -39,13 +39,15 @@ export interface SubjectType {
 export interface StudyType {
   address: Addresses;
   endDate: string;
-  files: Array<any>;
+  file: object;
   maxMember: number;
   startDate: string;
   contents: string;
   studyInstanceType: string;
+  onlineType: string;
+  link: string;
   studyType: string;
-  subject: SubjectType;
+  subjectId: number;
   title: string;
 }
 
