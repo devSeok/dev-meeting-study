@@ -36,13 +36,15 @@ import study.devmeetingstudy.domain.study.*;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
-import study.devmeetingstudy.dto.study.StudyVO;
+import study.devmeetingstudy.dto.study.CreatedStudyDto;
+import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
 import study.devmeetingstudy.service.*;
+import study.devmeetingstudy.service.study.*;
 
 
 import java.nio.charset.StandardCharsets;
@@ -62,7 +64,7 @@ class StudyControllerUnitTest {
     private StudyController studyController;
 
     @Mock
-    private StudyService studyService;
+    private StudyFacadeService studyFacadeService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -72,24 +74,6 @@ class StudyControllerUnitTest {
 
     @Mock
     private MemberService memberService;
-
-    @Mock
-    private SubjectService subjectService;
-
-    @Mock
-    private StudyFileService studyFileService;
-
-    @Mock
-    private StudyMemberService studyMemberService;
-
-    @Mock
-    private OnlineService onlineService;
-
-    @Mock
-    private OfflineService offlineService;
-
-    @Mock
-    private AddressService addressService;
 
     private MockMvc mockMvc;
 
@@ -139,7 +123,6 @@ class StudyControllerUnitTest {
     void saveOnlineStudy() throws Exception{
         //given
 
-        AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
         SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
 
         //리퀘스트 바디 데이터 생성
@@ -150,6 +133,8 @@ class StudyControllerUnitTest {
         Study study = Study.create(studySaveReqDto, subject);
         Online online = Online.create(studySaveReqDto, study);
 
+
+
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 //        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
 
@@ -158,17 +143,25 @@ class StudyControllerUnitTest {
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
-        StudyMember authReader = StudyMember.createAuthReader(loginMember, study);
+        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+
+        CreatedStudyDto createdStudyDto = CreatedStudyDto.builder()
+                .study(study)
+                .studyMember(studyMember)
+                .studyFile(studyFile)
+                .online(online)
+                .build();
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
-        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
-        doReturn(subject).when(subjectService).findSubject(anyLong());
-        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
-        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
-        doReturn(online).when(onlineService).saveOnline(any(StudySaveReqDto.class), any(Study.class));
+        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+//        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
+//        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
+//        doReturn(subject).when(subjectService).findSubject(anyLong());
+//        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
+//        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
+//        doReturn(online).when(onlineService).saveOnline(any(StudySaveReqDto.class), any(Study.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
@@ -199,6 +192,7 @@ class StudyControllerUnitTest {
                 .subjectId(subjectReqDto.getId())
                 .link("https://dfsdf.sdfd.d.")
                 .onlineType("디스코드")
+                .content("자바 스터디원 모집합니다 현재 2분 남았습니다.")
                 .build();
     }
 
@@ -241,18 +235,28 @@ class StudyControllerUnitTest {
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
-        StudyMember authReader = StudyMember.createAuthReader(loginMember, study);
+        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+
+        CreatedStudyDto createdStudyDto = CreatedStudyDto.builder()
+                .study(study)
+                .studyMember(studyMember)
+                .studyFile(studyFile)
+                .offline(offline)
+                .build();
+
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
-        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
-        doReturn(subject).when(subjectService).findSubject(anyLong());
-        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
-        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
-        doReturn(address).when(addressService).findAddress(anyLong());
-        doReturn(offline).when(offlineService).saveOffline(any(Address.class), any(Study.class));
+        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+
+//        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
+//        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
+//        doReturn(subject).when(subjectService).findSubject(anyLong());
+//        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
+//        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
+//        doReturn(address).when(addressService).findAddress(anyLong());
+//        doReturn(offline).when(offlineService).saveOffline(any(Address.class), any(Study.class));
 
 
         //when
@@ -284,6 +288,7 @@ class StudyControllerUnitTest {
                 .studyInstanceType(StudyInstanceType.OFFLINE)
                 .subjectId(subjectReqDto.getId())
                 .addressId(1L)
+                .content("자바 스터디원 모집합니다 현재 2분 남았습니다.")
                 .build();
     }
 
