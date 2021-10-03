@@ -106,7 +106,7 @@ const addSubject = (subject: SubjectType) => {
 const saveStudty = (study: StudyType) => {
   return Send({
     method: Method.POST,
-    url: '/study',
+    url: '/studies',
     data: study,
   });
 };
