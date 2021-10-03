@@ -5,13 +5,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
-import study.devmeetingstudy.domain.study.Offline;
-import study.devmeetingstudy.domain.study.Online;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyFileDto;
-import study.devmeetingstudy.dto.study.StudyVO;
+import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
 
 import java.time.LocalDate;
@@ -56,13 +55,8 @@ public class CreatedStudyResDto {
     @ApiModelProperty(value = "스터디 내용", notes = "스터디 내용 들어갑니다.", example = "자바 스터디원 구합니다.")
     private String content;
 
-    // TODO : 온라인이나 오프라인이냐를 어디서 결정하며 어떻게 넣어줘야하는지 생각.
-    public static CreatedStudyResDto of(StudyVO studyVO, StudyFile studyFile) {
-        if (Study.isDtypeOnline(studyVO.getStudy())) {
-            return CreatedOnlineStudyResDto.of(studyVO, studyFile);
-        }
-        return CreatedOfflineStudyResDto.of(studyVO, studyFile);
-    }
+    @ApiModelProperty(value = "스터디 맴버", notes = "생성된 스터디의 리더 정보")
+    private StudyMemberResDto studyMember;
 
     public static boolean isInstanceOnlineResDto(CreatedStudyResDto createdStudyResDto){
         return createdStudyResDto instanceof CreatedOnlineStudyResDto;

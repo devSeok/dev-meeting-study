@@ -3,12 +3,12 @@ package study.devmeetingstudy.dto.study.response;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
-import study.devmeetingstudy.domain.study.Online;
-import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
+import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyFileDto;
-import study.devmeetingstudy.dto.study.StudyVO;
+import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
 
 import java.time.LocalDate;
@@ -31,27 +31,28 @@ public class CreatedOnlineStudyResDto extends CreatedStudyResDto {
                                     SubjectResDto subject, String onlineType,
                                     String link, LocalDateTime createdDate,
                                     LocalDateTime lastUpdateDate, StudyFileDto file,
-                                    String content) {
-        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content);
+                                    String content, StudyMemberResDto studyMember) {
+        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content, studyMember);
         this.onlineType = onlineType;
         this.link = link;
     }
 
-    public static CreatedOnlineStudyResDto of(StudyVO studyVO, StudyFile studyFile) {
+    public static CreatedOnlineStudyResDto from(CreatedStudyDto createdStudyDto) {
         return CreatedOnlineStudyResDto.builder()
-                .id(studyVO.getStudy().getId())
-                .title(studyVO.getStudy().getTitle())
-                .maxMember(studyVO.getStudy().getMaxMember())
-                .startDate(studyVO.getStudy().getStartDate())
-                .endDate(studyVO.getStudy().getEndDate())
-                .studyType(studyVO.getStudy().getStudyType())
-                .subject(SubjectResDto.from(studyVO.getStudy().getSubject()))
-                .onlineType(studyVO.getOnline().getOnlineType())
-                .link(studyVO.getOnline().getLink())
-                .createdDate(studyVO.getStudy().getCreatedDate())
-                .lastUpdateDate(studyVO.getStudy().getLastUpdateDate())
-                .file(StudyFileDto.from(studyFile))
-                .content(studyVO.getStudy().getContent())
+                .id(createdStudyDto.getStudy().getId())
+                .title(createdStudyDto.getStudy().getTitle())
+                .maxMember(createdStudyDto.getStudy().getMaxMember())
+                .startDate(createdStudyDto.getStudy().getStartDate())
+                .endDate(createdStudyDto.getStudy().getEndDate())
+                .studyType(createdStudyDto.getStudy().getStudyType())
+                .subject(SubjectResDto.from(createdStudyDto.getStudy().getSubject()))
+                .onlineType(createdStudyDto.getOnline().getOnlineType())
+                .link(createdStudyDto.getOnline().getLink())
+                .createdDate(createdStudyDto.getStudy().getCreatedDate())
+                .lastUpdateDate(createdStudyDto.getStudy().getLastUpdateDate())
+                .file(StudyFileDto.from(createdStudyDto.getStudyFile()))
+                .content(createdStudyDto.getStudy().getContent())
+                .studyMember(StudyMemberResDto.from(createdStudyDto.getStudyMember()))
                 .build();
     }
 }

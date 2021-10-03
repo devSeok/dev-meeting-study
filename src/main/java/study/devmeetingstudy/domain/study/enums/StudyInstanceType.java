@@ -6,7 +6,7 @@ import study.devmeetingstudy.common.vaildEnum.PolymorphicEnum;
 public enum StudyInstanceType implements PolymorphicEnum {
     ONLINE("ONLINE"), OFFLINE("OFFLINE");
 
-    private String value;
+    private final String value;
 
     StudyInstanceType(String value){
         this.value = value;
