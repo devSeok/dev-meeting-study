@@ -31,7 +31,7 @@ function StudyFooter({}: StudyFooterProps) {
           </Link>
         </Icon>
         <Icon>
-          <Link to="/my/info">
+          <Link to="/my/study">
             <BookmarkIcon style={{ fontSize: 70 }} />
           </Link>
         </Icon>
@@ -41,7 +41,9 @@ function StudyFooter({}: StudyFooterProps) {
           </Link>
         </Icon>
         <Icon>
-          <PersonOutlineIcon style={{ fontSize: 70 }} />
+          <Link to="/my/info">
+            <PersonOutlineIcon style={{ fontSize: 70 }} />
+          </Link>
         </Icon>
       </FooterBox>
     </>

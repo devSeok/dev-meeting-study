@@ -1,4 +1,5 @@
 import Send from './interceptors';
+import { SendMessageType } from '../ToolKit/MessageTypes';
 import { RegisterType, LoginType, Token, Addresses, SubjectType, StudyType } from '../ToolKit/userType';
 
 enum Method {
@@ -68,6 +69,23 @@ const member = (email: string) => {
   });
 };
 
+// messages 보내기
+const sendMessages = (message: SendMessageType) => {
+  return Send({
+    method: Method.POST,
+    url: '/messages',
+    data: message,
+  });
+};
+
+// messages 목록
+const listMessages = () => {
+  return Send({
+    method: Method.GET,
+    url: '/messages',
+  });
+};
+
 // 주소 추가
 const addAddresses = (addresses: Addresses) => {
   return Send({
@@ -119,6 +137,8 @@ export {
   reissueToken,
   myInfo,
   member,
+  sendMessages,
+  listMessages,
   addAddresses,
   searchAddresses,
   getSubjects,

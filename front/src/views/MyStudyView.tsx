@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { NewLifecycle, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import StudyHeader from '../components/StudyHeader';
 import StudyColumnList from '../components/StudyColumnList';
@@ -6,8 +6,8 @@ import { Main, Section, InputWrap, Input, InputTitle, Button, Icon } from '../el
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
-
 import person from '../asset/image/person.png';
+import { BrowserRouter as Router, Link, Switch, Route, useHistory } from 'react-router-dom';
 
 const SelectItem = styled.div`
   width: 500px;
@@ -30,22 +30,34 @@ const Item = styled.li`
   }
 `;
 
-const items = [
+export const items = [
   {
     title: '개인정보',
     image: <PermIdentityIcon />,
+    url: '/my/info',
+    name: 'info',
+    component: Info,
   },
   {
     title: '스터디',
     image: <MenuBookIcon />,
+    url: '/my/study',
+    name: 'study',
+    component: Study,
   },
   {
     title: '쪽지',
     image: <MailOutlineIcon />,
+    url: '/my/message',
+    name: 'message',
+    component: Message,
   },
   {
     title: '회원탈퇴',
     image: <PermIdentityIcon />,
+    url: '/my/secession',
+    name: 'secession',
+    component: Secession,
   },
 ];
 
@@ -76,6 +88,7 @@ const post = [
 ];
 
 function MyStudyView() {
+  const history = useHistory();
   const [inputs, setInputs] = useState({
     email: '',
     nickname: '',
@@ -111,6 +124,20 @@ function MyStudyView() {
       [name]: value,
     });
   };
+  const obj: any = {
+    info: '0',
+    study: '1',
+    message: '2',
+    secession: '3',
+  };
+
+  const pathname = history.location.pathname;
+  // const pathnameSlice = pathname.slice(4);
+  // setItem(parseInt(obj[pathnameSlice]));
+  useEffect(() => {
+    const pathnameSlice = pathname.slice(4);
+    setItem(parseInt(obj[pathnameSlice]));
+  }, []);
 
   return (
     <>
@@ -119,53 +146,41 @@ function MyStudyView() {
         <Section>
           <SelectItem>
             <Items>
-              {items.map(({ image, title }, index) => {
+              {items.map(({ image, title, url, name }: any, index: number) => {
+                const obj: any = {
+                  info: '0',
+                  study: '1',
+                  message: '2',
+                  secession: '3',
+                };
+                const pathname = history.location.pathname;
+                const pathnameSlice = pathname.slice(4);
+                // console.log(typeof pathname);
+                // console.log(pathnameSlice);
                 return (
-                  <Item
-                    onClick={(e) => onClick(e.currentTarget, index)}
-                    key={index}
-                    className={index === 0 ? 'selected' : ''}
-                  >
-                    <Icon style={{ display: 'flex', flexDirection: 'column' }}>
-                      {image}
-                      <span>{title}</span>
-                    </Icon>
-                  </Item>
+                  <>
+                    <Link to={url}>
+                      <Item
+                        onClick={(e) => onClick(e.currentTarget, index)}
+                        key={index}
+                        className={index === parseInt(obj[pathnameSlice]) ? 'selected' : ''}
+                      >
+                        <Icon style={{ display: 'flex', flexDirection: 'column' }}>
+                          {image}
+                          <span>{title}</span>
+                        </Icon>
+                      </Item>
+                    </Link>
+                  </>
                 );
               })}
             </Items>
           </SelectItem>
           <div style={{ marginTop: '50px' }}>
-            {item === 0 && (
-              <div style={{ width: '500px', display: 'flex' }}>
-                <div style={{ padding: '10px 20px' }}>
-                  <img src={person} alt="유저" />
-                </div>
-                <div>
-                  <InputWrap>
-                    <InputTitle htmlFor="email">이메일</InputTitle>
-                    <Input id="email" name="email" type="email" onChange={onChange} placeholder="이메일" />
-                  </InputWrap>
-                  <InputWrap>
-                    <InputTitle htmlFor="nickname">닉네임</InputTitle>
-                    <Input id="nickname" name="nickname" type="text" onChange={onChange} placeholder="닉네임" />
-                  </InputWrap>
-                  <Button style={{ backgroundColor: '#51aafe' }}>수정하기</Button>
-                </div>
-              </div>
-            )}
-            {item === 1 && <StudyColumnList items={study} index={item} />}
-            {item === 2 && <StudyColumnList items={post} index={item} />}
-            {item === 3 && (
-              <div>
-                <h3 style={{ marginBottom: '30px', fontWeight: 'lighter' }}>정말 탈퇴하시겠습니까?</h3>
-                <InputWrap>
-                  <InputTitle htmlFor="password">비밀번호</InputTitle>
-                  <Input id="password" name="password" type="password" onChange={onChange} placeholder="비밀번호" />
-                </InputWrap>
-                <Button style={{ backgroundColor: '#51aafe' }}>탈퇴</Button>
-              </div>
-            )}
+            {pathname === '/my/info' && <Info onChange={onChange} />}
+            {pathname === '/my/study' && <Study study={study} index={item} />}
+            {pathname === '/my/message' && <Message post={post} index={item} />}
+            {pathname === '/my/secession' && <Secession onChange={onChange} />}
           </div>
         </Section>
       </Main>
@@ -174,3 +189,68 @@ function MyStudyView() {
 }
 
 export default MyStudyView;
+
+interface PropsType {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+//ts-ignore
+export function Info({ onChange }: PropsType) {
+  // console.log('props', props);
+  return (
+    <>
+      <div style={{ width: '500px', display: 'flex' }}>
+        <div style={{ padding: '10px 20px' }}>
+          <img src={person} alt="유저" />
+        </div>
+        <div>
+          <InputWrap>
+            <InputTitle htmlFor="email">이메일</InputTitle>
+            <Input id="email" name="email" type="email" onChange={onChange} placeholder="이메일" />
+          </InputWrap>
+          <InputWrap>
+            <InputTitle htmlFor="nickname">닉네임</InputTitle>
+            <Input id="nickname" name="nickname" type="text" onChange={onChange} placeholder="닉네임" />
+          </InputWrap>
+          <Button style={{ backgroundColor: '#51aafe' }}>수정하기</Button>
+        </div>
+      </div>
+    </>
+  );
+}
+interface PType {
+  study?: any;
+  post?: any;
+  index: any;
+}
+
+export function Study({ study, index }: PType) {
+  console.log('items', study);
+  return (
+    <>
+      <StudyColumnList items={study} index={index} />
+    </>
+  );
+}
+
+
+export function Message({ post, index }: PType) {
+  return (
+    <>
+      <StudyColumnList items={post} index={index} />
+    </>
+  );
+}
+export function Secession({ onChange }: PropsType) {
+  return (
+    <>
+      <div>
+        <h3 style={{ marginBottom: '30px', fontWeight: 'lighter' }}>정말 탈퇴하시겠습니까?</h3>
+        <InputWrap>
+          <InputTitle htmlFor="password">비밀번호</InputTitle>
+          <Input id="password" name="password" type="password" onChange={onChange} placeholder="비밀번호" />
+        </InputWrap>
+        <Button style={{ backgroundColor: '#51aafe' }}>탈퇴</Button>
+      </div>
+    </>
+  );
+}

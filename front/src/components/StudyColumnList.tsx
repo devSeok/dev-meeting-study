@@ -17,6 +17,8 @@ interface Post {
 }
 
 function StudyColumnList({ items, index }: any) {
+  console.log('List:items', items);
+  console.log('List:index', index);
   return (
     <div style={{ width: '500px', justifyContent: 'flex-start' }}>
       <h3>총 {items.length}개</h3>
