@@ -155,7 +155,7 @@ function RegisterView() {
                   email: '',
                   checkNum: '',
                 });
-                // email input에 포커싱
+                // email input에 focus
                 emailRef.current?.focus();
               }
               setCheckEmailReq(false);
@@ -165,9 +165,29 @@ function RegisterView() {
           });
       } else {
         alert('모든 입력 창을 입력해주세요');
+        const obj = {
+          email: emailRef,
+          checkNum: checkNumRef,
+          password: passwordRef,
+          nickname: nicknameRef,
+        };
+        for (let prop in inputs) {
+          // @ts-ignore
+          console.log(obj[prop].current?.value);
+
+          // @ts-ignore
+          if (obj[prop].current?.value === '') {
+            // input value가 ""인 곳에 focus
+            // @ts-ignore
+            obj[prop].current?.focus();
+            break;
+          }
+        }
       }
     } else {
       alert('이메일 인증을 해주세요!');
+      // email input에 focus
+      emailRef.current?.focus();
     }
   };
   return (
