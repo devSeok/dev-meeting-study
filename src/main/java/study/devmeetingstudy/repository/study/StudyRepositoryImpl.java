@@ -4,16 +4,16 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
-import study.devmeetingstudy.domain.QAddress;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
-import study.devmeetingstudy.dto.QStudyDto;
+import study.devmeetingstudy.dto.study.QStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static study.devmeetingstudy.domain.QAddress.address;
 import static study.devmeetingstudy.domain.QSubject.subject;
 import static study.devmeetingstudy.domain.study.QOffline.offline;
 import static study.devmeetingstudy.domain.study.QOnline.online;
@@ -50,7 +50,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                 .leftJoin(study.subject, subject)
                 .leftJoin(study.offline, offline)
                 .leftJoin(study.online, online)
-                .leftJoin(offline.address, QAddress.address)
+                .leftJoin(offline.address, address)
                 .where(
                         titleLike(studySearchCondition.getTitle()),
                         subjectIdEq(studySearchCondition.getSubjectId()),

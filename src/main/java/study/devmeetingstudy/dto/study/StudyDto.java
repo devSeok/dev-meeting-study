@@ -1,6 +1,7 @@
 package study.devmeetingstudy.dto.study;
 
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.Builder;
 import lombok.Data;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
@@ -35,6 +36,7 @@ public class StudyDto {
     private StudyInstanceType dtype;
 
     @QueryProjection
+    @Builder
     public StudyDto(Long studyId, Address address,
                     Subject subject, LocalDateTime createdDate,
                     LocalDateTime lastUpdateDate, LocalDate startDate,

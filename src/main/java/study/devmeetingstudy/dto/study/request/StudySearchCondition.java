@@ -3,11 +3,13 @@ package study.devmeetingstudy.dto.study.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Setter;
+import lombok.ToString;
 import study.devmeetingstudy.common.vaildEnum.CheckValidEnum;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 
 @Setter
+@ToString
 public class StudySearchCondition {
 
     public static final Integer DEFAULT_OFFSET = 4;

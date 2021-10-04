@@ -23,6 +23,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
@@ -37,6 +38,7 @@ import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
+import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
@@ -136,7 +138,6 @@ class StudyControllerUnitTest {
 
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
-//        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
         Map<String, String> fileInfo = new HashMap<>();
@@ -156,16 +157,10 @@ class StudyControllerUnitTest {
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
         doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
-//        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
-//        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
-//        doReturn(subject).when(subjectService).findSubject(anyLong());
-//        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
-//        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
-//        doReturn(online).when(onlineService).saveOnline(any(StudySaveReqDto.class), any(Study.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
-        ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
+        final ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
                         .file(image)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -175,7 +170,6 @@ class StudyControllerUnitTest {
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
         JSONObject data = (JSONObject) getDataOfJSON(mvcResult.getResponse().getContentAsString());
-        System.out.println(data);
         assertNotNull(data.get("link"));
         assertNotNull(data.get("onlineType"));
         assertNull(data.get("address"));
@@ -228,8 +222,6 @@ class StudyControllerUnitTest {
         Offline offline = Offline.create(address, study);
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
-//        MockMultipartFile content = new MockMultipartFile("studySaveReqDto", null, "application/json", getJSON(studySaveReqDto).getBytes(StandardCharsets.UTF_8));
-
         //업로드 과정
         Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
@@ -244,24 +236,13 @@ class StudyControllerUnitTest {
                 .offline(offline)
                 .build();
 
-
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
         doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
 
-//        doReturn(fileInfo).when(uploader).upload(any(MultipartFile.class), anyString());
-//        doReturn(study).when(studyService).saveStudy(any(StudyVO.class));
-//        doReturn(subject).when(subjectService).findSubject(anyLong());
-//        doReturn(studyFile).when(studyFileService).saveStudyFile(any(Study.class), any(Map.class));
-//        doReturn(authReader).when(studyMemberService).saveStudyLeader(any(Member.class), any(Study.class));
-//        doReturn(address).when(addressService).findAddress(anyLong());
-//        doReturn(offline).when(offlineService).saveOffline(any(Address.class), any(Study.class));
-
-
         //when
         // multipart는 기본적으로 POST 요청이다.
-        ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
+        final ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
                 .file(image)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -271,8 +252,6 @@ class StudyControllerUnitTest {
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isCreated()).andReturn();
         JSONObject data = (JSONObject) getDataOfJSON(mvcResult.getResponse().getContentAsString());
-        System.out.println(data);
-
         assertNotNull(data.get("address"));
         assertNull(data.get("link"));
         assertNull(data.get("onlineType"));
@@ -292,13 +271,32 @@ class StudyControllerUnitTest {
                 .build();
     }
 
+    /* TODO 1. Study 10개 생성
+            2. 해당 searchCondition에 따른 필터링을 거친다. (title, dtype 등등)
+            3. mocking StudyService getList method
+    */
     @DisplayName("스터디 목록 200 Ok")
     @Test
     void getStudies() throws Exception{
         //given
+        StudySearchCondition searchCondition = StudySearchCondition.builder()
+                .title("자바")
+                .studyInstanceType(StudyInstanceType.ONLINE)
+                .build();
 
+//        for (int i = 0; i < 5; i++) {
+//            Study.create(getMockOfflineReqDto())
+//        }
+        // Offline 5
+        // Online 5
 
         //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/studies")
+                        .header("Authorization","bearer " + tokenDto.getAccessToken())
+                        .flashAttr("studySearchCondition", searchCondition));
         //then
+        String data = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(data);
     }
 }

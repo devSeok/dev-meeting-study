@@ -90,9 +90,9 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudies(@ModelAttribute StudySearchCondition studySearchCondition,
-                                                                              Pageable pageable) throws IOException {
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudies(@Valid @ModelAttribute StudySearchCondition studySearchCondition) throws IOException {
         log.info("StudyController.getStudies");
+        System.out.println(studySearchCondition);
         return null;
     }
 
@@ -111,3 +111,4 @@ public class StudyController {
 
 
 }
+

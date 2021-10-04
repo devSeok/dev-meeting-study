@@ -45,7 +45,6 @@ public class StudyFacadeService {
                     .online(onlineService.saveOnline(studySaveReqDto, createdStudy))
                     .studyMember(studyMember)
                     .build();
-
         }
         return CreatedStudyDto.builder()
                 .study(createdStudy)
@@ -53,6 +52,7 @@ public class StudyFacadeService {
                 .offline(offlineService.saveOffline(addressService.findAddress(studySaveReqDto.getAddressId()), createdStudy))
                 .studyMember(studyMember)
                 .build();
-
     }
+
+
 }
