@@ -28,8 +28,34 @@ function LoginView() {
     });
   };
 
+  const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { code } = e;
+
+    if (code === 'Enter') {
+      checkInputs();
+    }
+  };
+
+  const checkInputs = () => {
+    if (email !== '' && password !== '') {
+      onLogin();
+    } else {
+      const obj = {
+        email: emailRef,
+        password: passwordRef,
+      };
+      for (let prop in inputs) {
+        // @ts-ignore
+        if (obj[prop].current.value === '') {
+          // @ts-ignore
+          obj[prop].current?.focus();
+          break;
+        }
+      }
+    }
+  };
+
   const onLogin = async () => {
-    const { email, password } = inputs;
     const obj = {
       email,
       password,
@@ -67,6 +93,7 @@ function LoginView() {
               value={email}
               ref={emailRef}
               onChange={onChange}
+              onKeyDown={onEnter}
               placeholder="이메일"
             />
             <InputSub style={{ display: 'flex', alignItems: 'center' }}>
@@ -83,13 +110,14 @@ function LoginView() {
               value={password}
               ref={passwordRef}
               onChange={onChange}
+              onKeyDown={onEnter}
               placeholder="비밀번호"
             />
             <InputSub>
               <InputSubLabel>비밀번호를 잊어버리셨나요?</InputSubLabel>
             </InputSub>
           </InputWrap>
-          <Button style={{ marginTop: '20px', backgroundColor: '#51aafe' }} onClick={onLogin}>
+          <Button style={{ marginTop: '20px', backgroundColor: '#51aafe' }} onClick={checkInputs}>
             로그인
           </Button>
           <div
