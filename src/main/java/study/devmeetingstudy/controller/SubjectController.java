@@ -11,7 +11,7 @@ import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
-import study.devmeetingstudy.service.SubjectService;
+import study.devmeetingstudy.service.study.SubjectService;
 
 import javax.validation.Valid;
 import java.net.URI;

@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.repository.AddressRepository;
+import study.devmeetingstudy.service.study.AddressService;
 
 import java.util.Optional;
 

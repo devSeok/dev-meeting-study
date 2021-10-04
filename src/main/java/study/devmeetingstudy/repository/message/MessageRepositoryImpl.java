@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class MessageRepositoryImpl implements MessageRepositoryCustom{
+public class MessageRepositoryImpl implements MessageRepositoryCustom {
 
     private final EntityManager em;
 

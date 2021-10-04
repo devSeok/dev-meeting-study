@@ -10,6 +10,7 @@ import study.devmeetingstudy.common.exception.global.error.exception.SubjectNotF
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.repository.SubjectRepository;
+import study.devmeetingstudy.service.study.SubjectService;
 
 import java.util.ArrayList;
 import java.util.List;

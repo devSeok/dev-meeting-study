@@ -1,4 +1,4 @@
-package study.devmeetingstudy.service;
+package study.devmeetingstudy.service.study;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class StudyMemberService {
 
     @Transactional
     public StudyMember saveStudyLeader(Member member, Study study){
-        StudyMember studyMember = StudyMember.createAuthReader(member, study);
+        StudyMember studyMember = StudyMember.createAuthLeader(member, study);
         return studyMemberRepository.save(studyMember);
     }
 }

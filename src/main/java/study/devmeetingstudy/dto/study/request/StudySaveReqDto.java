@@ -58,10 +58,12 @@ public class StudySaveReqDto {
     @NotNull
     private Long subjectId;
 
+    @ApiModelProperty(value = "스터디 내용", example = "스터디 내용 입니다", notes = "스터디 게시글의 내용 작성")
+    @NotNull
+    private String content;
 
     //TODO : @Valid Resolver 작성해야함. (온라인인지 오프라인인지 확인 필요함)
     @ApiModelProperty(value = "스터디 타입 (온라인, 오프라인)", example = "ONLINE", notes = "스터디 타입 (ONLINE, OFFLINE 만 가능)", required = true)
-//    @NotBlank(message = "온라인/오프라인 선택은 필수입니다.")
     @NotNull(message = "ONLINE/OFFLINE 선택은 필수입니다.")
     @CheckValidEnum(target = StudyInstanceType.class, message = "스터디 유형이 ONLINE or OFFLINE이여야 합니다.")
     private StudyInstanceType studyInstanceType;
@@ -84,7 +86,7 @@ public class StudySaveReqDto {
                            StudyType studyType, Long subjectId,
                            StudyInstanceType studyInstanceType,
                            Long addressId, String link,
-                           String onlineType) {
+                           String onlineType, String content) {
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
@@ -95,5 +97,6 @@ public class StudySaveReqDto {
         this.addressId = addressId;
         this.link = link;
         this.onlineType = onlineType;
+        this.content = content;
     }
 }

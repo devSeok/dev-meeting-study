@@ -12,7 +12,7 @@ import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.address.AddressResDto;
-import study.devmeetingstudy.service.AddressService;
+import study.devmeetingstudy.service.study.AddressService;
 
 import java.net.URI;
 

@@ -30,7 +30,7 @@ import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
-import study.devmeetingstudy.service.AddressService;
+import study.devmeetingstudy.service.study.AddressService;
 
 import java.util.Collections;
 

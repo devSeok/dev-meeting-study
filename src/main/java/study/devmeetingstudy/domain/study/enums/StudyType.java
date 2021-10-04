@@ -7,7 +7,7 @@ import study.devmeetingstudy.common.vaildEnum.PolymorphicEnum;
 public enum StudyType implements PolymorphicEnum {
     FREE("FREE"), PAY("PAY");
 
-    private String value;
+    private final String value;
 
     StudyType(String value){
         this.value = value;

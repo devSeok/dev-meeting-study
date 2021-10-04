@@ -22,7 +22,7 @@ public @interface CheckValidEnum {
         @Override
         public void initialize(CheckValidEnum constraintAnnotation) {
             values = Arrays.stream(constraintAnnotation.target().getEnumConstants())
-                    .map(constraint -> constraint.value())
+                    .map(PolymorphicEnum::value)
                     .collect(Collectors.toList());
         }
 

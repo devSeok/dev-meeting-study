@@ -2,18 +2,21 @@ package study.devmeetingstudy.domain.study.enums;
 
 import study.devmeetingstudy.common.vaildEnum.PolymorphicEnum;
 
-// 저장될때 타입 체크
-public enum StudyInstanceType implements PolymorphicEnum {
-    ONLINE("ONLINE"), OFFLINE("OFFLINE");
+public enum SortedEnum implements PolymorphicEnum {
+    DESC("Desc"),ASC("Asc");
 
     private final String value;
 
-    StudyInstanceType(String value){
+    SortedEnum(String value) {
         this.value = value;
     }
 
     @Override
     public String value() {
         return value;
+    }
+
+    public static boolean isDesc(SortedEnum sortedEnum){
+        return sortedEnum == SortedEnum.DESC;
     }
 }

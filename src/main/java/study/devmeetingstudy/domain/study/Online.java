@@ -12,33 +12,32 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DiscriminatorValue("Online")
-public class Online extends Study{
+public class Online {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "online_id")
+    private Long id;
 
     private String onlineType;
 
     private String link;
 
-    @Builder
-    public Online(Subject subject, String title, int maxMember,
-                  LocalDate statDate, LocalDate endDate,
-                  StudyType studyType, String onlineType, String link) {
+    @OneToOne
+    @JoinColumn(name = "study_id")
+    private Study study;
 
-        super(subject, title, maxMember, statDate, endDate, studyType);
+    @Builder
+    public Online(String onlineType, String link, Study study) {
         this.onlineType = onlineType;
         this.link = link;
+        this.study = study;
     }
 
-    public static Online create(StudySaveReqDto dto, Subject subject){
+    public static Online create(StudySaveReqDto dto, Study study){
         return Online.builder()
-                .subject(subject)
-                .title(dto.getTitle())
-                .maxMember(dto.getMaxMember())
-                .statDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .studyType(dto.getStudyType())
                 .onlineType(dto.getOnlineType())
                 .link(dto.getLink())
+                .study(study)
                 .build();
     }
 }

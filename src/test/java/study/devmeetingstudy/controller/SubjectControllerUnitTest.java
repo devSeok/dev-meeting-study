@@ -31,7 +31,7 @@ import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
 import study.devmeetingstudy.jwt.TokenProvider;
 import study.devmeetingstudy.repository.MemberRepository;
-import study.devmeetingstudy.service.SubjectService;
+import study.devmeetingstudy.service.study.SubjectService;
 
 import java.util.ArrayList;
 import java.util.Collections;
