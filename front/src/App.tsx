@@ -11,6 +11,7 @@ import Auth from './hoc/auth';
 
 import './asset/GlobalStyle.css';
 import MessageView from './views/MessageView';
+import TestMessage from './views/MessageListView';
 
 // null  =>  누구나 가능
 // true  =>  로그안 한 사람만 가능
@@ -21,7 +22,7 @@ function App() {
     <Switch>
       <Route exact path="/" component={Auth(MainView, null)} />
       <Route exact path="/message/send" component={Auth(MessageView, null)} />
-      <Route exact path="/message/list" component={Auth(MessageView, null)} />
+      <Route exact path="/message/list" component={Auth(TestMessage, null)} />
       <Route exact path="/register" component={Auth(RegisterView, false)} />
       <Route exact path="/login" component={Auth(LoginView, false)} />
       <Route exact path="/study/create" component={Auth(CreateStudyView, true)} />

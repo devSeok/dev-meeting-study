@@ -155,8 +155,8 @@ function MyStudyView() {
                 };
                 const pathname = history.location.pathname;
                 const pathnameSlice = pathname.slice(4);
-                console.log(typeof pathname);
-                console.log(pathnameSlice);
+                // console.log(typeof pathname);
+                // console.log(pathnameSlice);
                 return (
                   <>
                     <Link to={url}>
@@ -189,10 +189,6 @@ function MyStudyView() {
 }
 
 export default MyStudyView;
-
-// function ItemSubRoutes(index) {
-//   return console.log(index);
-// }
 
 interface PropsType {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -235,6 +231,8 @@ export function Study({ study, index }: PType) {
     </>
   );
 }
+
+
 export function Message({ post, index }: PType) {
   return (
     <>
@@ -256,4 +254,3 @@ export function Secession({ onChange }: PropsType) {
     </>
   );
 }
-

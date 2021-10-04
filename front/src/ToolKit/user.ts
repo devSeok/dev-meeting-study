@@ -6,14 +6,7 @@ import { ReducerType } from '../rootReducer';
 import { MESSAGE_TYPE, SendMessageType } from './MessageTypes';
 
 // 메세지 보내기
-export const sendMessage: AsyncThunk<
-  {
-    type: MESSAGE_TYPE;
-    payload: ResSendMessage;
-  },
-  SendMessageType,
-  {}
-> = createAsyncThunk('sendMessage', async (message: SendMessageType, { rejectWithValue }) => {
+export const sendMessage = createAsyncThunk('sendMessage', async (message: SendMessageType, { rejectWithValue }) => {
   try {
     const { data }: PayloadSuccessType<ResSendMessage> = await sendMessages(message);
     console.log('data', data);
@@ -33,11 +26,23 @@ export const sendMessage: AsyncThunk<
 });
 
 // 메세지 리스트
-export const listMessage = createAsyncThunk('listMessage', async (message, { rejectWithValue }) => {
+export const listMessage = createAsyncThunk('listMessage', async ({ rejectWithValue }: any) => {
+  console.log('listMessage', listMessage);
+
   try {
-    console.log(listMessages);
+    const { data }: any = await listMessages();
+    console.log('listMessages', data);
+    return {
+      type: MESSAGE_TYPE.MESSAGE_LIST,
+      payload: data,
+    };
   } catch (err: any) {
-    console.log(err);
+    const error: PayloadFailType = err.response.data;
+    const messageObj = {
+      ...error,
+      type: MESSAGE_TYPE.MESSAGE_LIST,
+    };
+    return rejectWithValue(messageObj);
   }
 });
 
@@ -181,7 +186,17 @@ const State: InitialState = {
       message: '',
     },
   },
-  message: {},
+  message: {
+    type: '',
+    payload: {
+      type: '',
+      payload: {
+        message: '',
+        status: 0,
+        data: [],
+      },
+    },
+  },
 };
 
 const user = createSlice({
@@ -257,10 +272,26 @@ const user = createSlice({
       state.status = 'failed';
       state.message = { type, payload };
     });
+    // 메세지 리스트 로딩
+    builder.addCase(listMessage.pending, (state) => {
+      state.status = 'loading';
+    });
+    // 메세지 리스트 성공
+    builder.addCase(listMessage.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.message = { type, payload };
+      console.log(payload);
+    });
+    // 메세지 리스트 실패
+    builder.addCase(listMessage.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.message = { type, payload };
+    });
   },
 });
 
 export const { logout } = user.actions;
 export const userStatus = (state: ReducerType) => state.users.user;
 export const auth = (state: ReducerType) => state.users.auth.payload;
+export const message = (state: ReducerType) => state.users.message;
 export default user.reducer;
