@@ -1,9 +1,11 @@
 package study.devmeetingstudy.dto.study.response;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import study.devmeetingstudy.domain.study.StudyFile;
+import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressResDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
@@ -20,15 +22,15 @@ public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
     @ApiModelProperty(value = "주소", notes = "주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다.")
     private AddressResDto address;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     public CreatedOfflineStudyResDto(Long id, String title,
                                      int maxMember, LocalDate startDate,
                                      LocalDate endDate, StudyType studyType,
                                      SubjectResDto subject, AddressResDto address,
                                      LocalDateTime createdDate, LocalDateTime lastUpdateDate,
                                      StudyFileDto file, String content,
-                                     StudyMemberResDto studyMemberResDto) {
-        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content, studyMemberResDto);
+                                     StudyMemberResDto studyMemberResDto, StudyInstanceType dtype) {
+        super(id, title, maxMember, startDate, endDate, createdDate, lastUpdateDate, studyType, subject, file, content, studyMemberResDto, dtype);
         this.address = address;
     }
 
@@ -47,6 +49,7 @@ public class CreatedOfflineStudyResDto extends CreatedStudyResDto {
                 .file(StudyFileDto.from(createdStudyDto.getStudyFile()))
                 .content(createdStudyDto.getStudy().getContent())
                 .studyMemberResDto(StudyMemberResDto.from(createdStudyDto.getStudyMember()))
+                .dtype(createdStudyDto.getStudy().getDtype())
                 .build();
     }
 }

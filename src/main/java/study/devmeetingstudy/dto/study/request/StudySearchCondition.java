@@ -7,6 +7,7 @@ import lombok.ToString;
 import study.devmeetingstudy.common.vaildEnum.CheckValidEnum;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.domain.study.enums.StudyType;
 
 @Setter
 @ToString
@@ -30,6 +31,8 @@ public class StudySearchCondition {
     @ApiModelProperty(value = "정렬 방법", notes = "기본값 Desc, id 기준 최신 순(Desc), 나중 순(Asc)")
     @CheckValidEnum(target = SortedEnum.class, message = "정렬 유형은 Desc or Asc 만 가능합니다.")
     private SortedEnum sorted;
+    @ApiModelProperty(value = "스터디 타입", notes = "FREE or PAY")
+    private StudyType studyType;
 
     @Builder
     public StudySearchCondition(Long subjectId, String address1, StudyInstanceType studyInstanceType, Long lastId, String title, Integer offset) {

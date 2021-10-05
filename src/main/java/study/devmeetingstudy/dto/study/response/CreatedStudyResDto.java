@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
+import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyFileDto;
@@ -58,8 +59,7 @@ public class CreatedStudyResDto {
     @ApiModelProperty(value = "스터디 맴버", notes = "생성된 스터디의 리더 정보")
     private StudyMemberResDto studyMember;
 
-    public static boolean isInstanceOnlineResDto(CreatedStudyResDto createdStudyResDto){
-        return createdStudyResDto instanceof CreatedOnlineStudyResDto;
-    }
+    @ApiModelProperty(value = "스터디 인스턴스 타입", notes = "ONLINE or OFFLINE", example = "ONLINE")
+    private StudyInstanceType dtype;
 
 }
