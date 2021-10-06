@@ -20,11 +20,11 @@ public class Offline {
     @Column(name = "offline_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
     private Study study;
 

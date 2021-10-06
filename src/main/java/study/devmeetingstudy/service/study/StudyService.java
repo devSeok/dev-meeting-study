@@ -3,12 +3,13 @@ package study.devmeetingstudy.service.study;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.vo.StudyVO;
-import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.repository.study.StudyRepository;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,5 +27,9 @@ public class StudyService {
 
     private boolean isInstanceOnline(StudyInstanceType studyInstanceType) {
         return studyInstanceType == StudyInstanceType.ONLINE;
+    }
+
+    public List<Study> findStudiesByStudySearchCondition(StudySearchCondition studySearchCondition) {
+        return studyRepository.findByStudySearchConditionDesc(studySearchCondition);
     }
 }

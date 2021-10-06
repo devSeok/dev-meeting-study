@@ -6,7 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyMember;
+import study.devmeetingstudy.domain.study.enums.StudyAuth;
 import study.devmeetingstudy.repository.StudyMemberRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,9 @@ public class StudyMemberService {
     public StudyMember saveStudyLeader(Member member, Study study){
         StudyMember studyMember = StudyMember.createAuthLeader(member, study);
         return studyMemberRepository.save(studyMember);
+    }
+
+    public List<StudyMember> findStudyMemberByStudyIdAndAuth(Long studyId, StudyAuth studyAuth) {
+        return studyMemberRepository.findFirstByStudyIdAndStudyAuth(studyId, studyAuth);
     }
 }

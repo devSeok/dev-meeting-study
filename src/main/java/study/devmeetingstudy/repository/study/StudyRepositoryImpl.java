@@ -4,10 +4,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
+import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
-import study.devmeetingstudy.dto.study.QStudyDto;
-import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 
 import javax.persistence.EntityManager;
@@ -30,27 +29,13 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
         this.query = new JPAQueryFactory(em);
     }
 
-    public List<StudyDto> findByStudySearchConditionDesc(StudySearchCondition studySearchCondition) {
+    public List<Study> findByStudySearchConditionDesc(StudySearchCondition studySearchCondition) {
         return query
-                .select(new QStudyDto(
-                        study.id.as("studyId"),
-                        offline.address,
-                        study.subject,
-                        study.createdDate,
-                        study.lastUpdateDate,
-                        study.startDate,
-                        study.endDate,
-                        study.maxMember,
-                        study.studyType,
-                        study.title,
-                        study.online,
-                        study.offline,
-                        study.dtype))
-                .from(study)
-                .leftJoin(study.subject, subject)
-                .leftJoin(study.offline, offline)
-                .leftJoin(study.online, online)
-                .leftJoin(offline.address, address)
+                .selectFrom(study)
+                .leftJoin(study.offline, offline).fetchJoin()
+                .leftJoin(study.online, online).fetchJoin()
+                .leftJoin(offline.address, address).fetchJoin()
+                .leftJoin(study.subject, subject).fetchJoin()
                 .where(
                         titleLike(studySearchCondition.getTitle()),
                         subjectIdEq(studySearchCondition.getSubjectId()),
@@ -64,7 +49,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
     }
 
     public BooleanExpression titleLike(String title) {
-        return isBlank(title) ? study.title.contains(title) : null;
+        return !isBlank(title) ? study.title.contains(title) : null;
     }
 
     private boolean isBlank(String str) {
@@ -77,7 +62,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
 
     public BooleanExpression address1Like(String address1, StudyInstanceType dtype) {
         if (isDtypeOnline(dtype)) return null;
-        return isBlank(address1) ? offline.address.address1.contains(address1) : null;
+        return !isBlank(address1) ? offline.address.address1.contains(address1) : null;
     }
 
     private boolean isDtypeOnline(StudyInstanceType dtype) {
@@ -102,6 +87,6 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
     }
 
     public OrderSpecifier<?> sorted(SortedEnum sortedEnum) {
-        return SortedEnum.isDesc(sortedEnum) ? study.id.asc() : study.id.desc();
+        return sortedEnum == null || SortedEnum.isDesc(sortedEnum) ? study.id.desc() : study.id.asc();
     }
 }

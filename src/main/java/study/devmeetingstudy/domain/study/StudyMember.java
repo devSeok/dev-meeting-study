@@ -35,7 +35,6 @@ public class StudyMember {
     @ColumnDefault("'MEMBER'")  // 최초 방을 생성하는 사람이 리더가 된다.
     private StudyAuth studyAuth;
 
-
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'JOIN'")

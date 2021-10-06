@@ -1,6 +1,7 @@
 package study.devmeetingstudy.dto.address;
 
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import study.devmeetingstudy.domain.Address;
@@ -19,7 +20,8 @@ public class AddressResDto {
 
     @ApiModelProperty(value = "읍/면/동", required = true, example = "서초동")
     private final String address3;
-    private AddressResDto(Long id, String address1, String address2, String address3) {
+
+    public AddressResDto(Long id, String address1, String address2, String address3) {
         this.id = id;
         this.address1 = address1;
         this.address2 = address2;

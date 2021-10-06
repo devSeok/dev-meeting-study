@@ -22,7 +22,7 @@ public class Online {
 
     private String link;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
     private Study study;
 

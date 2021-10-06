@@ -1,12 +1,13 @@
 package study.devmeetingstudy.dto.study;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import study.devmeetingstudy.domain.study.StudyFile;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudyFileDto {
 
     @ApiModelProperty(value = "스터디 파일 아이디")
