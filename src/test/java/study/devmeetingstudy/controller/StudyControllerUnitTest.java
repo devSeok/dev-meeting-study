@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,7 +26,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Address;
@@ -38,8 +38,8 @@ import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
+import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
-import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.dto.token.TokenDto;
@@ -52,9 +52,9 @@ import study.devmeetingstudy.service.study.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,6 +76,9 @@ class StudyControllerUnitTest {
 
     @Mock
     private MemberService memberService;
+
+    @Mock
+    private StudyService studyService;
 
     private MockMvc mockMvc;
 
@@ -190,7 +193,7 @@ class StudyControllerUnitTest {
                 .build();
     }
 
-    public String getJSON(Object obj) throws JsonProcessingException {
+    private String getJSON(Object obj) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -274,29 +277,94 @@ class StudyControllerUnitTest {
     /* TODO 1. Study 10개 생성
             2. 해당 searchCondition에 따른 필터링을 거친다. (title, dtype 등등)
             3. mocking StudyService getList method
+       TODO 1. title, InstanceType, offset, StudyType 조건...
     */
-    @DisplayName("스터디 목록 200 Ok")
+    @DisplayName("스터디 목록 200 Ok, Condition ONLINE")
     @Test
     void getStudies() throws Exception{
         //given
         StudySearchCondition searchCondition = StudySearchCondition.builder()
-                .title("자바")
-                .studyInstanceType(StudyInstanceType.ONLINE)
+                .dtype(StudyInstanceType.ONLINE)
                 .build();
+        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
+        AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
+        Subject subject = Subject.create(subjectReqDto);
+        Address address = Address.create(addressReqDto);
 
-//        for (int i = 0; i < 5; i++) {
-//            Study.create(getMockOfflineReqDto())
-//        }
-        // Offline 5
-        // Online 5
+        // studyDto 만들기
+        List<StudyDto> studyDtos = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            StudySaveReqDto mockOfflineReqDto = getMockOfflineReqDto(subjectReqDto);
+            StudySaveReqDto mockOnlineReqDto = getMockOnlineReqDto(subjectReqDto);
+            Study offlineStudy = Study.create(mockOfflineReqDto, subject);
+            Study onlineStudy = Study.create(mockOnlineReqDto, subject);
+            Online online = Online.create(mockOnlineReqDto, onlineStudy);
+            Offline offline = Offline.create(address, offlineStudy);
+            Map<String, String> fileInfo = new HashMap<>();
+            fileInfo.put(Uploader.FILE_NAME, "image-" + i + ".jpeg");
+            fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+            StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
+            StudyDto offlineDto = getOfflineDto(subject, offlineStudy, offline);
+            List<StudyFile> studyFiles = new ArrayList<>();
+            studyFiles.add(StudyFile.create(onlineStudy, fileInfo));
+            List<StudyMember> studyMembers = new ArrayList<>();
+            studyMembers.add(StudyMember.createAuthLeader(loginMember, onlineStudy));
+            onlineDto.setFiles(studyFiles);
+            onlineDto.setStudyMembers(studyMembers);
+            offlineDto.setFiles(studyFiles);
+            offlineDto.setStudyMembers(studyMembers);
+            studyDtos.add(onlineDto);
+            studyDtos.add(offlineDto);
+        }
+
+        List<StudyDto> filterStudyDtos = studyDtos.stream().filter(studyDto -> studyDto.getDtype() == StudyInstanceType.ONLINE).collect(Collectors.toList());
+        doReturn(filterStudyDtos).when(studyFacadeService).findStudiesBySearchCondition(any(StudySearchCondition.class));
+
 
         //when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/studies")
                         .header("Authorization","bearer " + tokenDto.getAccessToken())
                         .flashAttr("studySearchCondition", searchCondition));
+
+
         //then
-        String data = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println(data);
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        String data = mvcResult.getResponse().getContentAsString();
+        JSONArray dataOfJSON = (JSONArray) getDataOfJSON(data);
+        assertEquals(5, dataOfJSON.size());
+    }
+
+    private StudyDto getOfflineDto(Subject subject, Study offlineStudy, Offline offline) {
+        return StudyDto.builder()
+                .studyId(offlineStudy.getId())
+                .subject(subject)
+                .createdDate(offlineStudy.getCreatedDate())
+                .lastUpdateDate(offlineStudy.getLastUpdateDate())
+                .startDate(offlineStudy.getStartDate())
+                .endDate(offlineStudy.getEndDate())
+                .maxMember(offlineStudy.getMaxMember())
+                .studyType(offlineStudy.getStudyType())
+                .dtype(offlineStudy.getDtype())
+                .offline(offline)
+                .title(offlineStudy.getTitle())
+                .build();
+    }
+
+    private StudyDto getOnlineDto(Subject subject, Study onlineStudy, Online online) {
+        return StudyDto.builder()
+                .studyId(onlineStudy.getId())
+                .subject(subject)
+                .createdDate(onlineStudy.getCreatedDate())
+                .lastUpdateDate(onlineStudy.getLastUpdateDate())
+                .startDate(onlineStudy.getStartDate())
+                .endDate(onlineStudy.getEndDate())
+                .maxMember(onlineStudy.getMaxMember())
+                .studyType(onlineStudy.getStudyType())
+                .dtype(onlineStudy.getDtype())
+                .online(online)
+                .title(onlineStudy.getTitle())
+                .build();
     }
 }

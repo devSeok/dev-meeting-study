@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
+import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
@@ -25,6 +25,10 @@ import javax.persistence.PersistenceContext;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static study.devmeetingstudy.domain.study.QOffline.offline;
+import static study.devmeetingstudy.domain.study.QOnline.online;
+import static study.devmeetingstudy.domain.study.QStudy.study;
 
 @SpringBootTest
 class StudyRepositoryTest {
@@ -71,14 +75,26 @@ class StudyRepositoryTest {
         */
         StudySearchCondition searchCondition = StudySearchCondition.builder()
                 .title("자바")
-                .studyInstanceType(StudyInstanceType.ONLINE)
-                .lastId(4L)
+                .dtype(StudyInstanceType.OFFLINE)
                 .offset(4)
                 .build();
 
-        List<StudyDto> studies = studyRepository.findByStudySearchConditionDesc(searchCondition);
+        List<Study> studies = studyRepository.findByStudySearchConditionDesc(searchCondition);
 
         System.out.println(studies);
+    }
+
+    @DisplayName("테스트2")
+    @Test
+    void test() throws Exception{
+        //given
+        List<Study> fetch = queryFactory.selectFrom(study)
+                .leftJoin(study.offline, offline).fetchJoin()
+                .leftJoin(study.online, online).fetchJoin()
+                .fetch();
+        //when
+        //then
+        System.out.println(fetch);
     }
 
     private StudySaveReqDto getMockOnlineReqDto(SubjectReqDto subjectReqDto) {
