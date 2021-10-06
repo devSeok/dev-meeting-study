@@ -1,14 +1,10 @@
 package study.devmeetingstudy.dto.study;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
-import study.devmeetingstudy.domain.Address;
+import lombok.ToString;
 import study.devmeetingstudy.domain.Subject;
-import study.devmeetingstudy.domain.study.Offline;
-import study.devmeetingstudy.domain.study.Online;
-import study.devmeetingstudy.domain.study.StudyFile;
-import study.devmeetingstudy.domain.study.StudyMember;
+import study.devmeetingstudy.domain.study.*;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 
@@ -17,12 +13,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@ToString
 public class StudyDto {
 
     private Long studyId;
-    private Address address;
+    private String content;
     private Subject subject;
-    private List<StudyFile> studyFiles;
+    private List<StudyFile> files;
     private List<StudyMember> studyMembers;
     private LocalDateTime createdDate;
     private LocalDateTime lastUpdateDate;
@@ -35,18 +32,20 @@ public class StudyDto {
     private Offline offline;
     private StudyInstanceType dtype;
 
-    @QueryProjection
     @Builder
-    public StudyDto(Long studyId, Address address,
-                    Subject subject, LocalDateTime createdDate,
+    public StudyDto(Long studyId, String content,
+                    Subject subject, List<StudyFile> files,
+                    List<StudyMember> studyMembers, LocalDateTime createdDate,
                     LocalDateTime lastUpdateDate, LocalDate startDate,
                     LocalDate endDate, int maxMember,
                     StudyType studyType, String title,
                     Online online, Offline offline,
                     StudyInstanceType dtype) {
         this.studyId = studyId;
-        this.address = address;
+        this.content = content;
         this.subject = subject;
+        this.files = files;
+        this.studyMembers = studyMembers;
         this.createdDate = createdDate;
         this.lastUpdateDate = lastUpdateDate;
         this.startDate = startDate;
@@ -57,6 +56,30 @@ public class StudyDto {
         this.online = online;
         this.offline = offline;
         this.dtype = dtype;
+    }
+
+    public static StudyDto of(Study study, List<StudyMember> studyMembers, List<StudyFile> files) {
+        return StudyDto.builder()
+                .studyId(study.getId())
+                .content(study.getContent())
+                .subject(study.getSubject())
+                .files(files)
+                .studyMembers(studyMembers)
+                .createdDate(study.getCreatedDate())
+                .lastUpdateDate(study.getLastUpdateDate())
+                .startDate(study.getStartDate())
+                .endDate(study.getEndDate())
+                .maxMember(study.getMaxMember())
+                .studyType(study.getStudyType())
+                .title(study.getTitle())
+                .online(study.getOnline())
+                .offline(study.getOffline())
+                .dtype(study.getDtype())
+                .build();
+    }
+
+    public static boolean isDtypeOnline(StudyDto studyDto) {
+        return studyDto.getDtype() == StudyInstanceType.ONLINE;
     }
 }
 

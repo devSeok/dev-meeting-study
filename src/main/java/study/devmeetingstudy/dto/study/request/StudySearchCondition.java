@@ -7,6 +7,7 @@ import lombok.ToString;
 import study.devmeetingstudy.common.vaildEnum.CheckValidEnum;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.domain.study.enums.StudyType;
 
 @Setter
 @ToString
@@ -20,7 +21,7 @@ public class StudySearchCondition {
     private String address1;
     @ApiModelProperty(value = "스터디 인스턴스 타입(ONLINE, OFFLINE)", notes = "필터링 대상 id")
     @CheckValidEnum(target = StudyInstanceType.class, message = "스터디 유형이 ONLINE or OFFLINE이여야 합니다.")
-    private StudyInstanceType studyInstanceType;
+    private StudyInstanceType dtype;
     @ApiModelProperty(value = "스터디 아이디 (마지막 아이디)", notes = "맨 처음 요청할 때는 null이고, 재 요청할 때는 마지막 요소의 id를 넘겨주세요")
     private Long lastId;
     @ApiModelProperty(value = "스터디 제목", notes = "스터디 제목 검색")
@@ -30,12 +31,14 @@ public class StudySearchCondition {
     @ApiModelProperty(value = "정렬 방법", notes = "기본값 Desc, id 기준 최신 순(Desc), 나중 순(Asc)")
     @CheckValidEnum(target = SortedEnum.class, message = "정렬 유형은 Desc or Asc 만 가능합니다.")
     private SortedEnum sorted;
+    @ApiModelProperty(value = "스터디 타입", notes = "FREE or PAY")
+    private StudyType studyType;
 
     @Builder
-    public StudySearchCondition(Long subjectId, String address1, StudyInstanceType studyInstanceType, Long lastId, String title, Integer offset) {
+    public StudySearchCondition(Long subjectId, String address1, StudyInstanceType dtype, Long lastId, String title, Integer offset) {
         this.subjectId = subjectId;
         this.address1 = address1;
-        this.studyInstanceType = studyInstanceType;
+        this.dtype = dtype;
         this.lastId = lastId;
         this.title = title;
         this.offset = offset;
@@ -50,7 +53,7 @@ public class StudySearchCondition {
     }
 
     public StudyInstanceType getStudyInstanceType() {
-        return studyInstanceType;
+        return dtype;
     }
 
     public Long getLastId() {

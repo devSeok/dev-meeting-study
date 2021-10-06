@@ -23,7 +23,7 @@ public enum ErrorCode {
     TOKEN_DUPLICATION(400, "M002", "권한정보가 없는 토큰입니다."),
     ACCESSTOKEN_NOT_HAVE  (400, "M003", "Access Token이 존재하지 않습니다."),
     USER_NOT_FOUND(400, "M004", "유저 정보가 없습니다."),
-    LOGIN_INPUT_INVALID(400, "M005", "Login input is invalid"),
+    LOGIN_INPUT_INVALID(400, "M005", "Login input is invalid."),
     USER_OUT(400, "M006", "탈퇴한 회원입니다"),
     USER_NOT_PASSWORD(400, "M007", "패스워드가 틀렸습니다."),
     NICKNAME_DUPLICATION(400, "M008", "이미 사용중인 닉네임입니다."),
@@ -31,15 +31,19 @@ public enum ErrorCode {
     USER_INFO_MISMATCH(400, "M011", "유저 정보가 일치하지 않습니다."),
 
     // Message
-    MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다"),
+    MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다."),
 
     // Address
-    ADDRESS_NOT_FOUND(400, "A001", "주소 정보가 없습니다"),
+    ADDRESS_NOT_FOUND(400, "A001", "주소 정보가 없습니다."),
 
     // Subject
-    SUBJECT_NOT_FOUND(400, "S001", "스터디 주제 정보가 없습니다"),
+    SUBJECT_NOT_FOUND(400, "S001", "스터디 주제 정보가 없습니다."),
 
-    // validation
+    // StudyMember
+    STUDY_MEMBER_NOT_FOUND(400, "SM001", "스터디 멤버를 찾을 수 없습니다."),
+
+    // StudyFile
+    STUDY_FILE_NOT_FOUND(400, "SF001", "스터디 파일을 찾을 수 없습니다."),
 
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),

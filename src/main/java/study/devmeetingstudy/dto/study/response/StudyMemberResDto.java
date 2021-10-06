@@ -1,6 +1,7 @@
 package study.devmeetingstudy.dto.study.response;
 
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import study.devmeetingstudy.domain.study.StudyMember;
@@ -9,7 +10,7 @@ import study.devmeetingstudy.domain.study.enums.StudyStatus;
 import study.devmeetingstudy.dto.member.response.MemberResDto;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudyMemberResDto {
 
     private Long id;
