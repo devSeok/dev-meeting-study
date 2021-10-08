@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '../elements';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import person from '../asset/image/person.png';
+import moment from 'moment';
 
 interface Study {
   title: string;
@@ -12,13 +13,30 @@ interface Study {
 }
 
 interface Post {
-  title: string;
-  sub: string;
+  content: string;
+  createdDate: string;
+  delflg: string;
+  id: number;
+  lastUpdateDate: string;
+  // member:
+  // email: "test1@test.com"
+  // grade: 0
+  // id: 7
+  // nickname: "jun"
+
+  // sender:
+  // email: "test1@test.com"
+  // grade: 0
+  // id: 7
+  // nickname: "jun"
+  // [[Prototype]]: Object
+  // status: "NOT_READ"
 }
 
 function StudyColumnList({ items, index }: any) {
-  console.log('List:items', items);
-  console.log('List:index', index);
+  // console.log('List:items', items);
+  // console.log('List:index', index);
+
   return (
     <div style={{ width: '500px', justifyContent: 'flex-start' }}>
       <h3>총 {items.length}개</h3>
@@ -65,6 +83,8 @@ function StudyColumnList({ items, index }: any) {
           })}
         {index === 2 &&
           items.map((item: Post, idx: number) => {
+            const date = moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss');
+            const contents = item.content.substring(0, 40);
             return (
               <li key={idx} style={{ margin: '20px 0px', cursor: 'pointer' }}>
                 <div style={{ display: 'flex' }}>
@@ -72,8 +92,9 @@ function StudyColumnList({ items, index }: any) {
                     <img src={person} alt="유저" />
                   </div>
                   <div>
-                    <h2>{item.title}</h2>
-                    <span>{item.sub}</span>
+                    <span>{date}</span>
+                    <h2>{contents}</h2>
+                    <button>Del</button>
                   </div>
                 </div>
               </li>

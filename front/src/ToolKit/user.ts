@@ -172,7 +172,7 @@ export interface InitialState {
   user: {};
   status: string;
   auth: AuthType;
-  message: object;
+  message: any;
 }
 
 const State: InitialState = {
@@ -190,6 +190,8 @@ const State: InitialState = {
     type: '',
     payload: {
       type: '',
+      message: '',
+      number: 0,
       payload: {
         message: '',
         status: 0,
