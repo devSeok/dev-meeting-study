@@ -123,15 +123,12 @@ function RegisterView() {
     } catch (err: any) {
       setCheckEmailRes(false);
 
-      const message = err.response.data.message;
-
-      alert(message);
+      alert('요청 실패');
 
       setCheckEmailButtonValue('요청');
     }
   };
 
-  // 본 코드
   const onRegister = async () => {
     if (checkEmailRes) {
       if (!expWarning.email && !expWarning.password && !expWarning.nickname) {
@@ -140,29 +137,36 @@ function RegisterView() {
           password,
           nickname,
         };
-        // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
-        await dispatch(register(obj))
-          // @ts-ignore
-          .then((res: DispatchReduxFailRes) => {
-            if (res.payload.payload?.status === 200) {
-              history.push('/login');
-            } else {
-              alert(res.payload.message);
 
-              if (res.payload.message === '이미 가입되어 있는 유저 입니다.') {
-                setInputs({
-                  ...inputs,
-                  email: '',
-                  checkNum: '',
-                });
-                // email input에 focus
-                emailRef.current?.focus();
-              }
+        // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
+        // @ts-ignore
+        const response: DispatchReduxFailRes = await dispatch(register(obj));
+        if (response.error) {
+          if (response.payload === undefined) {
+            alert('서버 에러입니다. 계속 지속될 시 문의 해주세요.');
+          } else {
+            if (response.payload.message === '이미 가입되어 있는 유저 입니다.') {
+              setInputs({
+                ...inputs,
+                email: '',
+                checkNum: '',
+              });
+              // email input에 focus
+              emailRef.current?.focus();
+
               setCheckEmailReq(false);
+
               setCheckEmailRes(false);
+
               setCheckEmailButtonValue('요청');
+            } else {
+              alert('회원가입 실패');
+              console.log('response payload', response.payload.message);
             }
-          });
+          }
+          return;
+        }
+        history.push('/login');
       } else {
         alert('모든 입력 창을 입력해주세요');
         const obj = {
