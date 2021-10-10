@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Main, Section, Icon } from '../elements';
 import SearchIcon from '@material-ui/icons/Search';
 import StudyHeader from '../components/StudyHeaderRemove';
 import StudyFooter from '../components/StudyFooter';
 import Items from '../components/Items';
+import StudyModal from '../components/Modal';
+import { ItemsType } from '../components/Items';
 
 const Select = styled.select`
   height: 40px;
@@ -35,6 +37,12 @@ export const Item = styled.li`
   border-radius: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+  overflow: hidden;
+
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
 
   &:nth-child(odd) {
     margin-right: 16px;
@@ -56,28 +64,104 @@ const SidoGungu = styled(Select)`
     white-space: pre-wrap;
   }
 `;
+// 초기 값
+export const initalStudy = {
+  createdDate: '',
+  dtype: '',
+  endDate: '',
+  files: [
+    {
+      id: 0,
+      name: '',
+      path: '',
+    },
+  ],
+  id: 0,
+  lastUpdateDate: '',
+  maxMember: 0,
+  offline: {
+    id: 0,
+    address: {
+      address1: '',
+      address2: '',
+      address3: '',
+      id: 0,
+    },
+  },
+  online: {
+    id: 0,
+    link: '',
+    onlineType: '',
+  },
+
+  startDate: '',
+  studyMembers: [
+    {
+      id: 0,
+      member: {
+        email: '',
+        grade: 0,
+        id: 0,
+        nickname: '',
+      },
+      studyAuth: '',
+      studyStatus: '',
+    },
+  ],
+  studyType: '',
+  subject: {
+    id: 0,
+    name: '',
+  },
+  title: '',
+};
 
 function OpenStudyView() {
+  const [modal, setModal] = useState({
+    open: false,
+    study: { ...initalStudy } as ItemsType,
+  });
   const [inputs, setInputs] = useState({
-    studyType: 'online',
-    sido: '',
-    gun: '',
-    gu: '',
-    studyList: '종류1',
-    callDataCount: 4,
+    studyInstanceType: 'ONLINE',
+    address1: null,
+    lastId: null,
+    studyType: 'FREE',
+    sorted: 'DESC',
+    subjectId: null,
+    title: null,
+    offset: 4,
   });
 
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setInputs({
       ...inputs,
-      [name]: name === 'callDataCount' ? parseInt(value) : value,
+      [name]: name === 'offset' ? parseInt(value) : value,
     });
   };
+
+  const modalStateChange = (study: ItemsType) => {
+    setModal({
+      open: !modal.open,
+      study,
+    });
+  };
+
+  useEffect(() => {
+    if (modal.open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      //@ts-ignore
+      document.body.style.overflow = 'unset';
+    }
+  }, [modalStateChange]);
 
   return (
     <>
       <StudyHeader />
+      {/* ype 'object | ItemsType' is not assignable to type 'ItemsType'.
+  Type '{}' is missing the following properties from type 'ItemsType': createdDate, dtype, endDate, files, and 8 more.ts(2322 */}
+      {modal.open && <StudyModal study={modal.study} modalStateChange={modalStateChange} />}
       <Main>
         <Section>
           <div
@@ -109,21 +193,21 @@ function OpenStudyView() {
                 전체
               </span>
 
-              <Select id="type-select" name="studyType" onChange={onChange}>
-                <option value="online">온라인</option>
+              <Select id="type-select" name="studyInstanceType" onChange={onChange}>
+                <option value="ONLINE">온라인</option>
                 {/* 오프라인은 배포 이후 지원 */}
-                {/* <option value="offline">오프라인</option> */}
+                {/* <option value="OFFLINE">오프라인</option> */}
               </Select>
-              <Select id="study-select" name="studyList" onChange={onChange}>
+              <Select id="study-select" name="studyType" onChange={onChange}>
                 <option value="FREE">무료</option>
                 <option value="PAY">유료</option>
               </Select>
-              <Select id="call-data-count-select" name="callDataCount" onChange={onChange}>
+              <Select id="call-data-count-select" name="offset" onChange={onChange}>
                 <option value={4}>4개</option>
                 <option value={8}>8개</option>
                 <option value={16}>16개</option>
               </Select>
-              {inputs.studyType === 'offline' && (
+              {inputs.studyInstanceType === 'OFFLINE' && (
                 <>
                   {/* innerwidth는 한번만 실행되므로 차후에 변경 예정 */}
                   {/* 오프라인은 배포 이후 지원 */}
@@ -148,7 +232,7 @@ function OpenStudyView() {
             </Icon>
           </div>
           <ItemList>
-            <Items callDataCount={inputs.callDataCount} />
+            <Items inputs={inputs} modalStateChange={modalStateChange} />
           </ItemList>
         </Section>
       </Main>
