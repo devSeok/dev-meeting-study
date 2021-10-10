@@ -248,7 +248,9 @@ const user = createSlice({
     });
     builder.addCase(checkToken.fulfilled, (state, { type, payload }) => {
       state.status = 'success';
-      state.auth = { type, payload };
+      const data = payload as { type: string; success: boolean; message: string };
+      state.auth.type = type;
+      state.auth.payload = data;
     });
     builder.addCase(checkToken.rejected, (state, { type, payload }) => {
       const data = payload as AuthType;
