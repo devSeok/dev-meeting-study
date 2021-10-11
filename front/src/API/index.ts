@@ -129,6 +129,26 @@ const saveStudty = (study: StudyType) => {
   });
 };
 
+export interface FilterType {
+  studyInstanceType: string;
+  address1: string | null;
+  lastId: number | null;
+  studyType: string;
+  sorted: string;
+  subjectId: number | null;
+  title: string | null;
+  offset: number;
+}
+
+const getStudty = (filter: FilterType) => {
+  let url = `/studies${makeQueryParm(filter)}`;
+
+  return Send({
+    method: Method.GET,
+    url,
+  });
+};
+
 export {
   register_user,
   register_check_email,
@@ -144,4 +164,25 @@ export {
   getSubjects,
   addSubject,
   saveStudty,
+  getStudty,
+};
+
+const makeQueryParm = (obj: object) => {
+  let url = '?';
+
+  for (let prop in obj) {
+    // Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+    // No index signature with a parameter of type 'string' was found on type '{}'.ts(7053)
+    // @ts-ignore
+    if (obj[prop] === null) {
+      continue;
+    }
+    // @ts-ignore
+    url = url += `${prop}=${obj[prop]}&`;
+  }
+
+  // 마지막 & 제거
+  url = url.substr(0, url.length - 1);
+
+  return url;
 };

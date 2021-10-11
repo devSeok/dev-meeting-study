@@ -36,14 +36,34 @@ export interface PayloadFailType {
 }
 
 export interface DispatchReduxFailRes {
+  error?: {
+    message: string;
+    name: string;
+    stack: string;
+  };
+  meta: {
+    aborted: boolean;
+    arg: {
+      email: string;
+      password: string;
+    };
+    condition: boolean;
+    rejectedWithValue: boolean;
+    requestId: string;
+    requestStatus: string;
+  };
   payload: {
     code: string;
+    errors: {
+      field: string;
+      reason: string;
+      value: string;
+    }[];
     message: string;
-    status?: number;
-    payload: {
-      status?: number;
-    };
+    statsu: number;
+    type: string;
   };
+  type: string;
 }
 
 export interface ResSendMessage {
