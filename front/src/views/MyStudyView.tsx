@@ -1,4 +1,4 @@
-import React, { NewLifecycle, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import StudyHeader from '../components/StudyHeader';
 import StudyColumnList from '../components/StudyColumnList';
@@ -7,8 +7,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import person from '../asset/image/person.png';
-import { BrowserRouter as Router, Link, Switch, Route, useHistory } from 'react-router-dom';
-
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { listMessage, message } from '../ToolKit/user';
+//  vs코드는 왜안됏지? 그거 테스트 ㄲ
+//
 const SelectItem = styled.div`
   width: 500px;
   background-color: #f8f8f8;
@@ -76,26 +79,32 @@ const study = [
   },
 ];
 
-const post = [
-  {
-    title: 'A',
-    sub: '회의 들어오세요',
-  },
-  {
-    title: 'A',
-    sub: '회의 들어오세요',
-  },
-];
-
+interface PayloadProps {
+  payload: {
+    payload: {
+      data: any;
+    };
+  };
+}
 function MyStudyView() {
+  const Dispatch = useDispatch();
+  const messageData: PayloadProps = useSelector(message);
+  console.log('messageData', messageData);
+  const messageList = messageData.payload.payload.data;
+  // 절대 놉 // Dispatch(listMessage('')); // 절대 놉
+  // }, [Dispatch]);
+  // console.log('messageList', messageList);
+  // console.log('dispatch', Dispatch(listMessage('')));
+
   const history = useHistory();
   const [inputs, setInputs] = useState({
     email: '',
     nickname: '',
     password: '',
   });
-  const [item, setItem] = useState(0);
+  const [item, setItem] = useState(0); // 이코드로 스터디 쪽지 구분함
 
+  console.log('item', item);
   const onClick = (e: any, index: number) => {
     // 나중에 코드 수정해야 함
     const lis = document.querySelectorAll('li');
@@ -137,6 +146,7 @@ function MyStudyView() {
   useEffect(() => {
     const pathnameSlice = pathname.slice(4);
     setItem(parseInt(obj[pathnameSlice]));
+    Dispatch(listMessage(''));
   }, []);
 
   return (
@@ -179,7 +189,7 @@ function MyStudyView() {
           <div style={{ marginTop: '50px' }}>
             {pathname === '/my/info' && <Info onChange={onChange} />}
             {pathname === '/my/study' && <Study study={study} index={item} />}
-            {pathname === '/my/message' && <Message post={post} index={item} />}
+            {pathname === '/my/message' && <Message post={messageList} index={item} />}
             {pathname === '/my/secession' && <Secession onChange={onChange} />}
           </div>
         </Section>
@@ -232,8 +242,8 @@ export function Study({ study, index }: PType) {
   );
 }
 
-
 export function Message({ post, index }: PType) {
+  console.log('post111111', post);
   return (
     <>
       <StudyColumnList items={post} index={index} />
