@@ -9,6 +9,8 @@ enum Method {
   DELETE = 'DELETE',
 }
 
+// 맞아요? 오 어디에요 안보여요 지리비
+//
 // 회원가입
 const register_user = (user: RegisterType) => {
   return Send({

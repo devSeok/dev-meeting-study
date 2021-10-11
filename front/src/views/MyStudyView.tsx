@@ -10,7 +10,8 @@ import person from '../asset/image/person.png';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listMessage, message } from '../ToolKit/user';
-
+//  vs코드는 왜안됏지? 그거 테스트 ㄲ
+//
 const SelectItem = styled.div`
   width: 500px;
   background-color: #f8f8f8;
@@ -90,10 +91,9 @@ function MyStudyView() {
   const messageData: PayloadProps = useSelector(message);
   console.log('messageData', messageData);
   const messageList = messageData.payload.payload.data;
-  useEffect(() => {
-    Dispatch(listMessage(''));
-  }, [Dispatch]);
-  console.log('messageList', messageList);
+  // 절대 놉 // Dispatch(listMessage('')); // 절대 놉
+  // }, [Dispatch]);
+  // console.log('messageList', messageList);
   // console.log('dispatch', Dispatch(listMessage('')));
 
   const history = useHistory();
@@ -146,6 +146,7 @@ function MyStudyView() {
   useEffect(() => {
     const pathnameSlice = pathname.slice(4);
     setItem(parseInt(obj[pathnameSlice]));
+    Dispatch(listMessage(''));
   }, []);
 
   return (
