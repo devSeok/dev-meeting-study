@@ -63,20 +63,19 @@ function LoginView() {
 
     // 'AsyncThunkAction<{ type: USER_TYPE; payload: ResLogin; }, Login, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
     // @ts-ignore
-    await dispatch(login(obj)).then((res: DispatchReduxFailRes) => {
-      if (res.payload.payload?.status === 200) {
-        history.push('/');
-      } else {
-        alert(res.payload.message);
+    const response: DispatchReduxFailRes = await dispatch(login(obj));
 
-        setInputs({
-          email: '',
-          password: '',
-        });
-        // email input에 포커싱
-        emailRef.current?.focus();
+    if (response.error) {
+      if (response.payload === undefined) {
+        alert('서버 에러입니다. 계속 지속될 시 문의 해주세요.');
+      } else {
+        alert('로그인 실패');
       }
-    });
+      console.log(response);
+
+      return;
+    }
+    history.push('/');
   };
 
   return (
