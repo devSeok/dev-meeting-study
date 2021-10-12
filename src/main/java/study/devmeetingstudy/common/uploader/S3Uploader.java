@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class S3Uploader implements Uploader{
     }
 
     private Map<String, String> getFileInfo(String originalFileName, String uploadImageUrl) {
-        Map<String, String> fileInfo = new HashMap<>();
+        Map<String, String> fileInfo = new ConcurrentHashMap<>();
         fileInfo.put(FILE_NAME, originalFileName);
         fileInfo.put(UPLOAD_URL, uploadImageUrl);
         return fileInfo;
