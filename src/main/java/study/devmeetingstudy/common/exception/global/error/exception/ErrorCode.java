@@ -37,13 +37,16 @@ public enum ErrorCode {
     ADDRESS_NOT_FOUND(400, "A001", "주소 정보가 없습니다."),
 
     // Subject
-    SUBJECT_NOT_FOUND(400, "S001", "스터디 주제 정보가 없습니다."),
+    SUBJECT_NOT_FOUND(400, "SB001", "스터디 주제 정보가 없습니다."),
 
     // StudyMember
     STUDY_MEMBER_NOT_FOUND(400, "SM001", "스터디 멤버를 찾을 수 없습니다."),
 
     // StudyFile
     STUDY_FILE_NOT_FOUND(400, "SF001", "스터디 파일을 찾을 수 없습니다."),
+
+    // Study
+    STUDY_NOT_FOUND(400, "S001", "스터디를 찾을 수 없습니다."),
 
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),

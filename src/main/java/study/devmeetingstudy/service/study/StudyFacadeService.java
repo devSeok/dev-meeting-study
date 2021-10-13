@@ -51,13 +51,19 @@ public class StudyFacadeService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public List<StudyDto> findStudiesBySearchCondition(StudySearchCondition studySearchCondition) {
         List<Study> studies = studyService.findStudiesByStudySearchCondition(studySearchCondition);
         return studies.stream().map(
                 study -> StudyDto.of(study,
                                 studyMemberService.findStudyMemberByStudyIdAndAuth(study.getId(), StudyAuth.LEADER),
-                                studyFileService.findStudyFileByStudyId(study.getId()))).collect(Collectors.toList());
+                                studyFileService.findStudyFileByStudyId(study.getId()))
+        ).collect(Collectors.toList());
     }
 
+    public StudyDto findStudyById(Long studyId) {
+        Study study = studyService.findStudyById(studyId);
+        return StudyDto.of(study,
+                studyMemberService.findStudyMemberByStudyIdAndAuth(study.getId(), StudyAuth.LEADER),
+                studyFileService.findStudyFileByStudyId(study.getId()));
+    }
 }

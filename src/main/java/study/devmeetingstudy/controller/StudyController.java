@@ -18,10 +18,7 @@ import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
-import study.devmeetingstudy.dto.study.response.CreatedOfflineStudyResDto;
-import study.devmeetingstudy.dto.study.response.CreatedOnlineStudyResDto;
-import study.devmeetingstudy.dto.study.response.CreatedStudyResDto;
-import study.devmeetingstudy.dto.study.response.FoundStudyResDto;
+import study.devmeetingstudy.dto.study.response.*;
 import study.devmeetingstudy.service.*;
 import study.devmeetingstudy.service.study.*;
 
@@ -88,29 +85,35 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResDto<List<FoundStudyResDto>>> getStudies(@Valid @ModelAttribute StudySearchCondition studySearchCondition) throws IOException {
+    public ResponseEntity<ApiResDto<List<FoundStudiesResDto>>> getStudies(@Valid @ModelAttribute StudySearchCondition studySearchCondition) throws IOException {
         log.info("StudyController.getStudies");
         List<StudyDto> studies = studyFacadeService.findStudiesBySearchCondition(studySearchCondition);
         return ResponseEntity.ok(
-                ApiResDto.<List<FoundStudyResDto>>builder()
+                ApiResDto.<List<FoundStudiesResDto>>builder()
                         .message("성공")
                         .status(HttpStatus.OK.value())
-                        .data(studies.stream().map(FoundStudyResDto::from).collect(Collectors.toList()))
+                        .data(studies.stream().map(FoundStudiesResDto::from).collect(Collectors.toList()))
                         .build()
         );
     }
 
     @GetMapping("/{studyId}")
-    @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
-    @ApiImplicitParam(name = "file", value = "이미지 파일, 하나만 넣어주세요")
+    @ApiOperation(value = "스터디 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "스터디 조회 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getStudy(@PathVariable Long studyId) throws IOException {
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResDto<FoundStudyResDto>> getStudy(@PathVariable Long studyId) throws IOException {
         log.info("StudyController.getStudy");
-        return null;
+        StudyDto studyDto = studyFacadeService.findStudyById(studyId);
+        return ResponseEntity.ok(
+                ApiResDto.<FoundStudyResDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(FoundStudyResDto.from(studyDto))
+                        .build()
+        );
     }
 
 

@@ -52,6 +52,7 @@ import study.devmeetingstudy.service.study.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,7 +144,7 @@ class StudyControllerUnitTest {
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
-        Map<String, String> fileInfo = new HashMap<>();
+        Map<String, String> fileInfo = new ConcurrentHashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -226,7 +227,7 @@ class StudyControllerUnitTest {
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
         //업로드 과정
-        Map<String, String> fileInfo = new HashMap<>();
+        Map<String, String> fileInfo = new ConcurrentHashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -301,7 +302,7 @@ class StudyControllerUnitTest {
             Study onlineStudy = Study.create(mockOnlineReqDto, subject);
             Online online = Online.create(mockOnlineReqDto, onlineStudy);
             Offline offline = Offline.create(address, offlineStudy);
-            Map<String, String> fileInfo = new HashMap<>();
+            Map<String, String> fileInfo = new ConcurrentHashMap<>();
             fileInfo.put(Uploader.FILE_NAME, "image-" + i + ".jpeg");
             fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
             StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
@@ -366,5 +367,41 @@ class StudyControllerUnitTest {
                 .online(online)
                 .title(onlineStudy.getTitle())
                 .build();
+    }
+
+    @DisplayName("스터디 조회 200 Ok")
+    @Test
+    void getStudy() throws Exception{
+        //given
+        Long id = 1L;
+        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
+        AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
+        Subject subject = Subject.create(subjectReqDto);
+        Address address = Address.create(addressReqDto);
+        StudySaveReqDto onlineReqDto = getMockOnlineReqDto(subjectReqDto);
+        Study onlineStudy = Study.create(onlineReqDto, subject);
+        Online online = Online.create(onlineReqDto, onlineStudy);
+        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
+        List<StudyFile> studyFiles = new ArrayList<>();
+        studyFiles.add(StudyFile.create(onlineStudy, fileInfo));
+        List<StudyMember> studyMembers = new ArrayList<>();
+        studyMembers.add(StudyMember.createAuthLeader(loginMember, onlineStudy));
+        onlineDto.setFiles(studyFiles);
+        onlineDto.setStudyMembers(studyMembers);
+
+        doReturn(onlineDto).when(studyFacadeService).findStudyById(anyLong());
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/studies/" + id)
+                        .header("Authorization","bearer " + tokenDto.getAccessToken()));
+
+        //then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        System.out.println(contentAsString);
     }
 }

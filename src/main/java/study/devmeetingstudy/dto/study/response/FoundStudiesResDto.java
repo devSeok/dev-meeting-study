@@ -1,9 +1,7 @@
 package study.devmeetingstudy.dto.study.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -16,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class FoundStudyResDto {
+@ToString
+public class FoundStudiesResDto {
 
     @ApiModelProperty(value = "스터디 아이디", example = "1")
     private Long id;
@@ -60,18 +59,14 @@ public class FoundStudyResDto {
     @ApiModelProperty(value = "오프라인 정보", notes = "dtype이 OFFLINE 일 시 address가 들어갑니다.")
     private OfflineResDto offline;
 
-    @ApiModelProperty(value = "스터디 내용", notes = "스터디 내용")
-    private String content;
-
     @Builder(access = AccessLevel.PRIVATE)
-    private FoundStudyResDto(Long id, SubjectResDto subject,
-                             List<StudyFileDto> files, List<StudyMemberResDto> studyMembers,
-                             LocalDateTime createdDate, LocalDateTime lastUpdateDate,
-                             LocalDate startDate, LocalDate endDate,
-                             int maxMember, StudyType studyType,
-                             String title, StudyInstanceType dtype,
-                             OnlineResDto online, OfflineResDto offline,
-                             String content) {
+    private FoundStudiesResDto(Long id, SubjectResDto subject,
+                               List<StudyFileDto> files, List<StudyMemberResDto> studyMembers,
+                               LocalDateTime createdDate, LocalDateTime lastUpdateDate,
+                               LocalDate startDate, LocalDate endDate,
+                               int maxMember, StudyType studyType,
+                               String title, StudyInstanceType dtype,
+                               OnlineResDto online, OfflineResDto offline) {
         this.id = id;
         this.subject = subject;
         this.files = files;
@@ -86,11 +81,10 @@ public class FoundStudyResDto {
         this.dtype = dtype;
         this.online = online;
         this.offline = offline;
-        this.content = content;
     }
 
-    public static FoundStudyResDto from(StudyDto studyDto) {
-        return FoundStudyResDto.builder()
+    public static FoundStudiesResDto from(StudyDto studyDto) {
+        return FoundStudiesResDto.builder()
                 .id(studyDto.getStudyId())
                 .subject(SubjectResDto.from(studyDto.getSubject()))
                 .files(studyDto.getFiles().stream().map(StudyFileDto::from).collect(Collectors.toList()))
@@ -105,7 +99,6 @@ public class FoundStudyResDto {
                 .online(StudyDto.isDtypeOnline(studyDto) ? OnlineResDto.from(studyDto.getOnline()) : null)
                 .offline(!StudyDto.isDtypeOnline(studyDto) ? OfflineResDto.from(studyDto.getOffline()) : null)
                 .dtype(studyDto.getDtype())
-                .content(studyDto.getContent())
                 .build();
     }
 

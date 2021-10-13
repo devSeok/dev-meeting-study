@@ -3,6 +3,7 @@ package study.devmeetingstudy.service.study;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.common.exception.global.error.exception.StudyNotFoundException;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
@@ -30,6 +31,10 @@ public class StudyService {
     }
 
     public List<Study> findStudiesByStudySearchCondition(StudySearchCondition studySearchCondition) {
-        return studyRepository.findByStudySearchConditionDesc(studySearchCondition);
+        return studyRepository.findStudiesByStudySearchCondition(studySearchCondition);
+    }
+
+    public Study findStudyById(Long studyId) {
+        return studyRepository.findStudyById(studyId).orElseThrow(() -> new StudyNotFoundException("스터디를 찾을 수 없습니다."));
     }
 }
