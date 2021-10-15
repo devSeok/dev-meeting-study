@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.member.response.MemberResDto;
 
@@ -25,9 +25,6 @@ public class MessageResDto {
     @ApiModelProperty(value = "메시지 내용", example = "하이")
     private String content;
 
-    @ApiModelProperty(value = "메시지 삭제 상태", example = "NOT_DELETED")
-    private MessageDeletionStatus delflg;
-
     @ApiModelProperty(value = "메시지 읽음 상태", example = "READ")
     private MessageReadStatus status;
 
@@ -44,7 +41,6 @@ public class MessageResDto {
                 MemberResDto.from(sender),
                 MemberResDto.from(member),
                 message.getContent(),
-                message.getDelflg(),
                 message.getStatus(),
                 message.getCreatedDate(),
                 message.getLastUpdateDate());

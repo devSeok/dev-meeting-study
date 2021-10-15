@@ -7,12 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.vo.MessageVO;
 import study.devmeetingstudy.repository.message.MessageRepository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
@@ -55,14 +54,14 @@ public class MessageService {
     // 영속성 관리
     @Transactional
     public void deleteMessage(Message message) {
-        if (isNotDeleted(message.getDelflg())) {
-            Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
+        if (isNotDeleted(message.getDeletionStatus())) {
+            Message.changeDeletionStatus(DeletionStatus.DELETED, message);
             // 영속화 후 변경 감지.
             messageRepository.save(message);
         }
     }
 
-    private boolean isNotDeleted(MessageDeletionStatus messageDeletionStatus){
-        return messageDeletionStatus == MessageDeletionStatus.NOT_DELETED;
+    private boolean isNotDeleted(DeletionStatus deletionStatus){
+        return deletionStatus == DeletionStatus.NOT_DELETED;
     }
 }

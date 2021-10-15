@@ -21,8 +21,17 @@ class StudyMemberRepositoryTest {
         //given
         Long id = 1L;
         //when
-        List<StudyMember> studyMemberByIdAndStudyAuth = studyMemberRepository.findFirstByStudyIdAndStudyAuth(id, StudyAuth.LEADER);
+        List<StudyMember> studyMemberByIdAndStudyAuth = studyMemberRepository.findByStudyIdAndStudyAuth(id, StudyAuth.LEADER);
         //then
+    }
 
+    @DisplayName("스터디 멤버 목록 조회")
+    @Test
+    void findStudyMembersByStudyIdAndStatusJOIN() throws Exception{
+        //given
+        Long id = 1L;
+        //when
+        List<StudyMember> byStudy_id = studyMemberRepository.findStudyMembersByStudyIdAndStatusJOIN(id);
+        //then
     }
 }

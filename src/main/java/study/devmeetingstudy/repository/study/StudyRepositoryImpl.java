@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
@@ -43,7 +44,8 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         subjectIdEq(studySearchCondition.getSubjectId()),
                         lastIdFactory(studySearchCondition.getLastId(), studySearchCondition.getSorted()),
                         dtypeEq(studySearchCondition.getStudyInstanceType()),
-                        address1Like(studySearchCondition.getAddress1(), studySearchCondition.getStudyInstanceType())
+                        address1Like(studySearchCondition.getAddress1(), studySearchCondition.getStudyInstanceType()),
+                        study.deletionStatus.eq(DeletionStatus.NOT_DELETED)
                 )
                 .limit(studySearchCondition.getOffset())
                 .orderBy(sorted(studySearchCondition.getSorted()))
@@ -101,7 +103,10 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                 .leftJoin(study.online, online).fetchJoin()
                 .leftJoin(offline.address, address).fetchJoin()
                 .leftJoin(study.subject, subject).fetchJoin()
-                .where(study.id.eq(studyId))
+                .where(
+                        study.id.eq(studyId),
+                        study.deletionStatus.eq(DeletionStatus.NOT_DELETED)
+                )
                 .fetchOne()
         );
     }

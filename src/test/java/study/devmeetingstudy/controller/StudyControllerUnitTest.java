@@ -139,8 +139,6 @@ class StudyControllerUnitTest {
         Study study = Study.create(studySaveReqDto, subject);
         Online online = Online.create(studySaveReqDto, study);
 
-
-
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
@@ -186,7 +184,7 @@ class StudyControllerUnitTest {
                 .startDate(LocalDate.of(2021, 9, 24))
                 .endDate(LocalDate.of(2021, 10, 25))
                 .studyType(StudyType.FREE)
-                .studyInstanceType(StudyInstanceType.ONLINE)
+                .dtype(StudyInstanceType.ONLINE)
                 .subjectId(subjectReqDto.getId())
                 .link("https://dfsdf.sdfd.d.")
                 .onlineType("디스코드")
@@ -268,7 +266,7 @@ class StudyControllerUnitTest {
                 .startDate(LocalDate.of(2021, 9, 24))
                 .endDate(LocalDate.of(2021, 10, 25))
                 .studyType(StudyType.FREE)
-                .studyInstanceType(StudyInstanceType.OFFLINE)
+                .dtype(StudyInstanceType.OFFLINE)
                 .subjectId(subjectReqDto.getId())
                 .addressId(1L)
                 .content("자바 스터디원 모집합니다 현재 2분 남았습니다.")
@@ -377,7 +375,6 @@ class StudyControllerUnitTest {
         SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
         AddressReqDto addressReqDto = new AddressReqDto("서울시", "강남구", "서초동");
         Subject subject = Subject.create(subjectReqDto);
-        Address address = Address.create(addressReqDto);
         StudySaveReqDto onlineReqDto = getMockOnlineReqDto(subjectReqDto);
         Study onlineStudy = Study.create(onlineReqDto, subject);
         Online online = Online.create(onlineReqDto, onlineStudy);
@@ -401,7 +398,21 @@ class StudyControllerUnitTest {
 
         //then
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        System.out.println(contentAsString);
+    }
+
+    // 파일이 실려서 오나 null check 하기.
+    @DisplayName("스터디 수정 201 Created")
+    @Test
+    void putStudy() throws Exception {
+        //given
+
+        //when
+//        final ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
+//                .file(image)
+//                .contentType(MediaType.MULTIPART_FORM_DATA)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .header("Authorization", "bearer " + tokenDto.getAccessToken())
+//                .flashAttr("studySaveReqDto", studySaveReqDto));
+//        //then
     }
 }

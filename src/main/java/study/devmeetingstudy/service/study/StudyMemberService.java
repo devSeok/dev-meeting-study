@@ -31,6 +31,10 @@ public class StudyMemberService {
     }
 
     public List<StudyMember> findStudyMemberByStudyIdAndAuth(Long studyId, StudyAuth studyAuth) {
-        return studyMemberRepository.findFirstByStudyIdAndStudyAuth(studyId, studyAuth);
+        return studyMemberRepository.findByStudyIdAndStudyAuth(studyId, studyAuth);
+    }
+
+    public List<StudyMember> findStudyMembersByStudyId(Long studyId) {
+        return null;
     }
 }

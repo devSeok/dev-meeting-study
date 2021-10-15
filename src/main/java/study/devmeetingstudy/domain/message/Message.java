@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.member.Member;
@@ -13,7 +13,6 @@ import study.devmeetingstudy.vo.MessageVO;
 
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -46,11 +45,11 @@ public class Message extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_DELETED'")
-    private MessageDeletionStatus delflg;
+    private DeletionStatus deletionStatus;
 
 
     @Builder
-    public Message(Long id, Long senderId, Member member, String content, MessageReadStatus status, String senderName, MessageDeletionStatus delflg, LocalDateTime createdDate, LocalDateTime lastUpdateDate) {
+    public Message(Long id, Long senderId, Member member, String content, MessageReadStatus status, String senderName, DeletionStatus deletionStatus, LocalDateTime createdDate, LocalDateTime lastUpdateDate) {
         // TODO : null로 들어가기 때문에 당연히 CurrentDate 가 될 것으로 예상.
         super(createdDate, lastUpdateDate);
         this.id = id;
@@ -59,7 +58,7 @@ public class Message extends BaseTimeEntity{
         this.content = content;
         this.status = status;
         this.senderName = senderName;
-        this.delflg = delflg;
+        this.deletionStatus = deletionStatus;
     }
 
     /**
@@ -97,12 +96,12 @@ public class Message extends BaseTimeEntity{
         return Objects.hash(getId(), getSenderId(), getContent(), getSenderName());
     }
 
-    public static Message changeDeletionStatus(MessageDeletionStatus delflg, Message message) {
-        message.setDelflg(delflg);
+    public static Message changeDeletionStatus(DeletionStatus delflg, Message message) {
+        message.setDeletionStatus(delflg);
         return message;
     }
 
-    private void setDelflg(MessageDeletionStatus delflg) {
-        this.delflg = delflg;
+    private void setDeletionStatus(DeletionStatus delflg) {
+        this.deletionStatus = delflg;
     }
 }

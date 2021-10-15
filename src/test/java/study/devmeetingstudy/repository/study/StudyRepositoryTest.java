@@ -33,15 +33,8 @@ class StudyRepositoryTest {
     @PersistenceContext
     private EntityManager em;
 
-    private JPAQueryFactory queryFactory;
-
     @Autowired
     private StudyRepository studyRepository;
-
-    @BeforeEach
-    void before(){
-        queryFactory = new JPAQueryFactory(em);
-    }
 
     @DisplayName("스터디 검색 조건으로 스터디 목록 조회")
     @Test
@@ -105,7 +98,7 @@ class StudyRepositoryTest {
                 .startDate(LocalDate.of(2021, 9, 24))
                 .endDate(LocalDate.of(2021, 10, 25))
                 .studyType(StudyType.FREE)
-                .studyInstanceType(StudyInstanceType.ONLINE)
+                .dtype(StudyInstanceType.ONLINE)
                 .subjectId(subjectReqDto.getId())
                 .link("https://dfsdf.sdfd.d.")
                 .onlineType("디스코드")
