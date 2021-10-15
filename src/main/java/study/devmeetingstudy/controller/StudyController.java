@@ -14,6 +14,7 @@ import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.study.Study;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
@@ -116,6 +117,18 @@ public class StudyController {
         );
     }
 
-
+    @PutMapping("/{studyId}")
+    @ApiOperation(value = "스터디 수정")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "스터디 수정 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청")
+    })
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> putStudy(@PathVariable Long studyId,
+                                                                            @ModelAttribute StudyPutReqDto studyPutReqDto,
+                                                                            @JwtMember MemberResolverDto memberResolverDto) {
+        log.info("StudyController.putStudy");
+        return null;
+    }
 }
 
