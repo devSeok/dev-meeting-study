@@ -126,4 +126,10 @@ public class AuthService {
             throw new UserOutException("비밀번호가 다릅니다.", ErrorCode.USER_NOT_PASSWORD);
         }
     }
+
+    public boolean isExistsNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+    
+
 }

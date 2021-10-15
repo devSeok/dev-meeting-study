@@ -3,20 +3,15 @@ package study.devmeetingstudy.dto.study.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import study.devmeetingstudy.common.vaildEnum.CheckValidEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.address.AddressReqDto;
-import study.devmeetingstudy.dto.subject.SubjectReqDto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.List;
 
 
 // TODO : enums 벨리데이션 어노테이션을 만들어야된다.
@@ -66,7 +61,7 @@ public class StudySaveReqDto {
     @ApiModelProperty(value = "스터디 타입 (온라인, 오프라인)", example = "ONLINE", notes = "스터디 타입 (ONLINE, OFFLINE 만 가능)", required = true)
     @NotNull(message = "ONLINE/OFFLINE 선택은 필수입니다.")
     @CheckValidEnum(target = StudyInstanceType.class, message = "스터디 유형이 ONLINE or OFFLINE이여야 합니다.")
-    private StudyInstanceType studyInstanceType;
+    private StudyInstanceType dtype;
 
     @ApiModelProperty(value = "주소 아이디", example = "1", notes = "StudyInstanceType이 오프라인이면, 주소를 저장 요청 한 뒤 해당 id를 넘겨줍니다. 나중에 수정할 수 있도록 제공할 예정.")
     private Long addressId;
@@ -84,7 +79,7 @@ public class StudySaveReqDto {
     public StudySaveReqDto(String title, int maxMember,
                            LocalDate startDate, LocalDate endDate,
                            StudyType studyType, Long subjectId,
-                           StudyInstanceType studyInstanceType,
+                           StudyInstanceType dtype,
                            Long addressId, String link,
                            String onlineType, String content) {
         this.title = title;
@@ -93,7 +88,7 @@ public class StudySaveReqDto {
         this.endDate = endDate;
         this.studyType = studyType;
         this.subjectId = subjectId;
-        this.studyInstanceType = studyInstanceType;
+        this.dtype = dtype;
         this.addressId = addressId;
         this.link = link;
         this.onlineType = onlineType;

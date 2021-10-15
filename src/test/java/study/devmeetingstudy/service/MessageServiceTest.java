@@ -13,7 +13,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageReqDto;
 import study.devmeetingstudy.repository.message.MessageRepository;
@@ -89,7 +89,7 @@ class MessageServiceTest {
                 .senderName(sender.getNickname())
                 .senderId(sender.getId())
                 .member(member)
-                .delflg(MessageDeletionStatus.NOT_DELETED)
+                .deletionStatus(DeletionStatus.NOT_DELETED)
                 .status(MessageReadStatus.NOT_READ).build();
     }
 
@@ -149,7 +149,7 @@ class MessageServiceTest {
         Long messageId = 1L;
         Message notDeletedMessage = createMessage(1L, loginMember, member);
         Message deletedMessage = createMessage(1L, loginMember, member);
-        Message.changeDeletionStatus(MessageDeletionStatus.DELETED, deletedMessage);
+        Message.changeDeletionStatus(DeletionStatus.DELETED, deletedMessage);
 
         doReturn(deletedMessage).when(messageRepository).save(any(Message.class));
         //when
@@ -157,6 +157,6 @@ class MessageServiceTest {
         messageService.deleteMessage(notDeletedMessage);
 
         //then
-        assertEquals(MessageDeletionStatus.DELETED, deletedMessage.getDelflg());
+        assertEquals(DeletionStatus.DELETED, deletedMessage.getDeletionStatus());
     }
 }

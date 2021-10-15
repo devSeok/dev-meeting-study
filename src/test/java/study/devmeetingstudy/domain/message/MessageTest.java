@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,7 +55,7 @@ class MessageTest {
                 .senderName(sender.getNickname())
                 .member(member)
                 .content("하이")
-                .delflg(MessageDeletionStatus.NOT_DELETED)
+                .deletionStatus(DeletionStatus.NOT_DELETED)
                 .status(MessageReadStatus.NOT_READ)
                 .build();
         return message;
@@ -66,9 +66,9 @@ class MessageTest {
         //given
         Message message = getMessage();
         //when
-        Message.changeDeletionStatus(MessageDeletionStatus.DELETED, message);
+        Message.changeDeletionStatus(DeletionStatus.DELETED, message);
         //then
-        assertEquals(MessageDeletionStatus.DELETED, message.getDelflg());
+        assertEquals(DeletionStatus.DELETED, message.getDeletionStatus());
     }
 
 }

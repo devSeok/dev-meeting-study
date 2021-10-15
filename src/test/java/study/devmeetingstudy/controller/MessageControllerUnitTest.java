@@ -30,7 +30,7 @@ import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.message.Message;
-import study.devmeetingstudy.domain.message.enums.MessageDeletionStatus;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.message.enums.MessageReadStatus;
 import study.devmeetingstudy.dto.message.MessageReqDto;
 import study.devmeetingstudy.service.AuthService;
@@ -175,7 +175,7 @@ class MessageControllerUnitTest {
                 .senderName(sender.getNickname())
                 .senderId(sender.getId())
                 .member(member)
-                .delflg(MessageDeletionStatus.NOT_DELETED)
+                .deletionStatus(DeletionStatus.NOT_DELETED)
                 .status(MessageReadStatus.NOT_READ).createdDate(LocalDateTime.now()).lastUpdateDate(LocalDateTime.now()).build();
     }
 
@@ -288,7 +288,7 @@ class MessageControllerUnitTest {
         // 메시지 생성
         Message createdMessage = createMessage(1L, loginMember, member);
         //생성 후 메시지 삭제 상태 수정
-        Message deletedMessage = Message.changeDeletionStatus(MessageDeletionStatus.DELETED, createdMessage);
+        Message deletedMessage = Message.changeDeletionStatus(DeletionStatus.DELETED, createdMessage);
         // 토큰 생성 및 발급
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(loginMember.getAuthority().toString());
         Authentication token = new UsernamePasswordAuthenticationToken(loginMember.getId(), loginMember.getPassword(), Collections.singleton(grantedAuthority));
@@ -316,7 +316,7 @@ class MessageControllerUnitTest {
         // 메시지 생성
         Message createdMessage = createMessage(1L, member, loginMember);
         //생성 후 메시지 삭제 상태 수정
-        Message deletedMessage = Message.changeDeletionStatus(MessageDeletionStatus.DELETED, createdMessage);
+        Message deletedMessage = Message.changeDeletionStatus(DeletionStatus.DELETED, createdMessage);
         // 토큰 생성 및 발급
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(loginMember.getAuthority().toString());
         Authentication token = new UsernamePasswordAuthenticationToken(loginMember.getId(), loginMember.getPassword(), Collections.singleton(grantedAuthority));

@@ -8,7 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.study.enums.StudyAuth;
-import study.devmeetingstudy.domain.study.enums.StudyStatus;
+import study.devmeetingstudy.domain.study.enums.StudyMemberStatus;
 
 import javax.persistence.*;
 
@@ -38,15 +38,15 @@ public class StudyMember {
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'JOIN'")
-    private StudyStatus studyStatus;
+    private StudyMemberStatus studyMemberStatus;
 
     @Builder
-    public StudyMember(Long id, Member member, Study study, StudyAuth studyAuth, StudyStatus studystatus) {
+    public StudyMember(Long id, Member member, Study study, StudyAuth studyAuth, StudyMemberStatus studyMemberStatus) {
         this.id = id;
         this.member = member;
         this.study = study;
         this.studyAuth = studyAuth;
-        this.studyStatus = studystatus;
+        this.studyMemberStatus = studyMemberStatus;
     }
 
     public static StudyMember create(Member member, Study study) {

@@ -1,22 +1,24 @@
 package study.devmeetingstudy.domain.study;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.base.BaseTimeEntity;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 //@DiscriminatorColumn
 //@Inheritance(strategy = InheritanceType.JOINED)
 public class Study extends BaseTimeEntity {
@@ -45,6 +47,10 @@ public class Study extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private StudyType studyType;
 
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'NOT_DELETED'")
+    private DeletionStatus deletionStatus;
+
     @OneToOne(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Online online;
 
@@ -58,7 +64,7 @@ public class Study extends BaseTimeEntity {
     private final List<StudyMember> studyMembers = new ArrayList<>();
 
     @Builder
-    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype, String content) {
+    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype, String content, DeletionStatus deletionStatus) {
         this.subject = subject;
         this.title = title;
         this.maxMember = maxMember;
@@ -67,6 +73,7 @@ public class Study extends BaseTimeEntity {
         this.studyType = studyType;
         this.dtype = dtype;
         this.content = content;
+        this.deletionStatus = deletionStatus;
     }
 
     public static Study create(StudySaveReqDto studySaveReqDto, Subject subject) {
@@ -77,7 +84,7 @@ public class Study extends BaseTimeEntity {
                 .startDate(studySaveReqDto.getStartDate())
                 .endDate(studySaveReqDto.getEndDate())
                 .studyType(studySaveReqDto.getStudyType())
-                .dtype(studySaveReqDto.getStudyInstanceType())
+                .dtype(studySaveReqDto.getDtype())
                 .content(studySaveReqDto.getContent())
                 .build();
     }

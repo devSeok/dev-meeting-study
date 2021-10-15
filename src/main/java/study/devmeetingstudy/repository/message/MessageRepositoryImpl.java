@@ -17,7 +17,7 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom {
 
     @Override
     public List<Message> findMessagesDesc(Member member) {
-        return em.createQuery("select ms from Message ms where ms.member.id = :memberId and ms.delflg = 'NOT_DELETED' order by ms.id desc", Message.class)
+        return em.createQuery("select ms from Message ms where ms.member.id = :memberId and ms.deletionStatus = 'NOT_DELETED' order by ms.id desc", Message.class)
                 .setParameter("memberId",member.getId())
                 .getResultList();
     }

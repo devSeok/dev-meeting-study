@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import study.devmeetingstudy.common.exception.global.error.ErrorResponse;
 import study.devmeetingstudy.common.exception.global.error.exception.EmailVerifyCodeNotFoundException;
@@ -25,6 +26,8 @@ import study.devmeetingstudy.service.EmailService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 @Api(tags = "인증", value = "controller")
@@ -136,6 +139,23 @@ public class AuthController {
                         .message("성공")
                         .status(HttpStatus.OK.value())
                         .data(Boolean.TRUE)
+                        .build()
+        );
+    }
+
+    @GetMapping("/nickname/exists/{nickname}")
+    @ApiOperation(value = "닉네임 중복 검사", notes = "닉네임 중복일시 true, 중복이 아닐시 false로 날라갑니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "닉네임 중복 검사 요청 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
+    })
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<ApiResDto<Boolean>> existsNickname(@PathVariable @NotBlank String nickname) {
+        return ResponseEntity.ok(
+                ApiResDto.<Boolean>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(authService.isExistsNickname(nickname))
                         .build()
         );
     }
