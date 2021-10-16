@@ -13,9 +13,13 @@ import './asset/GlobalStyle.css';
 import MessageView from './views/MessageView';
 import TestMessage from './views/MessageListView';
 
+import { helloDevMeetingStudy } from './HelloDevMeetingStudy';
+
 // null  =>  누구나 가능
 // true  =>  로그안 한 사람만 가능
 // fasle =>  로그인 한 사람은 불가능
+
+helloDevMeetingStudy();
 
 function App() {
   return (
