@@ -36,15 +36,6 @@ public class MessageController {
     private final MemberService memberService;
     private final AuthService authService;
 
-    /*
-    * TODO
-    *  멤버 확인 코드 작성.
-    * */
-
-    /**
-     * save Message
-     * @return
-     */
     @PostMapping
     @ApiOperation(value = "메시지 보내기", notes = "로그인 한 유저가 email 대상에게 메시지를 보냅니다. (메시지 리소스를 생성합니다.)")
     @ApiResponses(value = {
@@ -56,7 +47,7 @@ public class MessageController {
                                                                 @Valid @RequestBody MessageReqDto messageReqDto){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
         Member member = memberService.getMemberInfo(messageReqDto.getEmail());
-        Message message = messageService.send(new MessageVO(messageReqDto.getContent(), member, loginMember));
+        Message message = messageService.sendMessage(new MessageVO(messageReqDto.getContent(), member, loginMember));
         return ResponseEntity
                 .created(URI.create("/api/messages/" + message.getId()))
                 .body(
@@ -91,7 +82,7 @@ public class MessageController {
     }
 
     // TODO 보낸 메시지 기능 추가하기
-    @GetMapping("/{id}")
+    @GetMapping("/{messageId}")
     @ApiOperation(value = "메시지 조회", notes = "로그인 한 유저에 대한 messageId에 해당하는 리소스를 조회하며, 읽음 상태를 변경합니다.")
     @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
@@ -100,9 +91,9 @@ public class MessageController {
     })
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<MessageResDto>> getMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
-                                                               @PathVariable Long id){
+                                                               @PathVariable Long messageId){
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        Message message = messageService.findMessage(id);
+        Message message = messageService.findMessage(messageId);
         authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
         return ResponseEntity.ok(
                 ApiResDto.<MessageResDto>builder()
@@ -113,7 +104,7 @@ public class MessageController {
         );
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{messageId}")
     @ApiOperation(value = "메시지 삭제", notes = "로그인 한 유저에 대한 messageId에 해당하는 리소스를 삭제합니다 (삭제 상태 업데이트 처리)")
     @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
@@ -122,8 +113,8 @@ public class MessageController {
     })
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteMessage(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto,
-                                              @PathVariable Long id){
-        Message message = messageService.findMessage(id);
+                                              @PathVariable Long messageId){
+        Message message = messageService.findMessage(messageId);
         authService.checkUserInfo(message.getMember().getId(), memberResolverDto);
         messageService.deleteMessage(message);
         return ResponseEntity.noContent().build();

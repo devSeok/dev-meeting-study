@@ -76,7 +76,7 @@ class MessageServiceTest {
         doReturn(createdMessage).when(messageRepository).save(any(Message.class));
 
         //when
-        Message message = messageService.send(messageVO);
+        Message message = messageService.sendMessage(messageVO);
 
         //then
         assertNotNull(message);
