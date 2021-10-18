@@ -152,7 +152,7 @@ const saveStudty = (study: StudyType) => {
 };
 
 export interface FilterType {
-  studyInstanceType: string;
+  dtype: string;
   address1: string | null;
   lastId: number | null;
   studyType: string;

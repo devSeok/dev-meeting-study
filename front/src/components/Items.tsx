@@ -6,7 +6,7 @@ import { Item } from '../views/MainView';
 // 나중에 interface 파일 만들어서 빼기
 interface PropsData {
   inputs: {
-    studyInstanceType: string;
+    dtype: string;
     address1: string | null;
     lastId: number | null;
     studyType: string;
