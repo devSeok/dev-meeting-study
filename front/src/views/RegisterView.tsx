@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
+import { AxiosResponse } from 'axios';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { register_check_email, register_check_num } from '../API/index';
+import { register_check_email, register_check_num, register_check_nickname } from '../API/index';
 import { register } from '../ToolKit/user';
 import { DispatchReduxFailRes } from '../ToolKit/axiosType';
 import StudyHeader from '../components/StudyHeader';
@@ -123,10 +124,23 @@ function RegisterView() {
     } catch (err: any) {
       setCheckEmailRes(false);
 
-      alert('요청 실패');
+      console.log('err', err.response);
+      if (err.response.data !== undefined) {
+        alert(err.response.data.message);
+      } else {
+        alert('요청 실패');
+      }
 
       setCheckEmailButtonValue('요청');
     }
+  };
+
+  const checkNickname = async (nickname: string): Promise<boolean> => {
+    const {
+      data: { data },
+    }: AxiosResponse = await register_check_nickname(nickname);
+
+    return data;
   };
 
   const onRegister = async () => {
@@ -137,34 +151,37 @@ function RegisterView() {
           password,
           nickname,
         };
-
-        // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
-        // @ts-ignore
-        const response: DispatchReduxFailRes = await dispatch(register(obj));
-        if (response.error) {
-          if (response.payload === undefined) {
-            alert('서버 에러입니다. 계속 지속될 시 문의 해주세요.');
-          } else {
-            if (response.payload.message === '이미 가입되어 있는 유저 입니다.') {
-              setInputs({
-                ...inputs,
-                email: '',
-                checkNum: '',
-              });
-              // email input에 focus
-              emailRef.current?.focus();
-
-              setCheckEmailReq(false);
-
-              setCheckEmailRes(false);
-
-              setCheckEmailButtonValue('요청');
+        if (await checkNickname(nickname)) {
+          alert('이미 사용중인 닉네임입니다.');
+        } else {
+          // 'AsyncThunkAction<ResRegister, Register, {}>' 형식에 'then' 속성이 없습니다.ts(2339)
+          // @ts-ignore
+          const response: DispatchReduxFailRes = await dispatch(register(obj));
+          if (response.error) {
+            if (response.payload === undefined) {
+              alert('서버 에러입니다. 계속 지속될 시 문의 해주세요.');
             } else {
-              alert('회원가입 실패');
-              console.log('response payload', response.payload.message);
+              if (response.payload.message === '이미 가입되어 있는 유저 입니다.') {
+                alert('이미 가입되어 있는 유저 입니다.');
+                setInputs({
+                  ...inputs,
+                  email: '',
+                  checkNum: '',
+                });
+                // email input에 focus
+                emailRef.current?.focus();
+
+                setCheckEmailReq(false);
+
+                setCheckEmailRes(false);
+
+                setCheckEmailButtonValue('요청');
+              } else {
+                alert(response.payload.message + '!@@');
+              }
             }
+            return;
           }
-          return;
         }
         history.push('/login');
       } else {

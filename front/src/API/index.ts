@@ -37,6 +37,13 @@ const register_check_num = (auth_number: string, email: string) => {
   });
 };
 
+const register_check_nickname = (nickname: string) => {
+  return Send({
+    method: Method.GET,
+    url: `auth/nickname/exists/${nickname}`,
+  });
+};
+
 // 로그인
 const login_user = (user: LoginType) => {
   return Send({
@@ -155,6 +162,7 @@ export {
   register_user,
   register_check_email,
   register_check_num,
+  register_check_nickname,
   login_user,
   reissueToken,
   myInfo,
