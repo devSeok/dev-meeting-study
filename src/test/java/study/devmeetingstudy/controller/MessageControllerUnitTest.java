@@ -143,7 +143,7 @@ class MessageControllerUnitTest {
         doReturn(loginMember).when(memberService).getUserOne(any(Long.class));
         doReturn(member).when(memberService).getMemberInfo(any(String.class));
         // 새로 생성된 메시지가 리턴됨.
-        doReturn(message).when(messageService).send(any(MessageVO.class));
+        doReturn(message).when(messageService).sendMessage(any(MessageVO.class));
 
         //when
         // 요청 리퀘스트 폼 생성

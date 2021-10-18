@@ -25,7 +25,7 @@ public class MessageService {
      * @return Message
      */
     @Transactional
-    public Message send(MessageVO messageVO){
+    public Message sendMessage(MessageVO messageVO){
         Message createMessage = Message.create(messageVO);
         return messageRepository.save(createMessage);
     }
