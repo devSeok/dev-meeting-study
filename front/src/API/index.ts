@@ -1,5 +1,5 @@
 import Send from './interceptors';
-import { SendMessageType } from '../ToolKit/MessageTypes';
+import { SendMessageType, ReadMessageType } from '../ToolKit/MessageTypes';
 import { RegisterType, LoginType, Token, Addresses, SubjectType, StudyType } from '../ToolKit/userType';
 
 enum Method {
@@ -87,7 +87,20 @@ const listMessages = () => {
     url: '/messages',
   });
 };
-
+// message 조회
+const readMessages = (id: number) => {
+  return Send({
+    method: Method.GET,
+    url: `/messages/${id}`,
+  });
+};
+// message 삭제
+const deleteMessages = (id: number) => {
+  return Send({
+    method: Method.DELETE,
+    url: `/messages/${id}`,
+  });
+};
 // 주소 추가
 const addAddresses = (addresses: Addresses) => {
   return Send({
@@ -161,6 +174,8 @@ export {
   member,
   sendMessages,
   listMessages,
+  readMessages,
+  deleteMessages,
   addAddresses,
   searchAddresses,
   getSubjects,

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 import { Icon } from '../elements';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import person from '../asset/image/person.png';
 import moment from 'moment';
-import MessageContents from './MessageContents';
+import { deleteMessage } from '../ToolKit/user';
 
 interface Study {
   title: string;
@@ -12,47 +14,44 @@ interface Study {
   lang: string[];
   id: number;
 }
-
-interface Post {
-  content: string;
-  createdDate: string;
-  delflg: string;
-  id: number;
-  lastUpdateDate: string;
-  // member:
-  // email: "test1@test.com"
-  // grade: 0
-  // id: 7
-  // nickname: "jun"
-
-  // sender:
-  // email: "test1@test.com"
-  // grade: 0
-  // id: 7
-  // nickname: "jun"
-  // [[Prototype]]: Object
-  // status: "NOT_READ"
+interface PropsType {
+  items: any;
+  index: number;
 }
-interface ReadeonlyPost {}
 
-function StudyColumnList({ items, index }: any) {
-  const [message, setMessage] = useState<Post>();
-  const [openMessage, setOpenMessage] = useState(false);
-  const [clicked, setClicked] = useState(false);
+const Contents = styled.div`
+  max-width: 390px;
+  height: max-content;
+  word-break: break-all;
+  display: none;
+
+  &.open {
+    display: block;
+  }
+`;
+
+function StudyColumnList({ items, index }: PropsType) {
+  const Dispatch = useDispatch();
+  const [message, setMessage] = useState();
   // console.log('List:items', items);
   // console.log('List:index', index);
-
-  // 1. 파라미터 타입 바꾸기
+  const itemRef = useRef<HTMLLIElement>(null);
+  const contentMaxRef = useRef<HTMLDivElement>(null);
+  const contentSliceRef = useRef<HTMLDivElement>(null);
   // 2. onClick 함수에서 처리하기
+  const onClick = (data: any, idx: number, e: any) => {
+    setMessage(data); // data
+    const parent = e.currentTarget.childNodes[0].childNodes[1];
+    const contentSlice = parent.childNodes[2];
+    const contentMax = parent.childNodes[3];
 
-  const onClick = (data: Post) => {
-    console.log('onClick!');
-    setMessage(data);
-    setOpenMessage(!openMessage);
+    contentSlice.classList.toggle('open');
+    contentMax.classList.toggle('open');
   };
 
-  const onDel = () => {
-    console.log('삭제!');
+  const onDelete = (id: any) => {
+    console.log(id);
+    Dispatch(deleteMessage(id));
   };
 
   // JSX
@@ -101,28 +100,35 @@ function StudyColumnList({ items, index }: any) {
             );
           })}
         {index === 2 &&
-          items.map((item: Post, idx: number) => {
+          items.map((item: any, idx: number) => {
             const date = moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss');
             const contents = item.content.substring(0, 40);
-            // console.log(clicked);
+            const contentsMax = item.content;
             return (
               <>
-                <li key={idx} style={{ margin: '20px 0px', cursor: 'pointer' }} onClick={() => onClick(item)}>
+                <li
+                  key={idx}
+                  ref={itemRef}
+                  style={{ margin: '20px 0px', cursor: 'pointer' }}
+                  onClick={(e) => onClick(item, idx, e)}
+                >
                   <div style={{ display: 'flex' }}>
                     <div style={{ paddingRight: '20px' }}>
                       <img src={person} alt="유저" />
                     </div>
                     <div>
                       <span>{date}</span>
-                      <button onClick={onDel}>Del</button>
-                      <h2>{contents}</h2>
+                      <button onClick={onDelete}>Del</button>
+                      <Contents ref={contentSliceRef} className="open">
+                        {contents}
+                      </Contents>
+                      <Contents ref={contentMaxRef}>{contentsMax}</Contents>
                     </div>
                   </div>
                 </li>
               </>
             );
           })}
-        {openMessage && <span>TURE!</span>}
       </ul>
     </div>
   );

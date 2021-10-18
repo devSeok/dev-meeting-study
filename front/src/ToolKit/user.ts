@@ -1,9 +1,17 @@
 import { createSlice, createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
-import { listMessages, login_user, register_user, reissueToken, sendMessages } from '../API/index';
+import {
+  listMessages,
+  login_user,
+  readMessages,
+  register_user,
+  reissueToken,
+  sendMessages,
+  deleteMessages,
+} from '../API/index';
 import { RegisterType, LoginType, Token, TokenCheck, USER_TYPE } from './userType';
 import { ResRegister, ResLogin, PayloadSuccessType, PayloadFailType, ResSendMessage } from './axiosType';
 import { ReducerType } from '../rootReducer';
-import { MESSAGE_TYPE, SendMessageType } from './MessageTypes';
+import { MESSAGE_TYPE, ReadMessageType, SendMessageType } from './MessageTypes';
 
 // 메세지 보내기
 export const sendMessage = createAsyncThunk('sendMessage', async (message: SendMessageType, { rejectWithValue }) => {
@@ -26,7 +34,8 @@ export const sendMessage = createAsyncThunk('sendMessage', async (message: SendM
 });
 
 // 메세지 리스트
-export const listMessage = createAsyncThunk('listMessage', async ({ rejectWithValue }: any) => {
+
+export const listMessage = createAsyncThunk('listMessage', async (arg, { rejectWithValue }: any) => {
   console.log('listMessage', listMessage);
 
   try {
@@ -41,6 +50,45 @@ export const listMessage = createAsyncThunk('listMessage', async ({ rejectWithVa
     const messageObj = {
       ...error,
       type: MESSAGE_TYPE.MESSAGE_LIST,
+    };
+    return rejectWithValue(messageObj);
+  }
+});
+
+// 메세지 조회
+export const readMessage = createAsyncThunk('readMessage', async (id: number, { rejectWithValue }: any) => {
+  console.log('readMessage', id);
+  try {
+    const { data }: any = await readMessages(id);
+    console.log('data', data);
+
+    return {
+      type: MESSAGE_TYPE.MESSAGE_READ,
+      payload: data,
+    };
+  } catch (err: any) {
+    const error: PayloadFailType = err.response.data;
+    const messageObj = {
+      ...error,
+      type: MESSAGE_TYPE.MESSAGE_LIST,
+    };
+    return rejectWithValue(messageObj);
+  }
+});
+
+// 메세지 삭제
+export const deleteMessage = createAsyncThunk('deleteMessage', async (id: number, { rejectWithValue }: any) => {
+  try {
+    const { data }: any = await deleteMessages(id);
+    return {
+      type: MESSAGE_TYPE.MESSAGE_DELETE,
+      payload: data,
+    };
+  } catch (err: any) {
+    const error: PayloadFailType = err.response.data;
+    const messageObj = {
+      ...error,
+      type: MESSAGE_TYPE.MESSAGE_DELETE,
     };
     return rejectWithValue(messageObj);
   }
@@ -288,6 +336,36 @@ const user = createSlice({
     });
     // 메세지 리스트 실패
     builder.addCase(listMessage.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.message = { type, payload };
+    });
+    // 메세지 읽음 로딩
+    builder.addCase(readMessage.pending, (state) => {
+      state.status = 'loading';
+    });
+    // 메세지 읽음 성공
+    builder.addCase(readMessage.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.message = { type, payload };
+      console.log(payload);
+    });
+    // 메세지 읽음 실패
+    builder.addCase(readMessage.rejected, (state, { type, payload }) => {
+      state.status = 'failed';
+      state.message = { type, payload };
+    });
+    // 메세지 삭제 로딩
+    builder.addCase(deleteMessage.pending, (state) => {
+      state.status = 'loading';
+    });
+    // 메세지 삭제 성공
+    builder.addCase(deleteMessage.fulfilled, (state, { type, payload }) => {
+      state.status = 'success';
+      state.message = { type, payload };
+      console.log(payload);
+    });
+    // 메세지 삭제 실패
+    builder.addCase(deleteMessage.rejected, (state, { type, payload }) => {
       state.status = 'failed';
       state.message = { type, payload };
     });
