@@ -69,9 +69,9 @@ function LoginView() {
       if (response.payload === undefined) {
         alert('서버 에러입니다. 계속 지속될 시 문의 해주세요.');
       } else {
-        alert('로그인 실패');
+        alert(response.payload.message);
       }
-      console.log(response);
+      // console.log(response);
 
       return;
     }

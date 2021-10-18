@@ -88,13 +88,12 @@ interface PayloadProps {
 }
 function MyStudyView() {
   const Dispatch = useDispatch();
+  console.log('요청 전');
   const messageData: PayloadProps = useSelector(message);
+  // console.log("요청 후 ", messageData);
   console.log('messageData', messageData);
-  const messageList = messageData.payload.payload.data;
-  // 절대 놉 // Dispatch(listMessage('')); // 절대 놉
-  // }, [Dispatch]);
-  // console.log('messageList', messageList);
-  // console.log('dispatch', Dispatch(listMessage('')));
+  const messageList: any = messageData.payload.payload.data;
+  console.log('messageList', messageList);
 
   const history = useHistory();
   const [inputs, setInputs] = useState({
@@ -146,7 +145,7 @@ function MyStudyView() {
   useEffect(() => {
     const pathnameSlice = pathname.slice(4);
     setItem(parseInt(obj[pathnameSlice]));
-    Dispatch(listMessage(''));
+    Dispatch(listMessage());
   }, []);
 
   return (
