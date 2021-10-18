@@ -122,7 +122,7 @@ function OpenStudyView() {
     study: { ...initalStudy } as ItemsType,
   });
   const [inputs, setInputs] = useState({
-    studyInstanceType: 'ONLINE',
+    dtype: 'ONLINE',
     address1: null,
     lastId: null,
     studyType: 'FREE',
@@ -193,7 +193,7 @@ function OpenStudyView() {
                 전체
               </span>
 
-              <Select id="type-select" name="studyInstanceType" onChange={onChange}>
+              <Select id="type-select" name="dtype" onChange={onChange}>
                 <option value="ONLINE">온라인</option>
                 {/* 오프라인은 배포 이후 지원 */}
                 {/* <option value="OFFLINE">오프라인</option> */}
@@ -207,7 +207,7 @@ function OpenStudyView() {
                 <option value={8}>8개</option>
                 <option value={16}>16개</option>
               </Select>
-              {inputs.studyInstanceType === 'OFFLINE' && (
+              {inputs.dtype === 'OFFLINE' && (
                 <>
                   {/* innerwidth는 한번만 실행되므로 차후에 변경 예정 */}
                   {/* 오프라인은 배포 이후 지원 */}
