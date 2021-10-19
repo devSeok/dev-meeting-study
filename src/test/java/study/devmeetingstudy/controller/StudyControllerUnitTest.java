@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.tomcat.jni.Local;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,15 +34,19 @@ import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.study.*;
+import study.devmeetingstudy.domain.study.enums.StudyAuth;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.domain.study.enums.StudyMemberStatus;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
@@ -408,38 +413,39 @@ class StudyControllerUnitTest {
     //      2. offline -> online // description offline row 삭제 및 address row 삭제, online row 생성
     // TODO 온라인 -> 오프라인으로 바뀔시 2021.10.18 엑셉션 던지기
     //      503 service Unavailable
+    //
     @DisplayName("스터디 수정 200 Ok")
     @Test
     void putStudy_Ok() throws Exception {
         //given
-        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
-        Subject subject = Subject.create(subjectReqDto);
+        Subject subject = getSubject(1L, "JAVA");
 
-        // 수정 요청할 request
-        StudySaveReqDto requestDto = getMockOnlineReqDto(subjectReqDto);
-        requestDto.setTitle("자바 스터디 급구합니다");
-        requestDto.setContent("정말 급히 구합니다.");
+        // 리소스 생성.
+        Study study = getStudy(1L, "자바 스터디원 모집합니다.", "급히 구해봐요!! 2분", subject);
 
-        Study study = Study.create(requestDto, subject);
-        Online online = Online.create(requestDto, study);
+        Online online = getOnline(1L, study);
         Map<String, String> fileInfo = new HashMap<>();
-        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.FILE_NAME, "image-2.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
-        StudyFile studyFile = StudyFile.create(study, fileInfo);
-        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+        StudyFile studyFile = getStudyFile(1L, study, fileInfo);
+        StudyMember studyMember = getStudyMember(1L, study);
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
+        // 리소스 수정 request
+        StudyPutReqDto studyPutReqDto = getPutReq(study, online, studyFile, "급히 구합니다.", "잘해드립니다.");
+
+        Study modifyStudy = getStudy(1L, "자바 스터디원 급히 모집합니다.", "급히 구해봐요!! 마지막 한분!", subject);
 
         CreatedStudyDto modifyStudyDto = CreatedStudyDto.builder()
                 .online(online)
                 .studyFile(studyFile)
                 .studyMember(studyMember)
-                .study(study)
+                .study(modifyStudy)
                 .build();
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(true).when(studyService).existsStudyByStudyId(anyLong());
-        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudyPutReqDto.class), any(Member.class));
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
 
         //when
@@ -453,34 +459,98 @@ class StudyControllerUnitTest {
                 .file(image)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "bearer " + tokenDto.getAccessToken())
-                .flashAttr("studySaveReqDto", requestDto));
+                .flashAttr("studyPutReqDto", studyPutReqDto));
         //then
         resultActions.andExpect(status().isOk());
+    }
+
+    private StudyPutReqDto getPutReq(Study study, Online online, StudyFile studyFile, String title, String content) {
+        return StudyPutReqDto.builder()
+                .studyFileId(studyFile.getId())
+                .studyType(study.getStudyType())
+                .onlineId(online.getId())
+                .content("급구합니다.")
+                .dtype(study.getDtype())
+                .endDate(study.getEndDate())
+                .startDate(study.getStartDate())
+                .maxMember(study.getMaxMember())
+                .title(title)
+                .subjectId(1L)
+                .build();
+    }
+
+    private StudyMember getStudyMember(Long studyMemberId, Study study) {
+        return StudyMember.builder()
+                .id(studyMemberId)
+                .member(loginMember)
+                .studyMemberStatus(StudyMemberStatus.JOIN)
+                .studyAuth(StudyAuth.LEADER)
+                .study(study)
+                .build();
+    }
+
+    private StudyFile getStudyFile(Long studyFileId, Study study, Map<String, String> fileInfo) {
+        return StudyFile.builder()
+                .id(studyFileId)
+                .study(study)
+                .name(fileInfo.get(Uploader.FILE_NAME))
+                .path(fileInfo.get(Uploader.UPLOAD_URL))
+                .build();
+    }
+
+    private Online getOnline(Long onlineId, Study study) {
+        return Online.builder()
+                .id(onlineId)
+                .onlineType("디스코드")
+                .study(study)
+                .link("https://www.discord.com")
+                .build();
+    }
+
+    private Study getStudy(Long studyId, String title, String content, Subject subject) {
+        return Study.builder()
+                .title(title)
+                .content(content)
+                .studyType(StudyType.FREE)
+                .dtype(StudyInstanceType.ONLINE)
+                .id(studyId)
+                .deletionStatus(DeletionStatus.NOT_DELETED)
+                .subject(subject)
+                .maxMember(5)
+                .startDate(LocalDate.of(2021, 10, 20))
+                .endDate(LocalDate.of(2021, 11, 21))
+                .build();
+    }
+
+    private Subject getSubject(Long subjectId, String name) {
+        return Subject.builder()
+                .id(subjectId)
+                .name(name)
+                .build();
     }
 
     @DisplayName("스터디 수정 201 Created")
     @Test
     void putStudy_Created() throws Exception {
         //given
-        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
-        Subject subject = Subject.create(subjectReqDto);
+        Subject subject = getSubject(1L, "JAVA");
 
-        // 수정 요청할 request
-        StudySaveReqDto requestDto = getMockOnlineReqDto(subjectReqDto);
-        requestDto.setTitle("자바 스터디 급구합니다");
-        requestDto.setContent("정말 급히 구합니다.");
+        // 리소스 생성.
+        Study study = getStudy(1L, "자바 스터디원 모집합니다.", "급히 구해봐요!! 2분", subject);
 
-        Study study = Study.create(requestDto, subject);
-        Online online = Online.create(requestDto, study);
+        Online online = getOnline(1L, study);
         Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
-        StudyFile studyFile = StudyFile.create(study, fileInfo);
-        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+        StudyFile studyFile = getStudyFile(1L, study, fileInfo);
+
+        StudyMember studyMember = getStudyMember(1L, study);
+
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
+        StudyPutReqDto studyPutReqDto = getPutReq(study, online, studyFile, study.getTitle(), study.getContent());
 
-        CreatedStudyDto modifyStudyDto = CreatedStudyDto.builder()
+        CreatedStudyDto studyDto = CreatedStudyDto.builder()
                 .online(online)
                 .studyFile(studyFile)
                 .studyMember(studyMember)
@@ -489,7 +559,7 @@ class StudyControllerUnitTest {
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(false).when(studyService).existsStudyByStudyId(anyLong());
-        doReturn(modifyStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(studyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
 
         //when
@@ -503,8 +573,9 @@ class StudyControllerUnitTest {
                 .file(image)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "bearer " + tokenDto.getAccessToken())
-                .flashAttr("studySaveReqDto", requestDto));
+                .flashAttr("studyPutReqDto", studyPutReqDto));
         //then
         resultActions.andExpect(status().isCreated());
     }
+
 }
