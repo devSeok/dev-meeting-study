@@ -106,4 +106,13 @@ class StudyRepositoryTest {
                 .build();
     }
 
+    @DisplayName("스터디가 이미 존재하는지 확인 boolean")
+    @Test
+    void existStudyById() throws Exception {
+        //given
+        System.out.println(studyRepository.existsStudyById(1L));
+        //when
+        //then
+    }
+
 }

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +25,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Address;
@@ -142,7 +145,7 @@ class StudyControllerUnitTest {
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -225,7 +228,7 @@ class StudyControllerUnitTest {
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
         //업로드 과정
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -300,7 +303,7 @@ class StudyControllerUnitTest {
             Study onlineStudy = Study.create(mockOnlineReqDto, subject);
             Online online = Online.create(mockOnlineReqDto, onlineStudy);
             Offline offline = Offline.create(address, offlineStudy);
-            Map<String, String> fileInfo = new ConcurrentHashMap<>();
+            Map<String, String> fileInfo = new HashMap<>();
             fileInfo.put(Uploader.FILE_NAME, "image-" + i + ".jpeg");
             fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
             StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
@@ -378,7 +381,7 @@ class StudyControllerUnitTest {
         StudySaveReqDto onlineReqDto = getMockOnlineReqDto(subjectReqDto);
         Study onlineStudy = Study.create(onlineReqDto, subject);
         Online online = Online.create(onlineReqDto, onlineStudy);
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
@@ -389,7 +392,7 @@ class StudyControllerUnitTest {
         onlineDto.setFiles(studyFiles);
         onlineDto.setStudyMembers(studyMembers);
 
-        doReturn(onlineDto).when(studyFacadeService).findStudyById(anyLong());
+        doReturn(onlineDto).when(studyFacadeService).findStudyByStudyId(anyLong());
 
         //when
         final ResultActions resultActions = mockMvc.perform(
@@ -400,19 +403,108 @@ class StudyControllerUnitTest {
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
     }
 
-    // 파일이 실려서 오나 null check 하기.
-    @DisplayName("스터디 수정 201 Created")
+    // TODO 스터디 dtype이 바뀐다.
+    //      1. online -> offline // description online row 삭제 및 offline raw 생성, address raw 생성.
+    //      2. offline -> online // description offline row 삭제 및 address row 삭제, online row 생성
+    // TODO 온라인 -> 오프라인으로 바뀔시 2021.10.18 엑셉션 던지기
+    //      503 service Unavailable
+    @DisplayName("스터디 수정 200 Ok")
     @Test
-    void putStudy() throws Exception {
+    void putStudy_Ok() throws Exception {
         //given
+        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
+        Subject subject = Subject.create(subjectReqDto);
+
+        // 수정 요청할 request
+        StudySaveReqDto requestDto = getMockOnlineReqDto(subjectReqDto);
+        requestDto.setTitle("자바 스터디 급구합니다");
+        requestDto.setContent("정말 급히 구합니다.");
+
+        Study study = Study.create(requestDto, subject);
+        Online online = Online.create(requestDto, study);
+        Map<String, String> fileInfo = new HashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyFile studyFile = StudyFile.create(study, fileInfo);
+        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+
+
+        CreatedStudyDto modifyStudyDto = CreatedStudyDto.builder()
+                .online(online)
+                .studyFile(studyFile)
+                .studyMember(studyMember)
+                .study(study)
+                .build();
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doReturn(true).when(studyService).existsStudyByStudyId(anyLong());
+        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(loginMember).when(memberService).getUserOne(anyLong());
 
         //when
-//        final ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
-//                .file(image)
-//                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .header("Authorization", "bearer " + tokenDto.getAccessToken())
-//                .flashAttr("studySaveReqDto", studySaveReqDto));
-//        //then
+        MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/api/studies/" + 1L);
+        requestBuilder.with(request -> {
+            request.setMethod(HttpMethod.PUT.name());
+            return request;
+        });
+
+        final ResultActions resultActions = mockMvc.perform(requestBuilder
+                .file(image)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "bearer " + tokenDto.getAccessToken())
+                .flashAttr("studySaveReqDto", requestDto));
+        //then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @DisplayName("스터디 수정 201 Created")
+    @Test
+    void putStudy_Created() throws Exception {
+        //given
+        SubjectReqDto subjectReqDto = new SubjectReqDto(1L, "Java");
+        Subject subject = Subject.create(subjectReqDto);
+
+        // 수정 요청할 request
+        StudySaveReqDto requestDto = getMockOnlineReqDto(subjectReqDto);
+        requestDto.setTitle("자바 스터디 급구합니다");
+        requestDto.setContent("정말 급히 구합니다.");
+
+        Study study = Study.create(requestDto, subject);
+        Online online = Online.create(requestDto, study);
+        Map<String, String> fileInfo = new HashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyFile studyFile = StudyFile.create(study, fileInfo);
+        StudyMember studyMember = StudyMember.createAuthLeader(loginMember, study);
+        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+
+
+        CreatedStudyDto modifyStudyDto = CreatedStudyDto.builder()
+                .online(online)
+                .studyFile(studyFile)
+                .studyMember(studyMember)
+                .study(study)
+                .build();
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doReturn(false).when(studyService).existsStudyByStudyId(anyLong());
+        doReturn(modifyStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(loginMember).when(memberService).getUserOne(anyLong());
+
+        //when
+        MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/api/studies/" + 1L);
+        requestBuilder.with(request -> {
+            request.setMethod(HttpMethod.PUT.name());
+            return request;
+        });
+
+        final ResultActions resultActions = mockMvc.perform(requestBuilder
+                .file(image)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "bearer " + tokenDto.getAccessToken())
+                .flashAttr("studySaveReqDto", requestDto));
+        //then
+        resultActions.andExpect(status().isCreated());
     }
 }
