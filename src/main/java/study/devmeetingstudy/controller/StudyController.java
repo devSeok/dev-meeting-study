@@ -13,6 +13,7 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -106,19 +107,12 @@ public class StudyController {
             @ApiResponse(code = 201, message = "스터디 생성 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
-    // TODO StudyPutReqDto로 받기
-    //      만약 해당 리소스가 존재 하지 않는다면, SaveReq로 인스턴스를 바꿔 던져준다.
-    //      존재한다면 쓴다.
+    // TODO 인증처리
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> putStudy(@PathVariable Long studyId,
                                                                             @Valid @ModelAttribute StudyPutReqDto studyPutReqDto,
                                                                             @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.putStudy");
         studyPutReqDto.setStudyId(studyId);
-        if (!studyService.existsStudyByStudyId(studyId)) {
-            return getApiResDtoCreatedOrOk(
-                    studyFacadeService.store(StudySaveReqDto.of(studyPutReqDto), memberService.getUserOne(memberResolverDto.getId())),
-                    HttpStatus.CREATED);
-        }
         return getApiResDtoCreatedOrOk(
                 studyFacadeService.replaceStudy(studyPutReqDto, memberResolverDto),
                 HttpStatus.OK);

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// TODO : Study fetch join 으로 바로 Study로 리턴하기.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
