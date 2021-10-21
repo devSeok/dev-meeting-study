@@ -13,6 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.validation.BindException;
 import study.devmeetingstudy.common.exception.global.error.exception.BusinessException;
 import study.devmeetingstudy.common.exception.global.error.exception.ErrorCode;
+import study.devmeetingstudy.common.exception.global.error.exception.notfound.ResourceNotFoundException;
 
 import javax.validation.UnexpectedTypeException;
 import javax.validation.ValidationException;
@@ -79,6 +80,14 @@ public class CustomGlobalExceptionHandler{
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
         log.error("handleEntityNotFoundException", e);
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse response = ErrorResponse.of(errorCode);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleResourceNotFoundException(final ResourceNotFoundException e) {
+        log.error("handleResourceNotFoundException", e);
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
