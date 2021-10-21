@@ -1,5 +1,6 @@
 package study.devmeetingstudy.dto.study.request;
 
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -80,7 +81,8 @@ public class StudySaveReqDto {
                            StudyType studyType, Long subjectId,
                            StudyInstanceType dtype,
                            Long addressId, String link,
-                           String onlineType, String content) {
+                           String onlineType, String content,
+                           MultipartFile file) {
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
@@ -92,6 +94,7 @@ public class StudySaveReqDto {
         this.link = link;
         this.onlineType = onlineType;
         this.content = content;
+        this.file = file;
     }
 
 
@@ -108,6 +111,7 @@ public class StudySaveReqDto {
                 .link(studyPutReqDto.getLink())
                 .onlineType(studyPutReqDto.getOnlineType())
                 .content(studyPutReqDto.getContent())
+                .file(studyPutReqDto.getFile())
                 .build();
     }
 }
