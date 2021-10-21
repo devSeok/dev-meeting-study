@@ -3,7 +3,7 @@ package study.devmeetingstudy.service.study;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.common.exception.global.error.exception.StudyFileNotFoundException;
+import study.devmeetingstudy.common.exception.global.error.exception.notfound.StudyFileNotFoundException;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.repository.StudyFileRepository;
@@ -26,5 +26,14 @@ public class StudyFileService {
 
     public List<StudyFile> findStudyFileByStudyId(Long studyId) {
         return studyFileRepository.findFirstByStudy_Id(studyId);
+    }
+
+    public StudyFile findStudyFileById(Long studyFileId) {
+        return studyFileRepository.findById(studyFileId).orElseThrow(() -> new StudyFileNotFoundException("해당 id로 스터디 파일을 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public StudyFile replaceStudyFile(Map<String, String> upload, StudyFile studyFile) {
+        return StudyFile.replace(studyFile, upload);
     }
 }

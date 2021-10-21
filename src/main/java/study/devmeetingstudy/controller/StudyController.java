@@ -13,7 +13,6 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -41,6 +40,7 @@ public class StudyController {
 
     private final MemberService memberService;
     private final StudyFacadeService studyFacadeService;
+    private final AuthService authService;
     private final StudyService studyService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -58,25 +58,7 @@ public class StudyController {
 
         CreatedStudyDto createdStudyDto = studyFacadeService.store(studySaveReqDto, loginMember);
 
-        if (Study.isDtypeOnline(createdStudyDto.getStudy())) {
-            return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
-                    .body(
-                            ApiResDto.<CreatedOnlineStudyResDto>builder()
-                                    .message("생성됨")
-                                    .status(HttpStatus.CREATED.value())
-                                    .data(CreatedOnlineStudyResDto.from(createdStudyDto))
-                                    .build()
-                    );
-        }
-
-        return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
-                .body(
-                        ApiResDto.<CreatedOfflineStudyResDto>builder()
-                                .message("생성됨")
-                                .status(HttpStatus.CREATED.value())
-                                .data(CreatedOfflineStudyResDto.from(createdStudyDto))
-                                .build()
-                );
+        return getCreatedApiResDto(createdStudyDto);
     }
 
     @GetMapping
@@ -105,9 +87,9 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResDto<FoundStudyResDto>> getStudy(@PathVariable Long studyId) throws IOException {
+    public ResponseEntity<ApiResDto<FoundStudyResDto>> getStudy(@PathVariable Long studyId) {
         log.info("StudyController.getStudy");
-        StudyDto studyDto = studyFacadeService.findStudyById(studyId);
+        StudyDto studyDto = studyFacadeService.findStudyByStudyId(studyId);
         return ResponseEntity.ok(
                 ApiResDto.<FoundStudyResDto>builder()
                         .message("성공")
@@ -120,15 +102,75 @@ public class StudyController {
     @PutMapping("/{studyId}")
     @ApiOperation(value = "스터디 수정")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "스터디 수정 성공"),
+            @ApiResponse(code = 200, message = "스터디 수정 성공"),
+            @ApiResponse(code = 201, message = "스터디 생성 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
-    @ResponseStatus(value = HttpStatus.CREATED)
+    // TODO StudyPutReqDto로 받기
+    //      만약 해당 리소스가 존재 하지 않는다면, SaveReq로 인스턴스를 바꿔 던져준다.
+    //      존재한다면 쓴다.
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> putStudy(@PathVariable Long studyId,
-                                                                            @ModelAttribute StudyPutReqDto studyPutReqDto,
-                                                                            @JwtMember MemberResolverDto memberResolverDto) {
+                                                                            @Valid @ModelAttribute StudyPutReqDto studyPutReqDto,
+                                                                            @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.putStudy");
-        return null;
+        studyPutReqDto.setStudyId(studyId);
+        if (!studyService.existsStudyByStudyId(studyId)) {
+            return getApiResDtoCreatedOrOk(
+                    studyFacadeService.store(StudySaveReqDto.of(studyPutReqDto), memberService.getUserOne(memberResolverDto.getId())),
+                    HttpStatus.CREATED);
+        }
+        return getApiResDtoCreatedOrOk(
+                studyFacadeService.replaceStudy(studyPutReqDto, memberResolverDto),
+                HttpStatus.OK);
+    }
+
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getApiResDtoCreatedOrOk(CreatedStudyDto studyDto, HttpStatus httpStatus) {
+        if (HttpStatus.CREATED == httpStatus) {
+            return getCreatedApiResDto(studyDto);
+        }
+        return getOkApiResDto(studyDto);
+    }
+
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getOkApiResDto(CreatedStudyDto replaceStudy) {
+        if (replaceStudy.getStudy().isDtypeOnline()) {
+            return ResponseEntity.ok(
+                    ApiResDto.<CreatedOnlineStudyResDto>builder()
+                            .message("성공")
+                            .status(HttpStatus.OK.value())
+                            .data(CreatedOnlineStudyResDto.from(replaceStudy))
+                            .build()
+            );
+        }
+
+        return ResponseEntity.ok(
+                ApiResDto.<CreatedOfflineStudyResDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(CreatedOfflineStudyResDto.from(replaceStudy))
+                        .build()
+        );
+    }
+
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getCreatedApiResDto(CreatedStudyDto createdStudyDto) {
+        if (createdStudyDto.getStudy().isDtypeOnline()) {
+            return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
+                    .body(
+                            ApiResDto.<CreatedOnlineStudyResDto>builder()
+                                    .message("생성됨")
+                                    .status(HttpStatus.CREATED.value())
+                                    .data(CreatedOnlineStudyResDto.from(createdStudyDto))
+                                    .build()
+                    );
+        }
+
+        return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
+                .body(
+                        ApiResDto.<CreatedOfflineStudyResDto>builder()
+                                .message("생성됨")
+                                .status(HttpStatus.CREATED.value())
+                                .data(CreatedOfflineStudyResDto.from(createdStudyDto))
+                                .build()
+                );
     }
 }
 

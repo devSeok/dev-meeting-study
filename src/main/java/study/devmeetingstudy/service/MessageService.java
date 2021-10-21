@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import study.devmeetingstudy.common.exception.global.error.exception.MessageNotFoundException;
+import study.devmeetingstudy.common.exception.global.error.exception.notfound.MessageNotFoundException;
 import study.devmeetingstudy.domain.message.Message;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.enums.DeletionStatus;

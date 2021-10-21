@@ -30,7 +30,7 @@ public class StudyMemberService {
         return studyMemberRepository.save(studyMember);
     }
 
-    public List<StudyMember> findStudyMemberByStudyIdAndAuth(Long studyId, StudyAuth studyAuth) {
+    public List<StudyMember> findStudyMemberByStudyIdAndStudyAuth(Long studyId, StudyAuth studyAuth) {
         return studyMemberRepository.findByStudyIdAndStudyAuth(studyId, studyAuth);
     }
 

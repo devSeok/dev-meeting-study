@@ -54,7 +54,7 @@ public class AddressController {
     })
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<AddressResDto>> getAddress(@PathVariable Long id){
-        Address foundAddress = addressService.findAddress(id);
+        Address foundAddress = addressService.findAddressById(id);
         return ResponseEntity.ok(
                 ApiResDto.<AddressResDto>builder()
                         .message("성공")

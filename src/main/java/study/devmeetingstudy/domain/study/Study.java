@@ -8,7 +8,9 @@ import study.devmeetingstudy.domain.base.BaseTimeEntity;
 import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
+import study.devmeetingstudy.vo.StudyReplaceVO;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -64,7 +66,11 @@ public class Study extends BaseTimeEntity {
     private final List<StudyMember> studyMembers = new ArrayList<>();
 
     @Builder
-    public Study(Subject subject, String title, int maxMember, LocalDate startDate, LocalDate endDate, StudyType studyType, StudyInstanceType dtype, String content, DeletionStatus deletionStatus) {
+    public Study(Subject subject, String title,
+                 int maxMember, LocalDate startDate,
+                 LocalDate endDate, StudyType studyType,
+                 StudyInstanceType dtype, String content,
+                 DeletionStatus deletionStatus, Long id) {
         this.subject = subject;
         this.title = title;
         this.maxMember = maxMember;
@@ -74,6 +80,7 @@ public class Study extends BaseTimeEntity {
         this.dtype = dtype;
         this.content = content;
         this.deletionStatus = deletionStatus;
+        this.id = id;
     }
 
     public static Study create(StudySaveReqDto studySaveReqDto, Subject subject) {
@@ -89,11 +96,35 @@ public class Study extends BaseTimeEntity {
                 .build();
     }
 
-    public static boolean isDtypeOnline(Study study){
-        return study.getDtype() == StudyInstanceType.ONLINE;
+    public boolean isDtypeOnline(){
+        return this.dtype == StudyInstanceType.ONLINE;
     }
 
-//    public static boolean isInstanceOnline(Study study){
-//        return study instanceof Online;
-//    }
+    public static Study replace(StudyReplaceVO studyReplaceVO, Study foundStudy) {
+        StudyPutReqDto studyPutReqDto = studyReplaceVO.getStudyPutReqDto();
+        foundStudy.subject = studyReplaceVO.getSubject();
+        foundStudy.title = studyPutReqDto.getTitle();
+        foundStudy.maxMember = studyPutReqDto.getMaxMember();
+        foundStudy.startDate = studyPutReqDto.getStartDate();
+        foundStudy.endDate = studyPutReqDto.getEndDate();
+        foundStudy.studyType = studyPutReqDto.getStudyType();
+        foundStudy.dtype = studyPutReqDto.getDtype();
+        foundStudy.content = studyPutReqDto.getContent();
+        return foundStudy;
+    }
+
+    public static Study changeDeletionStatus(Study study, DeletionStatus deletionStatus) {
+        study.deletionStatus = deletionStatus;
+        return study;
+    }
+
+    public static Study removeOnline(Study study) {
+        study.online = null;
+        return study;
+    }
+
+    public static Study removeOffline(Study study) {
+        study.offline = null;
+        return study;
+    }
 }

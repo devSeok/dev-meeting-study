@@ -42,7 +42,7 @@ public class FoundStudiesResDto {
     private LocalDate endDate;
 
     @ApiModelProperty(value = "제한 인원", notes = "스터디 최대 인원", example = "5")
-    private int maxMember;
+    private Integer maxMember;
 
     @ApiModelProperty(value = "스터티 타입", notes = "FREE or PAY", example = "FREE")
     private StudyType studyType;

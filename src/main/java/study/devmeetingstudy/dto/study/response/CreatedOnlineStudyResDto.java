@@ -4,13 +4,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import study.devmeetingstudy.domain.study.StudyFile;
-import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyFileDto;
-import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
 
 import java.time.LocalDate;

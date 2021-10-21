@@ -44,4 +44,10 @@ public class StudyFile {
                 .path(uploadFileInfo.get(Uploader.UPLOAD_URL))
                 .build();
     }
+
+    public static StudyFile replace(StudyFile studyFile, Map<String, String> uploadFileInfo) {
+        studyFile.name = uploadFileInfo.get(Uploader.FILE_NAME);
+        studyFile.path = uploadFileInfo.get(Uploader.UPLOAD_URL);
+        return studyFile;
+    }
 }
