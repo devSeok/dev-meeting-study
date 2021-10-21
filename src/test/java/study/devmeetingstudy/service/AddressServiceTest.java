@@ -52,7 +52,7 @@ class AddressServiceTest {
         Address expectedAddress = createAddress();
         doReturn(Optional.of(expectedAddress)).when(addressRepository).findById(anyLong());
         //when
-        Address address = addressService.findAddress(id);
+        Address address = addressService.findAddressById(id);
 
         //then
         assertEquals(expectedAddress, address);

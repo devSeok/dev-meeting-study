@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import study.devmeetingstudy.common.exception.global.error.exception.SubjectNotFoundException;
+import study.devmeetingstudy.common.exception.global.error.exception.notfound.SubjectNotFoundException;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
 import study.devmeetingstudy.repository.SubjectRepository;
@@ -70,7 +70,7 @@ class SubjectServiceTest {
         Subject expectedSubject = Subject.create(new SubjectReqDto(subjectId, "Java"));
         doReturn(Optional.of(expectedSubject)).when(subjectRepository).findById(subjectId);
         //when
-        Subject subject = subjectService.findSubject(subjectId);
+        Subject subject = subjectService.findSubjectById(subjectId);
         //then
         assertEquals(expectedSubject, subject);
     }
@@ -82,7 +82,7 @@ class SubjectServiceTest {
         Long subjectId = 1L;
         doReturn(Optional.empty()).when(subjectRepository).findById(subjectId);
         //when
-        SubjectNotFoundException subjectNotFoundException = assertThrows(SubjectNotFoundException.class, () -> subjectService.findSubject(subjectId));
+        SubjectNotFoundException subjectNotFoundException = assertThrows(SubjectNotFoundException.class, () -> subjectService.findSubjectById(subjectId));
         String message = subjectNotFoundException.getMessage();
 
         //then

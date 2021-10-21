@@ -445,7 +445,7 @@ class StudyControllerUnitTest {
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(true).when(studyService).existsStudyByStudyId(anyLong());
-        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudyPutReqDto.class), any(Member.class));
+        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudyPutReqDto.class), any(MemberResolverDto.class));
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
 
         //when
