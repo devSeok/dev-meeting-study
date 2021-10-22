@@ -408,12 +408,6 @@ class StudyControllerUnitTest {
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
     }
 
-    // TODO 스터디 dtype이 바뀐다.
-    //      1. online -> offline // description online row 삭제 및 offline raw 생성, address raw 생성.
-    //      2. offline -> online // description offline row 삭제 및 address row 삭제, online row 생성
-    // TODO 온라인 -> 오프라인으로 바뀔시 2021.10.18 엑셉션 던지기
-    //      503 service Unavailable
-    //
     @DisplayName("스터디 수정 200 Ok")
     @Test
     void putStudy_Ok() throws Exception {
@@ -444,9 +438,7 @@ class StudyControllerUnitTest {
                 .build();
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(true).when(studyService).existsStudyByStudyId(anyLong());
         doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudyPutReqDto.class), any(MemberResolverDto.class));
-        doReturn(loginMember).when(memberService).getUserOne(anyLong());
 
         //when
         MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/api/studies/" + 1L);
@@ -529,53 +521,5 @@ class StudyControllerUnitTest {
                 .build();
     }
 
-    @DisplayName("스터디 수정 201 Created")
-    @Test
-    void putStudy_Created() throws Exception {
-        //given
-        Subject subject = getSubject(1L, "JAVA");
-
-        // 리소스 생성.
-        Study study = getStudy(1L, "자바 스터디원 모집합니다.", "급히 구해봐요!! 2분", subject);
-
-        Online online = getOnline(1L, study);
-        Map<String, String> fileInfo = new HashMap<>();
-        fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
-        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
-        StudyFile studyFile = getStudyFile(1L, study, fileInfo);
-
-        StudyMember studyMember = getStudyMember(1L, study);
-
-        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
-
-        StudyPutReqDto studyPutReqDto = getPutReq(study, online, studyFile, study.getTitle(), study.getContent());
-
-        CreatedStudyDto studyDto = CreatedStudyDto.builder()
-                .online(online)
-                .studyFile(studyFile)
-                .studyMember(studyMember)
-                .study(study)
-                .build();
-
-        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
-        doReturn(false).when(studyService).existsStudyByStudyId(anyLong());
-        doReturn(studyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
-        doReturn(loginMember).when(memberService).getUserOne(anyLong());
-
-        //when
-        MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/api/studies/" + 1L);
-        requestBuilder.with(request -> {
-            request.setMethod(HttpMethod.PUT.name());
-            return request;
-        });
-
-        final ResultActions resultActions = mockMvc.perform(requestBuilder
-                .file(image)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "bearer " + tokenDto.getAccessToken())
-                .flashAttr("studyPutReqDto", studyPutReqDto));
-        //then
-        resultActions.andExpect(status().isCreated());
-    }
 
 }
