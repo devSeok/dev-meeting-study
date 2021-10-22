@@ -12,8 +12,10 @@ import java.util.Optional;
 
 public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> {
 
-    @Query("select sm from StudyMember sm left join fetch sm.member where sm.studyAuth = :studyAuth and sm.study.id = :studyId")
-    List<StudyMember> findByStudyIdAndStudyAuth(@Param("studyId") Long studyId, @Param("studyAuth") StudyAuth studyAuth);
+    @Query("select sm from StudyMember sm left join fetch sm.member where sm.study.id = :studyId and sm.studyAuth = :studyAuth")
+    List<StudyMember> findStudyMembersByStudyIdAndStudyAuth(@Param("studyId") Long studyId, @Param("studyAuth") StudyAuth studyAuth);
     @Query("select sm from StudyMember sm left join fetch sm.member where sm.study.id = :studyId and sm.studyMemberStatus = 'JOIN'")
     List<StudyMember> findStudyMembersByStudyIdAndStatusJOIN(@Param("studyId") Long studyId);
+    @Query("select sm from StudyMember sm left join fetch sm.member where sm.study.id = :studyId and sm.studyAuth = 'LEADER'")
+    Optional<StudyMember> findStudyMemberByStudyIdAndAuthLeader(@Param("studyId") Long studyId);
 }

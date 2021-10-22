@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
+import study.devmeetingstudy.common.exception.global.error.exception.NotExistStudyLeaderException;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.enums.DomainType;
@@ -14,6 +15,7 @@ import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
+import study.devmeetingstudy.service.AuthService;
 import study.devmeetingstudy.vo.StudyReplaceVO;
 import study.devmeetingstudy.vo.StudySaveVO;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
@@ -36,6 +38,7 @@ public class StudyFacadeService {
     private final StudyMemberService studyMemberService;
     private final SubjectService subjectService;
     private final Uploader uploader;
+    private final AuthService authService;
 
     // TODO 파일이 비어있을시 기본 이미지 추가.
     @Transactional
@@ -72,8 +75,10 @@ public class StudyFacadeService {
     @Transactional
     public CreatedStudyDto replaceStudy(StudyPutReqDto studyPutReqDto, MemberResolverDto memberResolverDto) throws IOException {
         Long studyId = studyPutReqDto.getStudyId();
-        Study foundStudy = studyService.findStudyById(studyId);
-
+        Study foundStudy = studyService.findStudyFetchJoinById(studyId);
+        // 에러 발생 Leader 존재하지 않음.
+        StudyMember studyMember = studyMemberService.findStudyMemberByStudyIdAndAuthLeader(studyId);
+        authService.checkUserInfo(studyMember.getMember().getId(), memberResolverDto);
         Subject foundSubject = subjectService.findSubjectById(studyPutReqDto.getSubjectId());
         Object onlineOrOffline = SyncOrReplaceOnlineOrOffline(studyPutReqDto, foundStudy);
 
@@ -81,9 +86,17 @@ public class StudyFacadeService {
                 .study(studyService.replaceStudy(StudyReplaceVO.of(studyPutReqDto, foundSubject), foundStudy))
                 .online(onlineOrOffline instanceof Online ? (Online) onlineOrOffline : null)
                 .offline(onlineOrOffline instanceof Offline ? (Offline) onlineOrOffline : null)
-                .studyMember(studyMemberService.findStudyMemberByStudyIdAndStudyAuth(studyId, StudyAuth.LEADER).get(0))
+                .studyMember(studyMember)
                 .studyFile(replaceStudyFile(studyPutReqDto))
                 .build();
+    }
+
+    private StudyMember getStudyMemberAuthLeader(Study foundStudy) {
+        return foundStudy.getStudyMembers()
+                .stream()
+                .filter(StudyMember::isStudyAuthLeader)
+                .findFirst()
+                .orElseThrow(() -> new NotExistStudyLeaderException("해당 스터디에 스터디 리더가 존재하지 않습니다."));
     }
 
     private Object SyncOrReplaceOnlineOrOffline(StudyPutReqDto studyPutReqDto, Study foundStudy) {
