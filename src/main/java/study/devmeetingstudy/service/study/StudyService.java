@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.notfound.StudyNotFoundException;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
@@ -46,5 +47,12 @@ public class StudyService {
     @Transactional
     public Study replaceStudy(StudyReplaceVO studyReplaceVO, Study foundStudy) {
         return Study.replace(studyReplaceVO, foundStudy);
+    }
+
+    @Transactional
+    public void deleteStudyById(Study foundStudy) {
+        if (foundStudy.isNotDeleted()) {
+            Study.changeDeletionStatus(foundStudy, DeletionStatus.DELETED);
+        }
     }
 }

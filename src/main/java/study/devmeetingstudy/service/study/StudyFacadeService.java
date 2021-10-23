@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
-import study.devmeetingstudy.common.exception.global.error.exception.NotExistStudyLeaderException;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.enums.DomainType;
@@ -75,10 +74,9 @@ public class StudyFacadeService {
     @Transactional
     public CreatedStudyDto replaceStudy(StudyPutReqDto studyPutReqDto, MemberResolverDto memberResolverDto) throws IOException {
         Long studyId = studyPutReqDto.getStudyId();
-        Study foundStudy = studyService.findStudyFetchJoinById(studyId);
+        Study foundStudy = studyService.findStudyById(studyId);
         // 에러 발생 Leader 존재하지 않음.
-        StudyMember studyMember = studyMemberService.findStudyMemberByStudyIdAndAuthLeader(studyId);
-        authService.checkUserInfo(studyMember.getMember().getId(), memberResolverDto);
+        StudyMember studyMember = checkStudyMemberLeader(studyId, memberResolverDto);
         Subject foundSubject = subjectService.findSubjectById(studyPutReqDto.getSubjectId());
         Object onlineOrOffline = SyncOrReplaceOnlineOrOffline(studyPutReqDto, foundStudy);
 
@@ -91,12 +89,10 @@ public class StudyFacadeService {
                 .build();
     }
 
-    private StudyMember getStudyMemberAuthLeader(Study foundStudy) {
-        return foundStudy.getStudyMembers()
-                .stream()
-                .filter(StudyMember::isStudyAuthLeader)
-                .findFirst()
-                .orElseThrow(() -> new NotExistStudyLeaderException("해당 스터디에 스터디 리더가 존재하지 않습니다."));
+    private StudyMember checkStudyMemberLeader(Long studyId, MemberResolverDto memberResolverDto) {
+        StudyMember studyMember = studyMemberService.findStudyMemberByStudyIdAndAuthLeader(studyId);
+        authService.checkUserInfo(studyMember.getMember().getId(), memberResolverDto);
+        return studyMember;
     }
 
     private Object SyncOrReplaceOnlineOrOffline(StudyPutReqDto studyPutReqDto, Study foundStudy) {
@@ -143,4 +139,10 @@ public class StudyFacadeService {
         return studyFileService.findStudyFileById(studyPutReqDto.getStudyFileId());
     }
 
+    @Transactional
+    public void deleteStudy(Long studyId, MemberResolverDto memberResolverDto) {
+        Study foundStudy = studyService.findStudyById(studyId);
+        checkStudyMemberLeader(studyId, memberResolverDto);
+        studyService.deleteStudyById(foundStudy);
+    }
 }

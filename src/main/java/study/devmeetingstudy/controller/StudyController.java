@@ -13,7 +13,6 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -41,8 +40,6 @@ public class StudyController {
 
     private final MemberService memberService;
     private final StudyFacadeService studyFacadeService;
-    private final AuthService authService;
-    private final StudyService studyService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
@@ -56,10 +53,30 @@ public class StudyController {
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.saveStudy");
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-
         CreatedStudyDto createdStudyDto = studyFacadeService.store(studySaveReqDto, loginMember);
-
         return getCreatedApiResDto(createdStudyDto);
+    }
+
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getCreatedApiResDto(CreatedStudyDto createdStudyDto) {
+        if (createdStudyDto.getStudy().isDtypeOnline()) {
+            return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
+                    .body(
+                            ApiResDto.<CreatedOnlineStudyResDto>builder()
+                                    .message("생성됨")
+                                    .status(HttpStatus.CREATED.value())
+                                    .data(CreatedOnlineStudyResDto.from(createdStudyDto))
+                                    .build()
+                    );
+        }
+
+        return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
+                .body(
+                        ApiResDto.<CreatedOfflineStudyResDto>builder()
+                                .message("생성됨")
+                                .status(HttpStatus.CREATED.value())
+                                .data(CreatedOfflineStudyResDto.from(createdStudyDto))
+                                .build()
+                );
     }
 
     @GetMapping
@@ -104,25 +121,16 @@ public class StudyController {
     @ApiOperation(value = "스터디 수정")
     @ApiResponses({
             @ApiResponse(code = 200, message = "스터디 수정 성공"),
-            @ApiResponse(code = 201, message = "스터디 생성 성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청")
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 403, message = "리소스 권한 없음")
     })
-    // TODO 인증처리
+    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> putStudy(@PathVariable Long studyId,
                                                                             @Valid @ModelAttribute StudyPutReqDto studyPutReqDto,
                                                                             @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.putStudy");
         studyPutReqDto.setStudyId(studyId);
-        return getApiResDtoCreatedOrOk(
-                studyFacadeService.replaceStudy(studyPutReqDto, memberResolverDto),
-                HttpStatus.OK);
-    }
-
-    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getApiResDtoCreatedOrOk(CreatedStudyDto studyDto, HttpStatus httpStatus) {
-        if (HttpStatus.CREATED == httpStatus) {
-            return getCreatedApiResDto(studyDto);
-        }
-        return getOkApiResDto(studyDto);
+        return getOkApiResDto(studyFacadeService.replaceStudy(studyPutReqDto, memberResolverDto));
     }
 
     private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getOkApiResDto(CreatedStudyDto replaceStudy) {
@@ -145,26 +153,19 @@ public class StudyController {
         );
     }
 
-    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getCreatedApiResDto(CreatedStudyDto createdStudyDto) {
-        if (createdStudyDto.getStudy().isDtypeOnline()) {
-            return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
-                    .body(
-                            ApiResDto.<CreatedOnlineStudyResDto>builder()
-                                    .message("생성됨")
-                                    .status(HttpStatus.CREATED.value())
-                                    .data(CreatedOnlineStudyResDto.from(createdStudyDto))
-                                    .build()
-                    );
-        }
-
-        return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
-                .body(
-                        ApiResDto.<CreatedOfflineStudyResDto>builder()
-                                .message("생성됨")
-                                .status(HttpStatus.CREATED.value())
-                                .data(CreatedOfflineStudyResDto.from(createdStudyDto))
-                                .build()
-                );
+    @DeleteMapping("/{studyId}")
+    @ApiOperation(value = "스터디 삭제")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "스터디 삭제 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 403, message = "리소스 권한 없음")
+    })
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId,
+                                            @JwtMember MemberResolverDto memberResolverDto) {
+        log.info("StudyController.deleteStudy");
+        studyFacadeService.deleteStudy(studyId, memberResolverDto);
+        return ResponseEntity.noContent().build();
     }
 }
 

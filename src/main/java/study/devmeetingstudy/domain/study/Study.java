@@ -127,4 +127,8 @@ public class Study extends BaseTimeEntity {
         study.offline = null;
         return study;
     }
+
+    public boolean isNotDeleted() {
+        return this.deletionStatus == DeletionStatus.NOT_DELETED;
+    }
 }
