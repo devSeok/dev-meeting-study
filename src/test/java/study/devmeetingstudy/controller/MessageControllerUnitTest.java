@@ -246,7 +246,7 @@ class MessageControllerUnitTest {
         assertEquals(MessageReadStatus.READ.toString(), data.get("status"));
     }
 
-    @DisplayName("메시지 조회 400 Bad Request")
+    @DisplayName("메시지 조회 404 Not Found")
     @Test
     void showMessage_UserInfoNotFoundException() throws Exception{
         //given
@@ -276,7 +276,7 @@ class MessageControllerUnitTest {
                         .header("Authorization", "bearer " + tokenDto.getAccessToken()));
 
         //then
-        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest()).andReturn();
+        MvcResult mvcResult = resultActions.andExpect(status().isForbidden()).andReturn();
         String body = mvcResult.getResponse().getContentAsString();
         System.out.println(body);
     }
@@ -309,7 +309,7 @@ class MessageControllerUnitTest {
         resultActions.andExpect(status().isNoContent()).andReturn();
     }
 
-    @DisplayName("메시지 삭제 400 Bad Request")
+    @DisplayName("메시지 삭제 404 Not Found")
     @Test
     void deleteMessage_UserInfoNotFoundException() throws Exception{
         //given
@@ -334,7 +334,7 @@ class MessageControllerUnitTest {
                         .header("Authorization", "bearer " + tokenDto.getAccessToken()));
 
         //then
-        resultActions.andExpect(status().isBadRequest()).andReturn();
+        resultActions.andExpect(status().isForbidden()).andReturn();
     }
 
 }

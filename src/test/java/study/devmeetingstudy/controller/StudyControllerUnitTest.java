@@ -521,5 +521,24 @@ class StudyControllerUnitTest {
                 .build();
     }
 
+    @DisplayName("스터디 삭제 204 No Content")
+    @Test
+    void deleteStudy() throws Exception {
+        //given
+        Subject subject = getSubject(1L, "JAVA");
+        Study study = getStudy(1L, "자바 스터디원 모집합니다", "얼릉 오세요 얼마 남지 않았습니다.", subject);
+        StudyMember studyMember = getStudyMember(1L, study);
+        Study deleteStudy = Study.changeDeletionStatus(study, DeletionStatus.DELETED);
 
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doNothing().when(studyFacadeService).deleteStudy(anyLong(), any(MemberResolverDto.class));
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/studies/" + study.getId())
+                        .header("Authorization","bearer " + tokenDto.getAccessToken()));
+
+        //then
+        resultActions.andExpect(status().isNoContent());
+    }
 }
