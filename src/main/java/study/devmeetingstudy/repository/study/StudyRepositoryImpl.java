@@ -57,7 +57,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
     }
 
     private boolean isBlank(String str) {
-        return str == null || !str.trim().isEmpty();
+        return str == null || str.trim().isEmpty();
     }
 
     private BooleanExpression subjectIdEq(Long subjectId) {
