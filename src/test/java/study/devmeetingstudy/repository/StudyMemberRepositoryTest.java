@@ -21,7 +21,7 @@ class StudyMemberRepositoryTest {
         //given
         Long id = 1L;
         //when
-        List<StudyMember> studyMemberByIdAndStudyAuth = studyMemberRepository.findByStudyIdAndStudyAuth(id, StudyAuth.LEADER);
+        List<StudyMember> studyMemberByIdAndStudyAuth = studyMemberRepository.findStudyMembersByStudyIdAndStudyAuth(id, StudyAuth.LEADER);
         //then
     }
 

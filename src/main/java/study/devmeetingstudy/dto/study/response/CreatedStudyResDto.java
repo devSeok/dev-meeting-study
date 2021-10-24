@@ -5,13 +5,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
-import study.devmeetingstudy.domain.study.Study;
-import study.devmeetingstudy.domain.study.StudyFile;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.domain.study.enums.StudyType;
-import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyFileDto;
-import study.devmeetingstudy.vo.StudyVO;
 import study.devmeetingstudy.dto.subject.SubjectResDto;
 
 import java.time.LocalDate;
@@ -28,7 +24,7 @@ public class CreatedStudyResDto {
     private String title;
 
     @ApiModelProperty(value = "최대 인원", example = "5", dataType = "Integer")
-    private int maxMember;
+    private Integer maxMember;
 
     @ApiModelProperty(value = "시작 일자", example = "2021-09-16", dataType = "date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-mm-dd")

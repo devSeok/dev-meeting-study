@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,21 +25,27 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.annotation.handlerMethod.MemberDecodeResolver;
 import study.devmeetingstudy.common.uploader.Uploader;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
+import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.member.Member;
 import study.devmeetingstudy.domain.member.enums.Authority;
 import study.devmeetingstudy.domain.member.enums.MemberStatus;
 import study.devmeetingstudy.domain.study.*;
+import study.devmeetingstudy.domain.study.enums.StudyAuth;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.domain.study.enums.StudyMemberStatus;
 import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.address.AddressReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 import study.devmeetingstudy.dto.subject.SubjectReqDto;
@@ -52,7 +59,6 @@ import study.devmeetingstudy.service.study.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,7 +73,7 @@ class StudyControllerUnitTest {
     private StudyController studyController;
 
     @Mock
-    private StudyFacadeService studyFacadeService;
+    private StudyFacadeServiceImpl studyFacadeService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -142,7 +148,7 @@ class StudyControllerUnitTest {
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
 
         //업로드 과정
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -158,7 +164,7 @@ class StudyControllerUnitTest {
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(createdStudyDto).when(studyFacadeService).storeStudy(any(StudySaveReqDto.class), any(Member.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
@@ -225,7 +231,7 @@ class StudyControllerUnitTest {
 
         MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
         //업로드 과정
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyFile studyFile = StudyFile.create(study, fileInfo);
@@ -240,7 +246,7 @@ class StudyControllerUnitTest {
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(createdStudyDto).when(studyFacadeService).storeStudy(any(StudySaveReqDto.class), any(Member.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
@@ -300,7 +306,7 @@ class StudyControllerUnitTest {
             Study onlineStudy = Study.create(mockOnlineReqDto, subject);
             Online online = Online.create(mockOnlineReqDto, onlineStudy);
             Offline offline = Offline.create(address, offlineStudy);
-            Map<String, String> fileInfo = new ConcurrentHashMap<>();
+            Map<String, String> fileInfo = new HashMap<>();
             fileInfo.put(Uploader.FILE_NAME, "image-" + i + ".jpeg");
             fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
             StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
@@ -378,7 +384,7 @@ class StudyControllerUnitTest {
         StudySaveReqDto onlineReqDto = getMockOnlineReqDto(subjectReqDto);
         Study onlineStudy = Study.create(onlineReqDto, subject);
         Online online = Online.create(onlineReqDto, onlineStudy);
-        Map<String, String> fileInfo = new ConcurrentHashMap<>();
+        Map<String, String> fileInfo = new HashMap<>();
         fileInfo.put(Uploader.FILE_NAME, "image-1.jpeg");
         fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
         StudyDto onlineDto = getOnlineDto(subject, onlineStudy, online);
@@ -389,7 +395,7 @@ class StudyControllerUnitTest {
         onlineDto.setFiles(studyFiles);
         onlineDto.setStudyMembers(studyMembers);
 
-        doReturn(onlineDto).when(studyFacadeService).findStudyById(anyLong());
+        doReturn(onlineDto).when(studyFacadeService).findStudyByStudyId(anyLong());
 
         //when
         final ResultActions resultActions = mockMvc.perform(
@@ -400,19 +406,137 @@ class StudyControllerUnitTest {
         MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
     }
 
-    // 파일이 실려서 오나 null check 하기.
-    @DisplayName("스터디 수정 201 Created")
+    @DisplayName("스터디 수정 200 Ok")
     @Test
-    void putStudy() throws Exception {
+    void putStudy_Ok() throws Exception {
         //given
+        Subject subject = getSubject(1L, "JAVA");
+
+        // 리소스 생성.
+        Study study = getStudy(1L, "자바 스터디원 모집합니다.", "급히 구해봐요!! 2분", subject);
+
+        Online online = getOnline(1L, study);
+        Map<String, String> fileInfo = new HashMap<>();
+        fileInfo.put(Uploader.FILE_NAME, "image-2.jpeg");
+        fileInfo.put(Uploader.UPLOAD_URL, "https://www.asdf.asdf/image-1.jpeg");
+        StudyFile studyFile = getStudyFile(1L, study, fileInfo);
+        StudyMember studyMember = getStudyMember(1L, study);
+        MockMultipartFile image = new MockMultipartFile("file", "image-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes(StandardCharsets.UTF_8));
+
+        // 리소스 수정 request
+        StudyPutReqDto studyPutReqDto = getPutReq(study, online, studyFile, "급히 구합니다.", "잘해드립니다.");
+
+        Study modifyStudy = getStudy(1L, "자바 스터디원 급히 모집합니다.", "급히 구해봐요!! 마지막 한분!", subject);
+
+        CreatedStudyDto modifyStudyDto = CreatedStudyDto.builder()
+                .online(online)
+                .studyFile(studyFile)
+                .studyMember(studyMember)
+                .study(modifyStudy)
+                .build();
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doReturn(modifyStudyDto).when(studyFacadeService).replaceStudy(any(StudyPutReqDto.class), any(MemberResolverDto.class));
 
         //when
-//        final ResultActions resultActions = mockMvc.perform(multipart("/api/studies/")
-//                .file(image)
-//                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .header("Authorization", "bearer " + tokenDto.getAccessToken())
-//                .flashAttr("studySaveReqDto", studySaveReqDto));
-//        //then
+        MockMultipartHttpServletRequestBuilder requestBuilder = multipart("/api/studies/" + 1L);
+        requestBuilder.with(request -> {
+            request.setMethod(HttpMethod.PUT.name());
+            return request;
+        });
+
+        final ResultActions resultActions = mockMvc.perform(requestBuilder
+                .file(image)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "bearer " + tokenDto.getAccessToken())
+                .flashAttr("studyPutReqDto", studyPutReqDto));
+        //then
+        resultActions.andExpect(status().isOk());
+    }
+
+    private StudyPutReqDto getPutReq(Study study, Online online, StudyFile studyFile, String title, String content) {
+        return StudyPutReqDto.builder()
+                .studyFileId(studyFile.getId())
+                .studyType(study.getStudyType())
+                .onlineId(online.getId())
+                .content("급구합니다.")
+                .dtype(study.getDtype())
+                .endDate(study.getEndDate())
+                .startDate(study.getStartDate())
+                .maxMember(study.getMaxMember())
+                .title(title)
+                .subjectId(1L)
+                .build();
+    }
+
+    private StudyMember getStudyMember(Long studyMemberId, Study study) {
+        return StudyMember.builder()
+                .id(studyMemberId)
+                .member(loginMember)
+                .studyMemberStatus(StudyMemberStatus.JOIN)
+                .studyAuth(StudyAuth.LEADER)
+                .study(study)
+                .build();
+    }
+
+    private StudyFile getStudyFile(Long studyFileId, Study study, Map<String, String> fileInfo) {
+        return StudyFile.builder()
+                .id(studyFileId)
+                .study(study)
+                .name(fileInfo.get(Uploader.FILE_NAME))
+                .path(fileInfo.get(Uploader.UPLOAD_URL))
+                .build();
+    }
+
+    private Online getOnline(Long onlineId, Study study) {
+        return Online.builder()
+                .id(onlineId)
+                .onlineType("디스코드")
+                .study(study)
+                .link("https://www.discord.com")
+                .build();
+    }
+
+    private Study getStudy(Long studyId, String title, String content, Subject subject) {
+        return Study.builder()
+                .title(title)
+                .content(content)
+                .studyType(StudyType.FREE)
+                .dtype(StudyInstanceType.ONLINE)
+                .id(studyId)
+                .deletionStatus(DeletionStatus.NOT_DELETED)
+                .subject(subject)
+                .maxMember(5)
+                .startDate(LocalDate.of(2021, 10, 20))
+                .endDate(LocalDate.of(2021, 11, 21))
+                .build();
+    }
+
+    private Subject getSubject(Long subjectId, String name) {
+        return Subject.builder()
+                .id(subjectId)
+                .name(name)
+                .build();
+    }
+
+    @DisplayName("스터디 삭제 204 No Content")
+    @Test
+    void deleteStudy() throws Exception {
+        //given
+        Subject subject = getSubject(1L, "JAVA");
+        Study study = getStudy(1L, "자바 스터디원 모집합니다", "얼릉 오세요 얼마 남지 않았습니다.", subject);
+        StudyMember studyMember = getStudyMember(1L, study);
+        Study deleteStudy = Study.changeDeletionStatus(study, DeletionStatus.DELETED);
+
+        doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
+        doNothing().when(studyFacadeService).deleteStudy(anyLong(), any(MemberResolverDto.class));
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/studies/" + study.getId())
+                        .header("Authorization","bearer " + tokenDto.getAccessToken()));
+
+        //then
+        resultActions.andExpect(status().isNoContent());
     }
 }

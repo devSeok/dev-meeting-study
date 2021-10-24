@@ -16,4 +16,12 @@ public enum StudyInstanceType implements PolymorphicEnum {
     public String value() {
         return value;
     }
+
+    public boolean isOnline() {
+        return this == ONLINE;
+    }
+
+    public boolean equals(StudyInstanceType dtype) {
+        return this == dtype;
+    }
 }

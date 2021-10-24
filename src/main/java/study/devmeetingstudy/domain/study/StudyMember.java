@@ -63,4 +63,8 @@ public class StudyMember {
                 .studyAuth(StudyAuth.LEADER)
                 .build();
     }
+
+    public boolean isStudyAuthLeader() {
+        return this.studyAuth == StudyAuth.LEADER;
+    }
 }

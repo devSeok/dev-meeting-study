@@ -13,7 +13,6 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
-import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -40,8 +39,7 @@ import java.util.stream.Collectors;
 public class StudyController {
 
     private final MemberService memberService;
-    private final StudyFacadeService studyFacadeService;
-    private final StudyService studyService;
+    private final StudyFacadeServiceImpl studyFacadeService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
@@ -55,10 +53,12 @@ public class StudyController {
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.saveStudy");
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
+        CreatedStudyDto createdStudyDto = studyFacadeService.storeStudy(studySaveReqDto, loginMember);
+        return getCreatedApiResDto(createdStudyDto);
+    }
 
-        CreatedStudyDto createdStudyDto = studyFacadeService.store(studySaveReqDto, loginMember);
-
-        if (Study.isDtypeOnline(createdStudyDto.getStudy())) {
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getCreatedApiResDto(CreatedStudyDto createdStudyDto) {
+        if (createdStudyDto.getStudy().isDtypeOnline()) {
             return ResponseEntity.created(URI.create("/api/studies/" + createdStudyDto.getStudy().getId()))
                     .body(
                             ApiResDto.<CreatedOnlineStudyResDto>builder()
@@ -105,9 +105,9 @@ public class StudyController {
             @ApiResponse(code = 400, message = "잘못된 요청")
     })
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<ApiResDto<FoundStudyResDto>> getStudy(@PathVariable Long studyId) throws IOException {
+    public ResponseEntity<ApiResDto<FoundStudyResDto>> getStudy(@PathVariable Long studyId) {
         log.info("StudyController.getStudy");
-        StudyDto studyDto = studyFacadeService.findStudyById(studyId);
+        StudyDto studyDto = studyFacadeService.findStudyByStudyId(studyId);
         return ResponseEntity.ok(
                 ApiResDto.<FoundStudyResDto>builder()
                         .message("성공")
@@ -120,15 +120,52 @@ public class StudyController {
     @PutMapping("/{studyId}")
     @ApiOperation(value = "스터디 수정")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "스터디 수정 성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청")
+            @ApiResponse(code = 200, message = "스터디 수정 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 403, message = "리소스 권한 없음")
     })
-    @ResponseStatus(value = HttpStatus.CREATED)
+    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> putStudy(@PathVariable Long studyId,
-                                                                            @ModelAttribute StudyPutReqDto studyPutReqDto,
-                                                                            @JwtMember MemberResolverDto memberResolverDto) {
+                                                                            @Valid @ModelAttribute StudyPutReqDto studyPutReqDto,
+                                                                            @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.putStudy");
-        return null;
+        studyPutReqDto.setStudyId(studyId);
+        return getOkApiResDto(studyFacadeService.replaceStudy(studyPutReqDto, memberResolverDto));
+    }
+
+    private ResponseEntity<ApiResDto<? extends CreatedStudyResDto>> getOkApiResDto(CreatedStudyDto replaceStudy) {
+        if (replaceStudy.getStudy().isDtypeOnline()) {
+            return ResponseEntity.ok(
+                    ApiResDto.<CreatedOnlineStudyResDto>builder()
+                            .message("성공")
+                            .status(HttpStatus.OK.value())
+                            .data(CreatedOnlineStudyResDto.from(replaceStudy))
+                            .build()
+            );
+        }
+
+        return ResponseEntity.ok(
+                ApiResDto.<CreatedOfflineStudyResDto>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(CreatedOfflineStudyResDto.from(replaceStudy))
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/{studyId}")
+    @ApiOperation(value = "스터디 삭제")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "스터디 삭제 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 403, message = "리소스 권한 없음")
+    })
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId,
+                                            @JwtMember MemberResolverDto memberResolverDto) {
+        log.info("StudyController.deleteStudy");
+        studyFacadeService.deleteStudy(studyId, memberResolverDto);
+        return ResponseEntity.noContent().build();
     }
 }
 

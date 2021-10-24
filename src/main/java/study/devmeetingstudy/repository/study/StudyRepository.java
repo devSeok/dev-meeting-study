@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 import study.devmeetingstudy.domain.study.Study;
 
 public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryCustom {
+
+    boolean existsStudyById(Long studyId);
 }

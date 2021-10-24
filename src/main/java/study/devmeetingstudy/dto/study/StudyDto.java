@@ -25,7 +25,7 @@ public class StudyDto {
     private LocalDateTime lastUpdateDate;
     private LocalDate startDate;
     private LocalDate endDate;
-    private int maxMember;
+    private Integer maxMember;
     private StudyType studyType;
     private String title;
     private Online online;

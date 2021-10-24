@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO Facade 패턴으로 리팩토링.
 @Api(tags = {"1. Messages"})
 @RestController
 @RequiredArgsConstructor
@@ -87,6 +88,7 @@ public class MessageController {
     @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
             @ApiResponse(code = 200, message = "메시지 조회 성공 (메시지 읽음 상태 업데이트)"),
+            @ApiResponse(code = 404, message = "리소스를 찾을 수 없음."),
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.OK)
@@ -109,6 +111,7 @@ public class MessageController {
     @ApiImplicitParam(name = "id", value = "메시지 아이디")
     @ApiResponses({
             @ApiResponse(code = 204, message = "메시지 삭제 성공 (메시지 삭제 상태 업데이트)"),
+            @ApiResponse(code = 404, message = "리소스를 찾을 수 없음."),
             @ApiResponse(code = 400, message = "잘못된 요청", response = ErrorResponse.class)
     })
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

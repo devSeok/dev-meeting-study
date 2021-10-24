@@ -11,7 +11,7 @@ import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StudyVO {
+public class StudySaveVO {
 
     private StudySaveReqDto studySaveReqDto;
     private Subject subject;
@@ -19,30 +19,30 @@ public class StudyVO {
     private Offline offline;
     private Study study;
 
-    public StudyVO(StudySaveReqDto studySaveReqDto, Subject subject) {
+    public StudySaveVO(StudySaveReqDto studySaveReqDto, Subject subject) {
         this.studySaveReqDto = studySaveReqDto;
         this.subject = subject;
     }
 
-    public StudyVO(Study study, Online online) {
+    public StudySaveVO(Study study, Online online) {
         this.study = study;
         this.online = online;
     }
 
-    public StudyVO(Study study, Offline offline) {
+    public StudySaveVO(Study study, Offline offline) {
         this.study = study;
         this.offline = offline;
     }
 
-    public static StudyVO of(StudySaveReqDto studySaveReqDto, Subject subject) {
-        return new StudyVO(studySaveReqDto, subject);
+    public static StudySaveVO of(StudySaveReqDto studySaveReqDto, Subject subject) {
+        return new StudySaveVO(studySaveReqDto, subject);
     }
 
-    public static StudyVO of(Study study, Online online) {
-        return new StudyVO(study, online);
+    public static StudySaveVO of(Study study, Online online) {
+        return new StudySaveVO(study, online);
     }
 
-    public static StudyVO of(Study study, Offline offline) {
-        return new StudyVO(study, offline);
+    public static StudySaveVO of(Study study, Offline offline) {
+        return new StudySaveVO(study, offline);
     }
 }

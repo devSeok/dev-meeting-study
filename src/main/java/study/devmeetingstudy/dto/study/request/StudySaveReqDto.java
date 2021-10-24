@@ -1,5 +1,6 @@
 package study.devmeetingstudy.dto.study.request;
 
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,10 +27,10 @@ public class StudySaveReqDto {
     @NotNull
     private String title;
 
-    @ApiModelProperty(value = "최대 인원", example = "5", required = true, dataType = "Integer")
+    @ApiModelProperty(value = "최대 인원", example = "5", required = true)
     @NotNull(message = "최대 인원은 필수입니다.")
     @Min(value = 2)
-    private int maxMember;
+    private Integer maxMember;
 
     @ApiModelProperty(value = "시작 일자", example = "2021-09-16", required = true, dataType = "date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -57,7 +58,6 @@ public class StudySaveReqDto {
     @NotNull
     private String content;
 
-    //TODO : @Valid Resolver 작성해야함. (온라인인지 오프라인인지 확인 필요함)
     @ApiModelProperty(value = "스터디 타입 (온라인, 오프라인)", example = "ONLINE", notes = "스터디 타입 (ONLINE, OFFLINE 만 가능)", required = true)
     @NotNull(message = "ONLINE/OFFLINE 선택은 필수입니다.")
     @CheckValidEnum(target = StudyInstanceType.class, message = "스터디 유형이 ONLINE or OFFLINE이여야 합니다.")
@@ -81,7 +81,8 @@ public class StudySaveReqDto {
                            StudyType studyType, Long subjectId,
                            StudyInstanceType dtype,
                            Long addressId, String link,
-                           String onlineType, String content) {
+                           String onlineType, String content,
+                           MultipartFile file) {
         this.title = title;
         this.maxMember = maxMember;
         this.startDate = startDate;
@@ -93,5 +94,24 @@ public class StudySaveReqDto {
         this.link = link;
         this.onlineType = onlineType;
         this.content = content;
+        this.file = file;
+    }
+
+
+    public static StudySaveReqDto of(StudyPutReqDto studyPutReqDto) {
+        return StudySaveReqDto.builder()
+                .title(studyPutReqDto.getTitle())
+                .maxMember(studyPutReqDto.getMaxMember())
+                .startDate(studyPutReqDto.getStartDate())
+                .endDate(studyPutReqDto.getEndDate())
+                .studyType(studyPutReqDto.getStudyType())
+                .subjectId(studyPutReqDto.getSubjectId())
+                .dtype(studyPutReqDto.getDtype())
+                .addressId(studyPutReqDto.getAddressId())
+                .link(studyPutReqDto.getLink())
+                .onlineType(studyPutReqDto.getOnlineType())
+                .content(studyPutReqDto.getContent())
+                .file(studyPutReqDto.getFile())
+                .build();
     }
 }

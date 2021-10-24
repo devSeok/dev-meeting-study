@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import study.devmeetingstudy.domain.Address;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
@@ -41,4 +42,8 @@ public class Offline {
                 .build();
     }
 
+    public static Offline replace(Address address, Offline foundOffline) {
+        foundOffline.address = address;
+        return foundOffline;
+    }
 }

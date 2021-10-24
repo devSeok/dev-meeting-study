@@ -4,6 +4,7 @@ package study.devmeetingstudy.domain.study;
 import lombok.*;
 import study.devmeetingstudy.domain.Subject;
 import study.devmeetingstudy.domain.study.enums.StudyType;
+import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.request.StudySaveReqDto;
 
 import javax.persistence.*;
@@ -27,10 +28,11 @@ public class Online {
     private Study study;
 
     @Builder
-    public Online(String onlineType, String link, Study study) {
+    public Online(Long id, String onlineType, String link, Study study) {
         this.onlineType = onlineType;
         this.link = link;
         this.study = study;
+        this.id = id;
     }
 
     public static Online create(StudySaveReqDto dto, Study study){
@@ -39,5 +41,11 @@ public class Online {
                 .link(dto.getLink())
                 .study(study)
                 .build();
+    }
+
+    public static Online replace(StudyPutReqDto studyPutReqDto, Online foundOnline) {
+        foundOnline.onlineType = studyPutReqDto.getOnlineType();
+        foundOnline.link = studyPutReqDto.getLink();
+        return foundOnline;
     }
 }

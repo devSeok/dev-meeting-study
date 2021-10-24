@@ -12,7 +12,7 @@ public enum ErrorCode {
     // Common
     INVALID_INPUT_VALUE(400, "C001", " Invalid Input Value"),
     METHOD_NOT_ALLOWED(405, "C002", " Invalid Input Value"),
-    ENTITY_NOT_FOUND(400, "C003", " Entity Not Found"),
+    ENTITY_NOT_FOUND(404, "C003", " Entity Not Found"),
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
@@ -28,25 +28,31 @@ public enum ErrorCode {
     USER_NOT_PASSWORD(400, "M007", "패스워드가 틀렸습니다."),
     NICKNAME_DUPLICATION(400, "M008", "이미 사용중인 닉네임입니다."),
     EMAIL_CODE_NOTFOUND(400, "M010", "유효하지 않거나 마지막으로 온 유효 번호가 아닙니다."),
-    USER_INFO_MISMATCH(400, "M011", "유저 정보가 일치하지 않습니다."),
+    USER_INFO_MISMATCH(403, "M011", "유저 정보가 일치하지 않습니다."),
 
     // Message
-    MESSAGE_NOT_FOUND(400, "MS001", "메시지 정보가 없습니다."),
+    MESSAGE_NOT_FOUND(404, "MS001", "메시지 정보가 없습니다."),
 
     // Address
-    ADDRESS_NOT_FOUND(400, "A001", "주소 정보가 없습니다."),
+    ADDRESS_NOT_FOUND(404, "A001", "주소 정보가 없습니다."),
 
     // Subject
-    SUBJECT_NOT_FOUND(400, "SB001", "스터디 주제 정보가 없습니다."),
+    SUBJECT_NOT_FOUND(404, "SB001", "스터디 주제 정보가 없습니다."),
 
     // StudyMember
-    STUDY_MEMBER_NOT_FOUND(400, "SM001", "스터디 멤버를 찾을 수 없습니다."),
+    STUDY_MEMBER_NOT_FOUND(404, "SM001", "스터디 멤버를 찾을 수 없습니다."),
 
     // StudyFile
-    STUDY_FILE_NOT_FOUND(400, "SF001", "스터디 파일을 찾을 수 없습니다."),
+    STUDY_FILE_NOT_FOUND(404, "SF001", "스터디 파일을 찾을 수 없습니다."),
 
     // Study
-    STUDY_NOT_FOUND(400, "S001", "스터디를 찾을 수 없습니다."),
+    STUDY_NOT_FOUND(404, "S001", "스터디를 찾을 수 없습니다."),
+
+    // Online
+    ONLINE_NOT_FOUND(404, "ON001", "온라인을 찾을 수 없습니다."),
+
+    // Offline
+    OFFLINE_NOT_FOUND(404, "OF001", "오프라인을 찾을 수 없습니다."),
 
     // Coupon
     COUPON_ALREADY_USE(400, "CO001", "Coupon was already used"),
