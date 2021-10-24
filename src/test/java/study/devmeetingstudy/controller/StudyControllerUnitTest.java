@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.tomcat.jni.Local;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,7 +59,6 @@ import study.devmeetingstudy.service.study.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,7 +73,7 @@ class StudyControllerUnitTest {
     private StudyController studyController;
 
     @Mock
-    private StudyFacadeService studyFacadeService;
+    private StudyFacadeServiceImpl studyFacadeService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -166,7 +164,7 @@ class StudyControllerUnitTest {
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
 
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(createdStudyDto).when(studyFacadeService).storeStudy(any(StudySaveReqDto.class), any(Member.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.
@@ -248,7 +246,7 @@ class StudyControllerUnitTest {
 
         doReturn(Optional.of(loginMember)).when(memberRepository).findById(anyLong());
         doReturn(loginMember).when(memberService).getUserOne(anyLong());
-        doReturn(createdStudyDto).when(studyFacadeService).store(any(StudySaveReqDto.class), any(Member.class));
+        doReturn(createdStudyDto).when(studyFacadeService).storeStudy(any(StudySaveReqDto.class), any(Member.class));
 
         //when
         // multipart는 기본적으로 POST 요청이다.

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class StudyController {
 
     private final MemberService memberService;
-    private final StudyFacadeService studyFacadeService;
+    private final StudyFacadeServiceImpl studyFacadeService;
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "스터디 저장", notes = "온라인일시 link(String), onlineType(String)가 추가되고, 오프라인일시 Address(Object)가 추가됩니다. ")
@@ -53,7 +53,7 @@ public class StudyController {
                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) throws IOException {
         log.info("StudyController.saveStudy");
         Member loginMember = memberService.getUserOne(memberResolverDto.getId());
-        CreatedStudyDto createdStudyDto = studyFacadeService.store(studySaveReqDto, loginMember);
+        CreatedStudyDto createdStudyDto = studyFacadeService.storeStudy(studySaveReqDto, loginMember);
         return getCreatedApiResDto(createdStudyDto);
     }
 
