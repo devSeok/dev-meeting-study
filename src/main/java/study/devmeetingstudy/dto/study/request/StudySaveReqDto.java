@@ -1,6 +1,5 @@
 package study.devmeetingstudy.dto.study.request;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -41,6 +41,9 @@ public enum ErrorCode {
 
     // StudyMember
     STUDY_MEMBER_NOT_FOUND(404, "SM001", "스터디 멤버를 찾을 수 없습니다."),
+    UNABLE_APPLY_STUDYMEMBER(400, "SM002", "스터디 멤버 신청을 할 수 없습니다."),
+    EXISTS_STUDY_MEMBER(400, "SM003", "이미 존재하는 스터디 맴버 입니다."),
+    CANNOT_DELETE_STUDY_MEMBER(400, "SM004", "스터디 멤버를 삭제할 수 없습니다"),
 
     // StudyFile
     STUDY_FILE_NOT_FOUND(404, "SF001", "스터디 파일을 찾을 수 없습니다."),

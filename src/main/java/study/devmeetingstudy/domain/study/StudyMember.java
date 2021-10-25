@@ -64,6 +64,10 @@ public class StudyMember {
                 .build();
     }
 
+    public static void changeStudyMemberStatus(StudyMember studyMember, StudyMemberStatus studyMemberStatus) {
+        studyMember.studyMemberStatus = studyMemberStatus;
+    }
+
     public boolean isStudyAuthLeader() {
         return this.studyAuth == StudyAuth.LEADER;
     }

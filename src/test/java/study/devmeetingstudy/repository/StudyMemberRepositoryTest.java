@@ -34,4 +34,34 @@ class StudyMemberRepositoryTest {
         List<StudyMember> byStudy_id = studyMemberRepository.findStudyMembersByStudyIdAndStatusJOIN(id);
         //then
     }
+
+    @DisplayName("멤버가 스터디 멤버인지")
+    @Test
+    void existsStudyMemberByStudy_IdAndMember_Id() throws Exception {
+        //given
+
+        //when
+        studyMemberRepository.existsStudyMemberByStudy_IdAndMember_Id(1L, 1L);
+        //then
+    }
+
+    @DisplayName("해당 스터디의 스터디 멤버 카운트")
+    @Test
+    void countStudyMembersByStudyIdAndStatusJOIN() throws Exception {
+        //given
+
+        //when
+        studyMemberRepository.countStudyMembersByStudyIdAndStatusJOIN(1L);
+        //then
+    }
+
+    @DisplayName("멤버 아이디에 해당하는 스터디 맴버 조회")
+    @Test
+    void findStudyMemberByMemberId() throws Exception {
+        //given
+
+        //when
+        studyMemberRepository.findStudyMemberByStudyIdAndMemberId(1L, 1L);
+        //then
+    }
 }
