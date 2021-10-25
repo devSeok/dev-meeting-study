@@ -203,7 +203,7 @@ const makeQueryParm = (obj: object) => {
       continue;
     }
     // @ts-ignore
-    url = url += `${prop}=${obj[prop]}&`;
+    url = url += `${prop}=${prop === 'title' ? encodeURIComponent(obj[prop]) : obj[prop]}&`;
   }
 
   // 마지막 & 제거

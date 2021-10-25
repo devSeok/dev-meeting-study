@@ -132,7 +132,7 @@ function OpenStudyView() {
     offset: 4,
   });
 
-  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputs({
       ...inputs,
@@ -196,7 +196,7 @@ function OpenStudyView() {
               <Select id="type-select" name="dtype" onChange={onChange}>
                 <option value="ONLINE">온라인</option>
                 {/* 오프라인은 배포 이후 지원 */}
-                {/* <option value="OFFLINE">오프라인</option> */}
+                <option value="OFFLINE">오프라인</option>
               </Select>
               <Select id="study-select" name="studyType" onChange={onChange}>
                 <option value="FREE">무료</option>
@@ -227,9 +227,12 @@ function OpenStudyView() {
                 </>
               )}
             </div>
-            <Icon>
-              <SearchIcon style={{ fontSize: '45px', marginRight: '25px' }} />
-            </Icon>
+            <div>
+              <input name="title" onChange={onChange} placeholder="검색" />
+              <Icon>
+                <SearchIcon style={{ fontSize: '45px', marginRight: '25px' }} />
+              </Icon>
+            </div>
           </div>
           <ItemList>
             <Items inputs={inputs} modalStateChange={modalStateChange} />
