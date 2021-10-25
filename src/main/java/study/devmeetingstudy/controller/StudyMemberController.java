@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
@@ -40,7 +41,7 @@ public class StudyMemberController {
     })
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<List<StudyMemberResDto>>> getStudyMembers(@PathVariable Long studyId,
-                                                                              @JwtMember MemberResolverDto memberResolverDto) {
+                                                                              @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) {
         log.info("StudyMemberController.getStudyMembers");
         studyMemberService.authenticateStudyMember(studyId, memberResolverDto);
         List<StudyMember> studyMembers = studyMemberService.findStudyMembersByStudyId(studyId);
@@ -64,7 +65,7 @@ public class StudyMemberController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<ApiResDto<StudyMemberResDto>> getStudyMember(@PathVariable Long studyId,
                                                                        @PathVariable Long studyMemberId,
-                                                                       @JwtMember MemberResolverDto memberResolverDto) {
+                                                                       @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) {
         studyMemberService.authenticateStudyMember(studyId, memberResolverDto);
         StudyMember studyMember = studyMemberService.findStudyMemberById(studyMemberId);
         return ResponseEntity.ok(
@@ -85,7 +86,7 @@ public class StudyMemberController {
     })
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ApiResDto<StudyMemberResDto>> applyStudyMember(@PathVariable Long studyId,
-                                                                         @JwtMember MemberResolverDto memberResolverDto) {
+                                                                         @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) {
         StudyMember studyMember = studyMemberService.saveStudyMember(memberService.getUserOne(memberResolverDto.getId()), studyService.findStudyById(studyId));
         return ResponseEntity.created(URI.create("/api/studies" + studyId + "/study-members" + studyMember.getId()))
                 .body(
@@ -107,7 +108,7 @@ public class StudyMemberController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteStudyMember(@PathVariable Long studyId,
                                                   @PathVariable Long studyMemberId,
-                                                  @JwtMember MemberResolverDto memberResolverDto) {
+                                                  @ApiIgnore @JwtMember MemberResolverDto memberResolverDto) {
         studyMemberService.authenticateStudyMember(studyId, memberResolverDto);
         studyMemberService.deleteStudyMember(studyMemberId, memberResolverDto);
         return ResponseEntity.noContent().build();
