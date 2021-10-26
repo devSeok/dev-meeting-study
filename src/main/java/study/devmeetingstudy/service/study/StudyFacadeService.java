@@ -18,4 +18,5 @@ public interface StudyFacadeService {
     List<StudyDto> findStudiesBySearchCondition(StudySearchCondition studySearchCondition);
     StudyDto findStudyByStudyId(Long studyId);
     void deleteStudy(Long studyId, MemberResolverDto memberResolverDto);
+    List<StudyDto> findStudiesByMemberId(Long memberId);
 }

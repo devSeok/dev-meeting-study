@@ -13,6 +13,7 @@ import study.devmeetingstudy.annotation.JwtMember;
 import study.devmeetingstudy.annotation.dto.MemberResolverDto;
 import study.devmeetingstudy.common.exception.global.response.ApiResDto;
 import study.devmeetingstudy.domain.member.Member;
+import study.devmeetingstudy.domain.study.Study;
 import study.devmeetingstudy.dto.study.request.StudyPutReqDto;
 import study.devmeetingstudy.dto.study.CreatedStudyDto;
 import study.devmeetingstudy.dto.study.StudyDto;
@@ -89,6 +90,24 @@ public class StudyController {
     public ResponseEntity<ApiResDto<List<FoundStudiesResDto>>> getStudies(@Valid @ModelAttribute StudySearchCondition studySearchCondition) throws IOException {
         log.info("StudyController.getStudies");
         List<StudyDto> studies = studyFacadeService.findStudiesBySearchCondition(studySearchCondition);
+        return ResponseEntity.ok(
+                ApiResDto.<List<FoundStudiesResDto>>builder()
+                        .message("성공")
+                        .status(HttpStatus.OK.value())
+                        .data(studies.stream().map(FoundStudiesResDto::from).collect(Collectors.toList()))
+                        .build()
+        );
+    }
+
+    @GetMapping("/my")
+    @ApiOperation(value = "내 스터디 목록", notes = "로그인 한 멤버의 현재 가입한 스터디 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "내 스터디 목록 조회 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청")
+    })
+    public ResponseEntity<ApiResDto<List<FoundStudiesResDto>>> getMyStudies(@ApiIgnore @JwtMember MemberResolverDto memberResolverDto) {
+        log.info("StudyController.getMyStudies");
+        List<StudyDto> studies = studyFacadeService.findStudiesByMemberId(memberResolverDto.getId());
         return ResponseEntity.ok(
                 ApiResDto.<List<FoundStudiesResDto>>builder()
                         .message("성공")

@@ -114,5 +114,9 @@ public class StudyMemberService {
     private boolean isStudyMemberOwner(MemberResolverDto memberResolverDto, StudyMember studyMember) {
         return studyMember.getMember().getId().equals(memberResolverDto.getId());
     }
+
+    public List<StudyMember> findStudyMembersByMemberId(Long memberId) {
+        return studyMemberRepository.findStudyMembersByMemberId(memberId);
+    }
 }
 

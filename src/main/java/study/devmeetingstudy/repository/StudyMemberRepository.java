@@ -10,7 +10,7 @@ import study.devmeetingstudy.domain.study.enums.StudyAuth;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> {
+public interface StudyMemberRepository extends JpaRepository<StudyMember, Long>, StudyMemberRepositoryCustom {
 
     @Query("select sm from StudyMember sm left join fetch sm.member where sm.study.id = :studyId and sm.studyAuth = :studyAuth")
     List<StudyMember> findStudyMembersByStudyIdAndStudyAuth(@Param("studyId") Long studyId, @Param("studyAuth") StudyAuth studyAuth);
@@ -31,4 +31,5 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
 
     @Query("select sm from StudyMember sm left join fetch sm.member where sm.study.id = :studyId and sm.member.id = :memberId")
     Optional<StudyMember> findStudyMemberByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
+
 }
