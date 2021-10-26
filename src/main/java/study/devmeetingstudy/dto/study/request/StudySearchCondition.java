@@ -59,7 +59,7 @@ public class StudySearchCondition {
         return address1;
     }
 
-    public StudyInstanceType getStudyInstanceType() {
+    public StudyInstanceType getDtype() {
         return dtype;
     }
 
@@ -82,5 +82,9 @@ public class StudySearchCondition {
 
     public SortedEnum getSorted() {
         return sorted;
+    }
+
+    public StudyType getStudyType() {
+        return studyType;
     }
 }
