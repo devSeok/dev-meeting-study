@@ -9,9 +9,8 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import person from '../asset/image/person.png';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { listMessage, message } from '../ToolKit/user';
-//  vs코드는 왜안됏지? 그거 테스트 ㄲ
-//
+import { listMessage, message } from '../ToolKit/messages';
+
 const SelectItem = styled.div`
   width: 500px;
   background-color: #f8f8f8;

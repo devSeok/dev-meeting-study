@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { sendMessage } from '../ToolKit/user';
+import { sendMessage } from '../ToolKit/messages';
 import StudyHeader from '../components/StudyHeader';
 import { Button, Input, InputTitle, InputWrap, Main, Section, TextAreaInput } from '../elements';
 

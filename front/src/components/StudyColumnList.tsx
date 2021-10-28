@@ -5,7 +5,7 @@ import { Icon } from '../elements';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import person from '../asset/image/person.png';
 import moment from 'moment';
-import { deleteMessage } from '../ToolKit/user';
+import { deleteMessage } from '../ToolKit/messages';
 
 interface Study {
   title: string;
