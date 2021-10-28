@@ -88,11 +88,11 @@ interface PayloadProps {
 function MyStudyView() {
   const Dispatch = useDispatch();
   console.log('요청 전');
-  const messageData: PayloadProps = useSelector(message);
+  // const messageData: PayloadProps = useSelector(message);
   // console.log("요청 후 ", messageData);
-  console.log('messageData', messageData);
-  const messageList: any = messageData.payload.payload.data;
-  console.log('messageList', messageList);
+  // console.log('messageData', messageData);
+  // const messageList: any = messageData.payload.payload.data;
+  // console.log('messageList', messageList);
 
   const history = useHistory();
   const [inputs, setInputs] = useState({
@@ -187,7 +187,7 @@ function MyStudyView() {
           <div style={{ marginTop: '50px' }}>
             {pathname === '/my/info' && <Info onChange={onChange} />}
             {pathname === '/my/study' && <Study study={study} index={item} />}
-            {pathname === '/my/message' && <Message post={messageList} index={item} />}
+            {pathname === '/my/message' && <Message index={item} />}
             {pathname === '/my/secession' && <Secession onChange={onChange} />}
           </div>
         </Section>
@@ -240,11 +240,11 @@ export function Study({ study, index }: PType) {
   );
 }
 
-export function Message({ post, index }: PType) {
-  console.log('post111111', post);
+export function Message({ index }: PType) {
+  // console.log('post111111', post);
   return (
     <>
-      <StudyColumnList items={post} index={index} />
+      <StudyColumnList index={index} />
     </>
   );
 }
