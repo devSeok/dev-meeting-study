@@ -39,8 +39,9 @@ interface PayloadProps {
 function StudyColumnList({ items, index }: PropsType) {
   const Dispatch = useDispatch();
   const [messages, setMessages] = useState();
-  const messageData: PayloadProps = useSelector(message);
-  const [listMessage, setListMessage] = useState(messageData?.payload.payload.data);
+  const messageData: PayloadProps = useSelector(message); // 리덕스 변수
+
+  const [listMessage, setListMessage] = useState(messageData?.payload?.payload?.data);
   // console.log('List:items', items);
   // console.log('List:index', index);
   console.log('messageData', messageData);
@@ -57,15 +58,14 @@ function StudyColumnList({ items, index }: PropsType) {
     contentSlice.classList.toggle('open');
     contentMax.classList.toggle('open');
   };
-  useEffect(() => {
-    setListMessage(messageData?.payload.payload.data);
-  }, [messageData]);
-  console.log(listMessage, 'listMessage12312');
-
   const onDelete = (e: any, item: any) => {
-    e.preventDefault();
+    console.debug("kk", item);
     Dispatch(deleteMessage(item.id));
   };
+  useEffect(() => {
+    setListMessage(messageData?.payload?.payload?.data);
+  }, [onDelete]);
+  console.log(listMessage, 'listMessage12312');
 
   // JSX
   return (

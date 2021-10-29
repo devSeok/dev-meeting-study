@@ -70,10 +70,13 @@ export const readMessage = createAsyncThunk('readMessage', async (id: number, { 
 // 메세지 삭제
 export const deleteMessage = createAsyncThunk('deleteMessage', async (id: number, { rejectWithValue }: any) => {
   try {
-    const { data }: any = await deleteMessages(id);
+    const { data }: any = await deleteMessages(id); // api 요청해서 삭제 함. => 백엔드 db 삭제
+    console.log('체크 delete', data, id);
+
     return {
       type: MESSAGE_TYPE.MESSAGE_DELETE,
-      payload: data,
+      payload: data, // 얘는 쓸모가 없음. {}
+      id,
     };
   } catch (err: any) {
     const error: PayloadFailType = err.response.data;
@@ -99,6 +102,7 @@ export interface InitialState {
   auth: AuthType;
   message: any;
 }
+
 const State: InitialState = {
   user: {},
   status: '',
@@ -179,11 +183,20 @@ const messages = createSlice({
       state.status = 'loading';
     });
     // 메세지 삭제 성공
-    builder.addCase(deleteMessage.fulfilled, (state, { type, payload }) => {
+    builder.addCase(deleteMessage.fulfilled, (state, { type, payload }: any) => {
       state.status = 'success';
-      state.message = { type, payload };
-      console.log(payload);
-      // state.message.filter((list: any) => list.id !== payload);
+      // state.message = { type, payload };
+      // state.message = state.message;
+      state.message = {
+        ...state.message,
+        payload: {
+          ...state.message.payload,
+          payload: {
+            ...state.message.payload.payload,
+            data: [...state.message.payload.payload.data.filter((item: any) => item.id !== payload.id)],
+          },
+        },
+      };
     });
     // 메세지 삭제 실패
     builder.addCase(deleteMessage.rejected, (state, { type, payload }) => {
