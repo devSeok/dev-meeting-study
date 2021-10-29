@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { delStudy } from '../API/index';
 import { Icon } from '../elements/index';
 import { ItemsType } from './Items';
 import { initalStudy } from '../views/MainView';
@@ -44,6 +45,8 @@ const ModalTop = styled.div`
     position: absolute;
     bottom: 30px;
     left: 30px;
+    display: flex;
+    align-items: flex-end;
     font-size: 20px;
     font-weight: bold;
   }
@@ -77,7 +80,7 @@ const MemuItem = styled.li`
 
 interface PropsType {
   study: ItemsType;
-  modalStateChange: (study: ItemsType) => void;
+  modalStateChange: (open: boolean, study: ItemsType, del: boolean) => void;
 }
 
 function Modal({ study, modalStateChange }: PropsType) {
@@ -114,17 +117,44 @@ function Modal({ study, modalStateChange }: PropsType) {
     }
   };
 
+  const deleteStudy = async () => {
+    try {
+      console.log('l', study);
+
+      const res = await delStudy(leader.member.id, leader.member.nickname, study.id);
+
+      if (res.status === 204) {
+        alert('삭제 성공!');
+        modalStateChange(false, { ...initalStudy }, true);
+      }
+    } catch (err: any) {
+      console.log('err', err);
+      const error = err.response.data;
+
+      if (error) {
+        alert(error.message);
+      } else {
+        alert('서버 에러 발생');
+      }
+    }
+  };
+
   return (
     <ModalWrap>
       <StudyModal>
         <ModalTop>
           <div>
             <h2 className="studyTitle">{study.title}</h2>
-            <Icon onClick={() => modalStateChange({ ...initalStudy })}>
+            <Icon onClick={() => modalStateChange(false, { ...initalStudy }, false)}>
               <CloseIcon />
             </Icon>
           </div>
-          <span className="leader">{leader.member.nickname}</span>
+          <div className="leader">
+            <span>{leader.member.nickname}</span>
+            <button type="button" onClick={deleteStudy}>
+              삭제
+            </button>
+          </div>
           <img src={study.files[0].path} alt="스터디 사진" />
         </ModalTop>
         <ModalBottom>

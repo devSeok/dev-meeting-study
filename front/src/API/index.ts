@@ -171,6 +171,14 @@ const getStudty = (filter: FilterType) => {
   });
 };
 
+const delStudy = (id: number, nickname: string, studyId: number) => {
+  return Send({
+    method: Method.DELETE,
+    url: `studies/${studyId}`,
+    data: { id, nickname, studyId },
+  });
+};
+
 export {
   register_user,
   register_check_email,
@@ -190,6 +198,7 @@ export {
   addSubject,
   saveStudty,
   getStudty,
+  delStudy,
 };
 
 const makeQueryParm = (obj: object) => {
