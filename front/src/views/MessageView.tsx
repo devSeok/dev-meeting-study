@@ -41,7 +41,6 @@ function MessageView({}: MessageViewProps) {
     };
 
     Dispatch(sendMessage(obj));
-    // console.log('온클릭', Dispatch(sendMessage(obj)));
   };
   return (
     <>
@@ -62,7 +61,7 @@ function MessageView({}: MessageViewProps) {
           <InputWrap>
             <InputTitle placeholder="받는사람을 입력하세요">Contents</InputTitle>
             <TextAreaInput
-              placeholder="받는사람을 입력하세요"
+              placeholder="본문을 입력하세요"
               id="content"
               name="content"
               value={content}

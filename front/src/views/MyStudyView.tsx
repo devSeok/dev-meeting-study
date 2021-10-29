@@ -87,12 +87,6 @@ interface PayloadProps {
 }
 function MyStudyView() {
   const Dispatch = useDispatch();
-  console.log('요청 전');
-  // const messageData: PayloadProps = useSelector(message);
-  // console.log("요청 후 ", messageData);
-  // console.log('messageData', messageData);
-  // const messageList: any = messageData.payload.payload.data;
-  // console.log('messageList', messageList);
 
   const history = useHistory();
   const [inputs, setInputs] = useState({

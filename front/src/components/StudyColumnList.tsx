@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '../elements';
@@ -39,9 +39,10 @@ interface PayloadProps {
 function StudyColumnList({ items, index }: PropsType) {
   const Dispatch = useDispatch();
   const [messages, setMessages] = useState();
+  const messageData: PayloadProps = useSelector(message);
+  const [listMessage, setListMessage] = useState(messageData?.payload.payload.data);
   // console.log('List:items', items);
   // console.log('List:index', index);
-  const messageData: PayloadProps = useSelector(message);
   console.log('messageData', messageData);
   const itemRef = useRef<HTMLLIElement>(null);
   const contentMaxRef = useRef<HTMLDivElement>(null);
@@ -56,10 +57,14 @@ function StudyColumnList({ items, index }: PropsType) {
     contentSlice.classList.toggle('open');
     contentMax.classList.toggle('open');
   };
+  useEffect(() => {
+    setListMessage(messageData?.payload.payload.data);
+  }, [messageData]);
+  console.log(listMessage, 'listMessage12312');
 
-  const onDelete = (id: any) => {
-    console.log(id);
-    Dispatch(deleteMessage(id));
+  const onDelete = (e: any, item: any) => {
+    e.preventDefault();
+    Dispatch(deleteMessage(item.id));
   };
 
   // JSX
@@ -108,7 +113,8 @@ function StudyColumnList({ items, index }: PropsType) {
             );
           })}
         {index === 2 &&
-          messageData.payload.payload.data.map((item: any, idx: number) => {
+          listMessage &&
+          listMessage.map((item: any, idx: number) => {
             const date = moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss');
             const contents = item.content.substring(0, 40);
             const contentsMax = item.content;
@@ -126,7 +132,7 @@ function StudyColumnList({ items, index }: PropsType) {
                     </div>
                     <div>
                       <span>{date}</span>
-                      <button onClick={onDelete}>Del</button>
+                      <button onClick={(e) => onDelete(e, item)}>Del</button>
                       <Contents ref={contentSliceRef} className="open">
                         {contents}
                       </Contents>

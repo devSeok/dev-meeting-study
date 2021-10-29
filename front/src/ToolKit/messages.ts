@@ -183,6 +183,7 @@ const messages = createSlice({
       state.status = 'success';
       state.message = { type, payload };
       console.log(payload);
+      // state.message.filter((list: any) => list.id !== payload);
     });
     // 메세지 삭제 실패
     builder.addCase(deleteMessage.rejected, (state, { type, payload }) => {
