@@ -1,6 +1,7 @@
 package study.devmeetingstudy.repository.study;
 
 import study.devmeetingstudy.domain.study.Study;
+import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 
 import java.util.List;

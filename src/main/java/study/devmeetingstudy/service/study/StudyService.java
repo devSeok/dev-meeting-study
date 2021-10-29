@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.common.exception.global.error.exception.notfound.StudyNotFoundException;
 import study.devmeetingstudy.domain.enums.DeletionStatus;
 import study.devmeetingstudy.domain.study.Study;
+import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 import study.devmeetingstudy.vo.StudyReplaceVO;
@@ -55,4 +56,5 @@ public class StudyService {
             Study.changeDeletionStatus(foundStudy, DeletionStatus.DELETED);
         }
     }
+
 }

@@ -6,9 +6,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import study.devmeetingstudy.domain.enums.DeletionStatus;
+import study.devmeetingstudy.domain.member.QMember;
+import study.devmeetingstudy.domain.study.QStudyMember;
 import study.devmeetingstudy.domain.study.Study;
+import study.devmeetingstudy.domain.study.StudyMember;
 import study.devmeetingstudy.domain.study.enums.SortedEnum;
 import study.devmeetingstudy.domain.study.enums.StudyInstanceType;
+import study.devmeetingstudy.domain.study.enums.StudyType;
 import study.devmeetingstudy.dto.study.request.StudySearchCondition;
 
 import javax.persistence.EntityManager;
@@ -17,9 +21,11 @@ import java.util.Optional;
 
 import static study.devmeetingstudy.domain.QAddress.address;
 import static study.devmeetingstudy.domain.QSubject.subject;
+import static study.devmeetingstudy.domain.member.QMember.member;
 import static study.devmeetingstudy.domain.study.QOffline.offline;
 import static study.devmeetingstudy.domain.study.QOnline.online;
 import static study.devmeetingstudy.domain.study.QStudy.study;
+import static study.devmeetingstudy.domain.study.QStudyMember.studyMember;
 
 @Repository
 @Transactional(readOnly = true)
@@ -43,8 +49,9 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                         titleLike(studySearchCondition.getTitle()),
                         subjectIdEq(studySearchCondition.getSubjectId()),
                         lastIdFactory(studySearchCondition.getLastId(), studySearchCondition.getSorted()),
-                        dtypeEq(studySearchCondition.getStudyInstanceType()),
-                        address1Like(studySearchCondition.getAddress1(), studySearchCondition.getStudyInstanceType()),
+                        dtypeEq(studySearchCondition.getDtype()),
+                        address1Like(studySearchCondition.getAddress1(), studySearchCondition.getDtype()),
+                        studyTypeEq(studySearchCondition.getStudyType()),
                         study.deletionStatus.eq(DeletionStatus.NOT_DELETED)
                 )
                 .limit(studySearchCondition.getOffset())
@@ -94,6 +101,10 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
         return sortedEnum == null || SortedEnum.isDesc(sortedEnum) ? study.id.desc() : study.id.asc();
     }
 
+    private BooleanExpression studyTypeEq(StudyType studyType) {
+        return studyType != null ? study.studyType.eq(studyType) : null;
+    }
+
     @Override
     public Optional<Study> findStudyById(Long studyId) {
         return Optional.ofNullable(
@@ -110,4 +121,5 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom{
                 .fetchOne()
         );
     }
+
 }

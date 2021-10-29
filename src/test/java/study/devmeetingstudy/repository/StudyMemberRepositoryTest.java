@@ -64,4 +64,15 @@ class StudyMemberRepositoryTest {
         studyMemberRepository.findStudyMemberByStudyIdAndMemberId(1L, 1L);
         //then
     }
+
+    @DisplayName("멤버 아이디에 해당하는 스터디 멤버 조회 (내 스터디 목록)")
+    @Test
+    void findStudyMembersByMemberId() throws Exception {
+        //given
+
+        //when
+
+        studyMemberRepository.findStudyMembersByMemberId(1L);
+        //then
+    }
 }
