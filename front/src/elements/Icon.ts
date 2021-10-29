@@ -4,5 +4,5 @@ export const Icon = styled.span`
   display: flex;
   align-items: center;
   cursor: pointer;
-
+  z-index: 100;
 `;
