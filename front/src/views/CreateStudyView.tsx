@@ -42,7 +42,7 @@ function CreateStudyView() {
     title: '',
     studyType: 'FREE',
     maxMember: 2,
-    studyInstanceType: 'ONLINE',
+    dtype: 'ONLINE',
     onlineType: '',
     link: '',
     subjectId: 1,
@@ -59,7 +59,7 @@ function CreateStudyView() {
     title, // 타이틀
     studyType, // 유무료
     maxMember, // 최대 멤버 수
-    studyInstanceType, // 온, 오프라인
+    dtype, // 온, 오프라인
     onlineType, // 프로그램
     link, // 링크
     subjectId, // 언어 id
@@ -118,7 +118,7 @@ function CreateStudyView() {
 
   const checkInputs = () => {
     if (title !== '' && endDate !== '') {
-      if (studyInstanceType === 'ONLINE') {
+      if (dtype === 'ONLINE') {
         return true;
       } else {
         if (sido !== '' && gun !== '' && gu !== '') {
@@ -145,7 +145,7 @@ function CreateStudyView() {
         formData.append('title', title);
         formData.append('studyType', studyType);
         formData.append('maxMember', maxMember.toString());
-        formData.append('studyInstanceType', studyInstanceType);
+        formData.append('dtype', dtype);
         formData.append('onlineType', onlineType);
         formData.append('link', link);
         formData.append('subjectId', subjectId.toString());
@@ -206,13 +206,13 @@ function CreateStudyView() {
               <InputTitle htmlFor="study-type" className="required">
                 스터디 타입
               </InputTitle>
-              <Select id="type-select" name="studyInstanceType" value={studyInstanceType} onChange={onChange}>
+              <Select id="type-select" name="dtype" value={dtype} onChange={onChange}>
                 <option value="ONLINE">온라인</option>
                 {/* 오프라인은 배포 이후 지원 */}
                 {/* <option value="OFFLINE">오프라인</option> */}
               </Select>
             </WrapInput>
-            {studyInstanceType === 'ONLINE' && (
+            {dtype === 'ONLINE' && (
               <WrapInput style={{ height: '130px' }}>
                 <InputTitle htmlFor="study-type">온라인</InputTitle>
                 <Input
