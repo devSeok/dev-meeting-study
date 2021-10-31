@@ -66,6 +66,7 @@ export interface ItemsType {
     name: string;
   };
   title: string;
+  content: string;
 }
 
 function Items({ inputs, modalStateChange, modal }: PropsData) {
