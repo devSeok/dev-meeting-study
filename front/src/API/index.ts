@@ -179,6 +179,23 @@ const delStudy = (id: number, nickname: string, studyId: number) => {
   });
 };
 
+const studyInfo = (studyId: number) => {
+  return Send({
+    method: Method.GET,
+    url: `/studies/${studyId}`,
+  });
+};
+
+const modifyStudy = (studyId: number, study: StudyType) => {
+  console.log('study', study);
+
+  return Send({
+    method: Method.PUT,
+    url: `/studies/${studyId}`,
+    data: study,
+  });
+};
+
 export {
   register_user,
   register_check_email,
@@ -199,6 +216,8 @@ export {
   saveStudty,
   getStudty,
   delStudy,
+  studyInfo,
+  modifyStudy,
 };
 
 const makeQueryParm = (obj: object) => {

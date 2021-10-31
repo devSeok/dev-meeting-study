@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { delStudy } from '../API/index';
+import { delStudy, studyInfo as studyInfoFunc } from '../API/index';
 import { Icon } from '../elements/index';
 import { ItemsType } from './Items';
 import { initalStudy } from '../views/MainView';
@@ -84,7 +85,64 @@ interface PropsType {
 }
 
 function Modal({ study, modalStateChange }: PropsType) {
+  const [studyInfo, setstudyInfo] = useState({});
+
   console.log('study', study);
+
+  useEffect(() => {
+    const infoStudy = async (studyId: number) => {
+      const {
+        data: { data },
+      } = await studyInfoFunc(studyId);
+      setstudyInfo(data);
+    };
+
+    infoStudy(study.id);
+  }, []);
+
+  const checkNull = (obj: object) => {
+    if (obj === null) {
+      return { null: null };
+    }
+    return obj;
+  };
+
+  const makeObjectQueryString = (obj: any | null) => {
+    let url = '';
+
+    const checkObj = checkNull(obj as object);
+
+    for (let prop in checkObj) {
+      // @ts-ignore
+      url += `${prop}=${checkObj[prop]}&`;
+    }
+
+    return url;
+  };
+
+  const makeQueryString = (study: ItemsType) => {
+    let url = '/study/modify/type=modify&';
+    for (let prop in studyInfo) {
+      if (prop === 'studyMembers') {
+        continue;
+      }
+      // @ts-ignore
+      url = url += `${prop}=${
+        // @ts-ignore
+        typeof study[prop] === 'object'
+          ? // @ts-ignore
+            encodeURIComponent(makeObjectQueryString(prop === 'files' ? studyInfo[prop][0] : studyInfo[prop]))
+          : // @ts-ignore
+            encodeURIComponent(studyInfo[prop])
+      }&`;
+    }
+
+    // 마지막 & 제거
+    url = url.substr(0, url.length - 1);
+
+    console.log('url', url);
+    return url;
+  };
 
   interface MemberType {
     id: number;
@@ -154,6 +212,7 @@ function Modal({ study, modalStateChange }: PropsType) {
             <button type="button" onClick={deleteStudy}>
               삭제
             </button>
+            <Link to={() => makeQueryString(study)}>수정</Link>
           </div>
           <img src={study.files[0].path} alt="스터디 사진" />
         </ModalTop>
