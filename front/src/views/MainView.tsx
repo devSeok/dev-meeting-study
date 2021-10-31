@@ -114,6 +114,7 @@ export const initalStudy = {
     name: '',
   },
   title: '',
+  content: '',
 };
 
 function OpenStudyView() {
@@ -154,7 +155,7 @@ function OpenStudyView() {
       document.body.style.overflow = 'hidden';
     } else {
       //@ts-ignore
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = 'initial';
     }
   }, [modalStateChange]);
 
