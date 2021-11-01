@@ -171,6 +171,31 @@ const getStudty = (filter: FilterType) => {
   });
 };
 
+const delStudy = (id: number, nickname: string, studyId: number) => {
+  return Send({
+    method: Method.DELETE,
+    url: `studies/${studyId}`,
+    data: { id, nickname, studyId },
+  });
+};
+
+const studyInfo = (studyId: number) => {
+  return Send({
+    method: Method.GET,
+    url: `/studies/${studyId}`,
+  });
+};
+
+const modifyStudy = (studyId: number, study: StudyType) => {
+  console.log('study', study);
+
+  return Send({
+    method: Method.PUT,
+    url: `/studies/${studyId}`,
+    data: study,
+  });
+};
+
 export {
   register_user,
   register_check_email,
@@ -190,6 +215,9 @@ export {
   addSubject,
   saveStudty,
   getStudty,
+  delStudy,
+  studyInfo,
+  modifyStudy,
 };
 
 const makeQueryParm = (obj: object) => {

@@ -114,12 +114,14 @@ export const initalStudy = {
     name: '',
   },
   title: '',
+  content: '',
 };
 
 function OpenStudyView() {
   const [modal, setModal] = useState({
     open: false,
     study: { ...initalStudy } as ItemsType,
+    del: false,
   });
   const [inputs, setInputs] = useState({
     dtype: 'ONLINE',
@@ -140,10 +142,11 @@ function OpenStudyView() {
     });
   };
 
-  const modalStateChange = (study: ItemsType) => {
+  const modalStateChange = (open: boolean, study: ItemsType, del: boolean) => {
     setModal({
-      open: !modal.open,
+      open,
       study,
+      del,
     });
   };
 
@@ -152,7 +155,7 @@ function OpenStudyView() {
       document.body.style.overflow = 'hidden';
     } else {
       //@ts-ignore
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = 'initial';
     }
   }, [modalStateChange]);
 
@@ -235,7 +238,7 @@ function OpenStudyView() {
             </div>
           </div>
           <ItemList>
-            <Items inputs={inputs} modalStateChange={modalStateChange} />
+            <Items inputs={inputs} modalStateChange={modalStateChange} modal={modal} />
           </ItemList>
         </Section>
       </Main>

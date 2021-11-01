@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getStudty, FilterType } from '../API/index';
-import { Item } from '../views/MainView';
+import { initalStudy, Item } from '../views/MainView';
 
 // 나중에 interface 파일 만들어서 빼기
 interface PropsData {
@@ -15,7 +15,12 @@ interface PropsData {
     title: string | null;
     offset: number;
   };
-  modalStateChange: (study: ItemsType) => void;
+  modalStateChange: (open: boolean, study: ItemsType, del: boolean) => void;
+  modal: {
+    open: boolean;
+    study: ItemsType;
+    del: boolean;
+  };
 }
 export interface ItemsType {
   createdDate: string;
@@ -61,9 +66,10 @@ export interface ItemsType {
     name: string;
   };
   title: string;
+  content: string;
 }
 
-function Items({ inputs, modalStateChange }: PropsData) {
+function Items({ inputs, modalStateChange, modal }: PropsData) {
   const [items, setItems] = useState<ItemsType[]>([]);
   const [lastItem, setlastItem] = useState(false);
   const [page, setPage] = useState(inputs.offset);
@@ -118,7 +124,10 @@ function Items({ inputs, modalStateChange }: PropsData) {
       getItems(inputs, false);
       console.log('useEffect', inputs);
     }
-  }, [inputs]);
+    if (modal.del) {
+      modalStateChange(false, { ...initalStudy }, false);
+    }
+  }, [inputs, modal.del]);
 
   useEffect(() => {
     // 사용자가 마지막 요소를 보고 있고, 로딩 중이 아니고, 마지막 아이템이 아니면
@@ -157,7 +166,7 @@ function Items({ inputs, modalStateChange }: PropsData) {
             return (
               <React.Fragment key={index}>
                 {items.length - 1 === index ? (
-                  <Item key={item.id} ref={ref} onClick={() => modalStateChange(item)}>
+                  <Item key={item.id} ref={ref} onClick={() => modalStateChange(true, item, false)}>
                     <img src={item.files[0].path} alt="스터디 사진" />
                     <div
                       style={{
@@ -173,7 +182,7 @@ function Items({ inputs, modalStateChange }: PropsData) {
                     </div>
                   </Item>
                 ) : (
-                  <Item key={item.id} onClick={() => modalStateChange(item)}>
+                  <Item key={item.id} onClick={() => modalStateChange(true, item, false)}>
                     <img src={item.files[0].path} alt="스터디 사진" />
                     <div
                       style={{

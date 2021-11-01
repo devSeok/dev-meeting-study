@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { getSubjects, saveStudty } from '../API/index';
+import queryString from 'query-string';
+import { getSubjects, saveStudty, modifyStudy } from '../API/index';
 import { StudyType } from '../ToolKit/userType';
 import { Main, Section, InputWrap, Input, InputTitle, Button } from '../elements';
 import StudyHeader from '../components/StudyHeader';
@@ -37,19 +38,29 @@ const Textarea = styled.textarea`
 
 function CreateStudyView() {
   const history = useHistory();
+  const [pathName, setPathName] = useState('create');
+  const [studyId, setStudyId] = useState(1);
   const [subjects, setSubjects] = useState([]);
   const [inputs, setInputs] = useState({
     title: '',
     studyType: 'FREE',
     maxMember: 2,
-    studyInstanceType: 'ONLINE',
+    dtype: 'ONLINE',
+    onlineId: 0,
+    offlineId: 0,
     onlineType: '',
     link: '',
+    subjectName: '',
     subjectId: 1,
     content: '',
     startDate: moment().format('YYYY-MM-DD'),
     endDate: '',
-    file: {},
+    file: {
+      id: 0,
+      name: '',
+      path: '',
+    },
+    studyFileId: 0,
     sido: '',
     gun: '',
     gu: '',
@@ -59,14 +70,18 @@ function CreateStudyView() {
     title, // 타이틀
     studyType, // 유무료
     maxMember, // 최대 멤버 수
-    studyInstanceType, // 온, 오프라인
+    dtype, // 온, 오프라인
+    onlineId, // 온라인 id
+    offlineId, // 오프라인 id
     onlineType, // 프로그램
     link, // 링크
+    subjectName, // 언어 이름
     subjectId, // 언어 id
     content, // 내용
     startDate, // 시작 일
     endDate, // 종료 일
     file, // 사진
+    studyFileId, // 파일 Id
     sido, // 시도
     gun, // 군
     gu, // 구
@@ -74,8 +89,10 @@ function CreateStudyView() {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    // console.log(`name ${name}`);
-    // console.log(`value ${value}`);
+
+    console.log('name', name);
+    console.log('value', value);
+    console.log('inputs', inputs);
 
     if (name === 'file') {
       setInputs({
@@ -83,7 +100,23 @@ function CreateStudyView() {
         // @ts-ignore
         file: e.target.files[0],
       });
-    } else if (name !== 'subject') {
+    } else if (name === 'dtype') {
+      console.log('dtype', dtype);
+
+      if (value === 'ONLINE') {
+        setInputs({
+          ...inputs,
+          dtype: value,
+          onlineType: '',
+          link: '',
+        });
+      } else {
+        setInputs({
+          ...inputs,
+          dtype: value,
+        });
+      }
+    } else if (name !== 'subjectName') {
       setInputs({
         ...inputs,
         [name]: value,
@@ -102,9 +135,15 @@ function CreateStudyView() {
       setInputs({
         ...inputs,
         subjectId: parseInt(idx[0].id),
+        subjectName: idx[0].innerHTML,
       });
     }
   };
+
+  useEffect(() => {
+    // body style hidden 없애기
+    document.body.style.overflow = 'initial';
+  }, []);
 
   useEffect(() => {
     const getSubject = async () => {
@@ -116,9 +155,71 @@ function CreateStudyView() {
     getSubject();
   }, []);
 
+  useEffect(() => {
+    interface QueryStringType {
+      id: string;
+      createdDate: string;
+      dtype: string;
+      endDate: string;
+      files: string;
+      studyFileId: string;
+      lastUpdateDate: string;
+      maxMember: string;
+      offline: string;
+      online: string;
+      onlineId: string;
+      startDate: string;
+      studyMembers: string;
+      studyType: string;
+      subject: string;
+      title: string;
+      content: string;
+    }
+
+    const slicePathName = history.location.pathname.slice(7, 13);
+    setPathName(slicePathName);
+
+    if (slicePathName === 'modify') {
+      // @ts-ignore
+      const query: QueryStringType = queryString.parse(history.location.pathname);
+
+      const obj = {
+        id: query.id,
+        title: query.title,
+        studyType: query.studyType,
+        maxMember: parseInt(query.maxMember),
+        dtype: query.dtype,
+        onlineType: queryString.parse(query.online).onlineType as string,
+        link: queryString.parse(query.online).link as string,
+        offline: queryString.parse(query.offline).null as string,
+        onlineId: parseInt(queryString.parse(query.online).id as string),
+        subjectName: queryString.parse(query.subject).name as string,
+        subjectId: parseInt(queryString.parse(query.subject).id as string),
+        content: query.content,
+        startDate: query.startDate,
+        endDate: query.endDate,
+        file: {
+          id: parseInt(queryString.parse(query.files).id as string),
+          name: queryString.parse(query.files).name as string,
+          path: queryString.parse(query.files).path as string,
+        },
+        studyFileId: parseInt(queryString.parse(query.files).id as string),
+        // sido,
+        // gun,
+        // gu,
+      };
+
+      setStudyId(parseInt(query.id as string));
+      setInputs({
+        ...inputs,
+        ...obj,
+      });
+    }
+  }, []);
+
   const checkInputs = () => {
     if (title !== '' && endDate !== '') {
-      if (studyInstanceType === 'ONLINE') {
+      if (dtype === 'ONLINE') {
         return true;
       } else {
         if (sido !== '' && gun !== '' && gu !== '') {
@@ -136,41 +237,69 @@ function CreateStudyView() {
 
   const onSaveStudy = async (e: any) => {
     try {
+      console.log('저장');
       e.preventDefault();
       if (checkInputs()) {
+        console.log('true');
+
         let formData = new FormData();
+
+        console.log('inputs', inputs);
+
         const id = 1;
 
         formData.append('addressId', id.toString());
         formData.append('title', title);
         formData.append('studyType', studyType);
         formData.append('maxMember', maxMember.toString());
-        formData.append('studyInstanceType', studyInstanceType);
+        formData.append('dtype', dtype);
         formData.append('onlineType', onlineType);
         formData.append('link', link);
         formData.append('subjectId', subjectId.toString());
         formData.append('content', content);
         formData.append('startDate', startDate);
         formData.append('endDate', endDate);
-        //@ts-ignore
+        formData.append('studyFileId', studyFileId.toString());
+
+        // @ts-ignore
         formData.append('file', file);
 
-        //@ts-ignore
-        await saveStudty(formData);
+        console.log('file', file);
 
-        alert('스터디 등록 성공!');
-        history.push('/');
+        dtype === 'ONLINE'
+          ? formData.append('onlineId', onlineId.toString())
+          : formData.append('offlineId', offlineId.toString());
+        if (pathName === 'create') {
+          console.log('create');
+          // @ts-ignore
+          await saveStudty(formData);
+          alert('스터디 등록 성공!');
+        } else {
+          console.log('modify');
+          console.log('file', file);
+
+          // @ts-ignore
+          await modifyStudy(studyId, formData);
+          alert('스터디 수정 성공!');
+        }
       }
+      history.push('/');
+      console.log('false');
     } catch (err: any) {
       const res = err.response;
 
-      alert(`스터디 등록 중 에러 발생!`);
+      // if (res.data !== undefined) {
+      //   alert(`${res.data.message}`);
+      // } else {
+      //   alert('에러 발생!');
+      // }
+      alert('에러 발생!');
     }
   };
 
   return (
     <>
-      <StudyHeader>스터디 등록</StudyHeader>
+      <StudyHeader>{pathName === 'create' ? '스터디 생성' : '스터디 수정'}</StudyHeader>
       <Main>
         <Section>
           <form id="myForm" name="myForm" style={{ width: '100%' }}>
@@ -206,13 +335,13 @@ function CreateStudyView() {
               <InputTitle htmlFor="study-type" className="required">
                 스터디 타입
               </InputTitle>
-              <Select id="type-select" name="studyInstanceType" value={studyInstanceType} onChange={onChange}>
+              <Select id="type-select" name="dtype" value={dtype} onChange={onChange}>
                 <option value="ONLINE">온라인</option>
                 {/* 오프라인은 배포 이후 지원 */}
-                {/* <option value="OFFLINE">오프라인</option> */}
+                <option value="OFFLINE">오프라인</option>
               </Select>
             </WrapInput>
-            {studyInstanceType === 'ONLINE' && (
+            {dtype === 'ONLINE' && (
               <WrapInput style={{ height: '130px' }}>
                 <InputTitle htmlFor="study-type">온라인</InputTitle>
                 <Input
@@ -238,7 +367,7 @@ function CreateStudyView() {
               <InputTitle htmlFor="study-type" className="required">
                 언어
               </InputTitle>
-              <Select id="subject-select" name="subject" onChange={onChange}>
+              <Select id="subject-select" name="subjectName" value={subjectName} onChange={onChange}>
                 {subjects.map((item: { id: number; name: string }) => (
                   <option key={item.id} id={item.id.toString()} value={item.name}>
                     {item.name}
@@ -299,7 +428,7 @@ function CreateStudyView() {
               }}
               type="submit"
             >
-              스터디 등록
+              {pathName === 'create' ? '스터디 등록' : '스터디 수정'}
             </Button>
           </form>
         </Section>
