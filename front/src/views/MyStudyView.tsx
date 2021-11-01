@@ -9,9 +9,8 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import person from '../asset/image/person.png';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { listMessage, message } from '../ToolKit/user';
-//  vs코드는 왜안됏지? 그거 테스트 ㄲ
-//
+import { listMessage, message } from '../ToolKit/messages';
+
 const SelectItem = styled.div`
   width: 500px;
   background-color: #f8f8f8;
@@ -88,12 +87,6 @@ interface PayloadProps {
 }
 function MyStudyView() {
   const Dispatch = useDispatch();
-  console.log('요청 전');
-  const messageData: PayloadProps = useSelector(message);
-  // console.log("요청 후 ", messageData);
-  console.log('messageData', messageData);
-  const messageList: any = messageData.payload.payload.data;
-  console.log('messageList', messageList);
 
   const history = useHistory();
   const [inputs, setInputs] = useState({
@@ -188,7 +181,7 @@ function MyStudyView() {
           <div style={{ marginTop: '50px' }}>
             {pathname === '/my/info' && <Info onChange={onChange} />}
             {pathname === '/my/study' && <Study study={study} index={item} />}
-            {pathname === '/my/message' && <Message post={messageList} index={item} />}
+            {pathname === '/my/message' && <Message index={item} />}
             {pathname === '/my/secession' && <Secession onChange={onChange} />}
           </div>
         </Section>
@@ -241,11 +234,11 @@ export function Study({ study, index }: PType) {
   );
 }
 
-export function Message({ post, index }: PType) {
-  console.log('post111111', post);
+export function Message({ index }: PType) {
+  // console.log('post111111', post);
   return (
     <>
-      <StudyColumnList items={post} index={index} />
+      <StudyColumnList index={index} />
     </>
   );
 }

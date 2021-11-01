@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '../elements';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import person from '../asset/image/person.png';
 import moment from 'moment';
-import { deleteMessage } from '../ToolKit/user';
+import { deleteMessage, listMessage, message } from '../ToolKit/messages';
 
 interface Study {
   title: string;
@@ -15,7 +15,7 @@ interface Study {
   id: number;
 }
 interface PropsType {
-  items: any;
+  items?: any;
   index: number;
 }
 
@@ -29,18 +29,28 @@ const Contents = styled.div`
     display: block;
   }
 `;
-
+interface PayloadProps {
+  payload: {
+    payload: {
+      data: any;
+    };
+  };
+}
 function StudyColumnList({ items, index }: PropsType) {
   const Dispatch = useDispatch();
-  const [message, setMessage] = useState();
+  const [messages, setMessages] = useState();
+  const messageData: PayloadProps = useSelector(message); // 리덕스 변수
+
+  const [listMessage, setListMessage] = useState(messageData?.payload?.payload?.data);
   // console.log('List:items', items);
   // console.log('List:index', index);
+  console.log('messageData', messageData);
   const itemRef = useRef<HTMLLIElement>(null);
   const contentMaxRef = useRef<HTMLDivElement>(null);
   const contentSliceRef = useRef<HTMLDivElement>(null);
   // 2. onClick 함수에서 처리하기
   const onClick = (data: any, idx: number, e: any) => {
-    setMessage(data); // data
+    setMessages(data); // data
     const parent = e.currentTarget.childNodes[0].childNodes[1];
     const contentSlice = parent.childNodes[2];
     const contentMax = parent.childNodes[3];
@@ -48,16 +58,19 @@ function StudyColumnList({ items, index }: PropsType) {
     contentSlice.classList.toggle('open');
     contentMax.classList.toggle('open');
   };
-
-  const onDelete = (id: any) => {
-    console.log(id);
-    Dispatch(deleteMessage(id));
+  const onDelete = (e: any, item: any) => {
+    console.debug("kk", item);
+    Dispatch(deleteMessage(item.id));
   };
+  useEffect(() => {
+    setListMessage(messageData?.payload?.payload?.data);
+  }, [onDelete]);
+  console.log(listMessage, 'listMessage12312');
 
   // JSX
   return (
     <div style={{ width: '500px', justifyContent: 'flex-start' }}>
-      <h3>총 {items.length}개</h3>
+      {/* <h3>총 {items.length}개</h3> */}
       <hr />
       <ul style={{ padding: '0px 10px' }}>
         {index === 1 &&
@@ -100,7 +113,8 @@ function StudyColumnList({ items, index }: PropsType) {
             );
           })}
         {index === 2 &&
-          items.map((item: any, idx: number) => {
+          listMessage &&
+          listMessage.map((item: any, idx: number) => {
             const date = moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss');
             const contents = item.content.substring(0, 40);
             const contentsMax = item.content;
@@ -118,7 +132,7 @@ function StudyColumnList({ items, index }: PropsType) {
                     </div>
                     <div>
                       <span>{date}</span>
-                      <button onClick={onDelete}>Del</button>
+                      <button onClick={(e) => onDelete(e, item)}>Del</button>
                       <Contents ref={contentSliceRef} className="open">
                         {contents}
                       </Contents>
